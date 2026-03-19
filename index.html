@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Xivora — цифровые решения для бизнеса</title>
+  <meta name="description" content="Xivora — студия цифровых решений. Разработка сайтов, брендинг, UI/UX дизайн." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #080808;
+      --bg-panel:    #101010;
+      --bg-panel-2:  #141414;
+      --border:      rgba(255,255,255,.07);
+      --border-strong: rgba(255,255,255,.13);
+      --fg:          #ffffff;
+      --fg-soft:     rgba(255,255,255,.55);
+      --fg-muted:    rgba(255,255,255,.28);
+      --accent:      #e8190a;
+      --accent-soft: rgba(232,25,10,.09);
+      --accent-hover:#c91408;
+      --font-body:   'Manrope', system-ui, sans-serif;
+      --font-display:'Unbounded', sans-serif;
+      --r-card:      1.75rem;
+      --r-pill:      999px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ─── BACKGROUND GRID ─────────────────────── */
+    .xivora-bg-grid {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.028) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: .7;
+    }
+
+    /* ─── ORBS ────────────────────────────────── */
+    .xivora-orb {
+      position: fixed;
+      pointer-events: none;
+      border-radius: 50%;
+      z-index: 0;
+      filter: blur(90px);
+    }
+    .xivora-orb-1 {
+      width: 520px; height: 520px;
+      background: radial-gradient(circle, rgba(232,25,10,.18) 0%, transparent 70%);
+      top: -120px; right: -120px;
+    }
+    .xivora-orb-2 {
+      width: 380px; height: 380px;
+      background: radial-gradient(circle, rgba(232,25,10,.10) 0%, transparent 70%);
+      bottom: 20%; left: -100px;
+    }
+
+    /* ─── NAV ─────────────────────────────────── */
+    .xivora-nav-wrap {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 18px 24px;
+      display: flex;
+      justify-content: center;
+    }
+    .xivora-nav {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(12,12,12,.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: var(--r-pill);
+      padding: 10px 10px 10px 22px;
+      box-shadow: 0 0 0 1px rgba(232,25,10,.06), 0 16px 48px rgba(0,0,0,.45);
+      transition: background .3s;
+    }
+    .xivora-nav-logo {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 900;
+      letter-spacing: .06em;
+      color: var(--fg);
+    }
+    .xivora-nav-logo span { color: var(--accent); }
+    .xivora-nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .xivora-nav-link {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: .06em;
+      color: var(--fg-soft);
+      padding: 7px 15px;
+      border-radius: var(--r-pill);
+      transition: color .2s, background .2s;
+    }
+    .xivora-nav-link:hover {
+      color: var(--fg);
+      background: rgba(255,255,255,.06);
+    }
+    .xivora-nav-cta {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      color: var(--fg);
+      background: var(--accent);
+      padding: 9px 20px;
+      border-radius: var(--r-pill);
+      transition: background .2s;
+    }
+    .xivora-nav-cta:hover { background: var(--accent-hover); }
+
+    /* ─── HERO ────────────────────────────────── */
+    .xivora-hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 140px 24px 80px;
+    }
+    .xivora-hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--border-strong);
+      background: rgba(255,255,255,.04);
+      border-radius: var(--r-pill);
+      padding: 6px 16px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+      margin-bottom: 40px;
+    }
+    .xivora-hero-badge-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+      box-shadow: 0 0 8px var(--accent);
+    }
+    .xivora-hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(52px, 9vw, 108px);
+      font-weight: 900;
+      letter-spacing: -.03em;
+      line-height: 1;
+      color: var(--fg);
+      margin-bottom: 24px;
+    }
+    .xivora-hero-title span { color: var(--accent); }
+    .xivora-hero-sub {
+      font-size: clamp(15px, 1.8vw, 18px);
+      font-weight: 400;
+      color: var(--fg-soft);
+      max-width: 420px;
+      line-height: 1.7;
+      margin-bottom: 52px;
+    }
+    .xivora-hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .xivora-btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: .02em;
+      padding: 14px 28px;
+      border-radius: var(--r-pill);
+      transition: background .2s, transform .15s;
+    }
+    .xivora-btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+    .xivora-btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: transparent;
+      color: var(--fg-soft);
+      font-size: 14px;
+      font-weight: 500;
+      padding: 14px 24px;
+      border-radius: var(--r-pill);
+      border: 1px solid var(--border-strong);
+      transition: color .2s, border-color .2s;
+    }
+    .xivora-btn-secondary:hover {
+      color: var(--fg);
+      border-color: rgba(255,255,255,.28);
+    }
+    .xivora-hero-scroll-hint {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .xivora-hero-scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, transparent, rgba(255,255,255,.2));
+    }
+    .xivora-hero-scroll-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+    }
+
+    /* ─── SECTION COMMON ──────────────────────── */
+    .xivora-section {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 100px 24px;
+    }
+    .xivora-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 18px;
+    }
+    .xivora-eyebrow::before {
+      content: '';
+      display: block;
+      width: 18px; height: 1px;
+      background: var(--accent);
+    }
+    .xivora-section-title {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 900;
+      letter-spacing: -.03em;
+      line-height: 1.1;
+      color: var(--fg);
+      margin-bottom: 56px;
+    }
+
+    /* ─── SERVICES ────────────────────────────── */
+    .xivora-services-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .xivora-service-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--r-card);
+      padding: 36px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: border-color .25s, background .25s, transform .25s;
+      cursor: default;
+    }
+    .xivora-service-card:hover {
+      border-color: rgba(232,25,10,.28);
+      background: var(--bg-panel-2);
+      transform: translateY(-3px);
+    }
+    .xivora-service-icon-wrap {
+      width: 48px; height: 48px;
+      border-radius: 14px;
+      background: var(--accent-soft);
+      border: 1px solid rgba(232,25,10,.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .xivora-service-name {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--fg);
+      letter-spacing: -.3px;
+    }
+    .xivora-service-desc {
+      font-size: 13.5px;
+      font-weight: 400;
+      color: var(--fg-muted);
+      line-height: 1.65;
+    }
+    .xivora-service-tag {
+      align-self: flex-start;
+      margin-top: auto;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      color: var(--fg-muted);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--r-pill);
+      padding: 4px 12px;
+    }
+
+    /* ─── WHY ─────────────────────────────────── */
+    .xivora-why-bg {
+      background: var(--bg-panel);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .xivora-why-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+    }
+    .xivora-why-card {
+      padding: 48px 36px;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .xivora-why-card:last-child { border-right: none; }
+    .xivora-why-num {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: .1em;
+      color: var(--accent);
+    }
+    .xivora-why-title {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -.3px;
+      color: var(--fg);
+      line-height: 1.3;
+    }
+    .xivora-why-text {
+      font-size: 13.5px;
+      font-weight: 400;
+      color: var(--fg-muted);
+      line-height: 1.7;
+    }
+
+    /* ─── CTA BAND ────────────────────────────── */
+    .xivora-cta-section {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 80px 24px 100px;
+    }
+    .xivora-cta-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: calc(var(--r-card) + .5rem);
+      padding: 72px 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+      flex-wrap: wrap;
+      overflow: hidden;
+      position: relative;
+    }
+    .xivora-cta-card::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 340px; height: 340px;
+      background: radial-gradient(circle, rgba(232,25,10,.14) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .xivora-cta-heading {
+      font-family: var(--font-display);
+      font-size: clamp(26px, 3.5vw, 40px);
+      font-weight: 900;
+      letter-spacing: -.03em;
+      line-height: 1.15;
+      color: var(--fg);
+    }
+    .xivora-cta-heading span { color: var(--accent); }
+    .xivora-cta-sub {
+      font-size: 14px;
+      color: var(--fg-muted);
+      margin-top: 10px;
+      line-height: 1.6;
+    }
+
+    /* ─── FOOTER ──────────────────────────────── */
+    .xivora-footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 48px 24px 36px;
+    }
+    .xivora-footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+    .xivora-footer-logo {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: .05em;
+      color: var(--fg);
+    }
+    .xivora-footer-logo span { color: var(--accent); }
+    .xivora-footer-tg {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-display);
+      font-size: 17px;
+      font-weight: 900;
+      letter-spacing: .02em;
+      color: var(--fg);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--r-pill);
+      padding: 12px 24px;
+      transition: border-color .2s, color .2s, background .2s;
+    }
+    .xivora-footer-tg:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-soft);
+    }
+    /* ─── SOCIALS BLOCK ───────────────────────── */
+    .xivora-socials-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .xivora-social-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--r-card);
+      padding: 28px 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: border-color .25s, transform .25s, background .25s;
+      text-decoration: none;
+    }
+    .xivora-social-card:hover {
+      border-color: rgba(232,25,10,.30);
+      background: var(--bg-panel-2);
+      transform: translateY(-3px);
+    }
+    .xivora-social-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: var(--accent-soft);
+      border: 1px solid rgba(232,25,10,.18);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .xivora-social-platform {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+    }
+    .xivora-social-handle {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--fg);
+      letter-spacing: -.3px;
+    }
+    .xivora-social-desc {
+      font-size: 12.5px;
+      font-weight: 400;
+      color: var(--fg-muted);
+      line-height: 1.55;
+      margin-top: auto;
+    }
+    .xivora-footer-copy {
+      width: 100%;
+      text-align: center;
+      font-size: 12px;
+      color: var(--fg-muted);
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+      margin-top: 16px;
+    }
+
+    /* ─── STATS STRIP ────────────────────────── */
+    .xivora-stats {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-panel);
+    }
+    .xivora-stats-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .xivora-stat {
+      padding: 36px 28px;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .xivora-stat:last-child { border-right: none; }
+    .xivora-stat-value {
+      font-family: var(--font-display);
+      font-size: clamp(26px, 3vw, 36px);
+      font-weight: 900;
+      letter-spacing: -.04em;
+      color: var(--fg);
+    }
+    .xivora-stat-value span { color: var(--accent); }
+    .xivora-stat-label {
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--fg-muted);
+      line-height: 1.4;
+    }
+
+    /* ─── PROCESS ─────────────────────────────── */
+    .xivora-process-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      position: relative;
+    }
+    .xivora-process-steps::before {
+      content: '';
+      position: absolute;
+      top: 32px; left: calc(12.5% + 16px); right: calc(12.5% + 16px);
+      height: 1px;
+      background: linear-gradient(to right, var(--accent) 0%, rgba(232,25,10,.15) 100%);
+      pointer-events: none;
+    }
+    .xivora-step {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--r-card);
+      padding: 32px 24px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: border-color .25s, transform .25s;
+    }
+    .xivora-step:hover {
+      border-color: rgba(232,25,10,.22);
+      transform: translateY(-3px);
+    }
+    .xivora-step-num {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      border: 1px solid rgba(232,25,10,.22);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 900;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .xivora-step-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--fg);
+      letter-spacing: -.2px;
+    }
+    .xivora-step-desc {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--fg-muted);
+      line-height: 1.65;
+    }
+    .xivora-step-time {
+      margin-top: auto;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    /* ─── PRICING ─────────────────────────────── */
+    .xivora-pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+    .xivora-price-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--r-card);
+      padding: 36px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      transition: border-color .25s, transform .25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .xivora-price-card:hover {
+      border-color: rgba(232,25,10,.22);
+      transform: translateY(-4px);
+    }
+    .xivora-price-card.xivora-price-featured {
+      border-color: rgba(232,25,10,.35);
+      background: var(--bg-panel-2);
+    }
+    .xivora-price-card.xivora-price-featured::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 180px; height: 180px;
+      background: radial-gradient(circle, rgba(232,25,10,.16) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .xivora-price-badge {
+      display: inline-flex;
+      align-self: flex-start;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-soft);
+      border: 1px solid rgba(232,25,10,.22);
+      border-radius: var(--r-pill);
+      padding: 4px 12px;
+      margin-bottom: 24px;
+    }
+    .xivora-price-plan {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+      margin-bottom: 10px;
+    }
+    .xivora-price-value {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 3.5vw, 42px);
+      font-weight: 900;
+      letter-spacing: -.04em;
+      color: var(--fg);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .xivora-price-value sup {
+      font-size: .45em;
+      vertical-align: super;
+      font-weight: 700;
+      color: var(--fg-soft);
+    }
+    .xivora-price-note {
+      font-size: 12px;
+      color: var(--fg-muted);
+      margin-bottom: 28px;
+    }
+    .xivora-price-divider {
+      height: 1px;
+      background: var(--border);
+      margin-bottom: 24px;
+    }
+    .xivora-price-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .xivora-price-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13.5px;
+      font-weight: 400;
+      color: var(--fg-soft);
+      line-height: 1.45;
+    }
+    .xivora-price-features li::before {
+      content: '';
+      display: block;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      border: 1px solid rgba(232,25,10,.25);
+      flex-shrink: 0;
+      margin-top: 1px;
+      background-image: url("data:image/svg+xml,%3Csvg width='10' height='10' viewBox='0 0 10 10' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 5l2 2 4-4' stroke='%23e8190a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+    .xivora-price-time {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--fg-muted);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .xivora-price-time::before {
+      content: '⏱';
+      font-size: 12px;
+    }
+    .xivora-btn-outline {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--fg);
+      font-size: 13.5px;
+      font-weight: 700;
+      padding: 13px 20px;
+      border-radius: var(--r-pill);
+      border: 1px solid var(--border-strong);
+      transition: border-color .2s, background .2s;
+      margin-top: auto;
+    }
+    .xivora-btn-outline:hover {
+      border-color: rgba(232,25,10,.4);
+      background: var(--accent-soft);
+    }
+    .xivora-pricing-note {
+      text-align: center;
+      font-size: 13px;
+      color: var(--fg-muted);
+      margin-top: 20px;
+    }
+    .xivora-pricing-note a {
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    /* ─── FAQ ─────────────────────────────────── */
+    .xivora-faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: var(--r-card);
+      overflow: hidden;
+    }
+    .xivora-faq-item {
+      border-bottom: 1px solid var(--border);
+    }
+    .xivora-faq-item:last-child { border-bottom: none; }
+    .xivora-faq-q {
+      width: 100%;
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 26px 32px;
+      text-align: left;
+      transition: background .2s;
+    }
+    .xivora-faq-q:hover { background: rgba(255,255,255,.03); }
+    .xivora-faq-q.open { background: rgba(255,255,255,.03); }
+    .xivora-faq-q-text {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--fg);
+      letter-spacing: -.2px;
+      line-height: 1.35;
+    }
+    .xivora-faq-icon {
+      width: 28px; height: 28px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      border: 1px solid var(--border-strong);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--fg-muted);
+      transition: transform .3s, border-color .2s, color .2s;
+    }
+    .xivora-faq-q.open .xivora-faq-icon {
+      transform: rotate(45deg);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .xivora-faq-a {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height .4s cubic-bezier(.22,.84,.33,1);
+    }
+    .xivora-faq-a-inner {
+      padding: 0 32px 26px;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--fg-muted);
+      line-height: 1.75;
+    }
+
+    /* ─── RISE ANIMATION ──────────────────────── */
+    .rise {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .65s cubic-bezier(.22,.84,.33,1), transform .65s cubic-bezier(.22,.84,.33,1);
+    }
+    .rise.visible { opacity: 1; transform: translateY(0); }
+    .rise-d1 { transition-delay: .1s; }
+    .rise-d2 { transition-delay: .2s; }
+    .rise-d3 { transition-delay: .3s; }
+
+    /* ─── RESPONSIVE ──────────────────────────── */
+    @media (max-width: 860px) {
+      .xivora-nav-links { display: none; }
+      .xivora-why-grid { grid-template-columns: 1fr; }
+      .xivora-why-card { border-right: none; border-bottom: 1px solid var(--border); padding: 36px 24px; }
+      .xivora-why-card:last-child { border-bottom: none; }
+      .xivora-cta-card { padding: 48px 32px; flex-direction: column; align-items: flex-start; }
+      .xivora-stats-inner { grid-template-columns: repeat(2, 1fr); }
+      .xivora-stat:nth-child(2) { border-right: none; }
+      .xivora-stat:nth-child(3), .xivora-stat:nth-child(4) { border-top: 1px solid var(--border); }
+      .xivora-process-steps { grid-template-columns: repeat(2, 1fr); }
+      .xivora-process-steps::before { display: none; }
+      .xivora-pricing-grid { grid-template-columns: 1fr; max-width: 440px; }
+      .xivora-socials-grid { grid-template-columns: repeat(2, 1fr); }
+      .xivora-faq-q { padding: 22px 24px; }
+      .xivora-faq-a-inner { padding: 0 24px 22px; }
+    }
+    @media (max-width: 620px) {
+      .xivora-services-grid { grid-template-columns: 1fr; }
+      .xivora-hero-title { letter-spacing: -.02em; }
+      .xivora-footer-inner { flex-direction: column; align-items: flex-start; }
+      .xivora-bg-grid { background-size: 28px 28px; opacity: .4; }
+      .xivora-stats-inner { grid-template-columns: repeat(2, 1fr); }
+      .xivora-process-steps { grid-template-columns: 1fr; }
+      .xivora-socials-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BG EFFECTS -->
+  <div class="xivora-bg-grid" aria-hidden="true"></div>
+  <div class="xivora-orb xivora-orb-1" aria-hidden="true"></div>
+  <div class="xivora-orb xivora-orb-2" aria-hidden="true"></div>
+
+  <!-- NAV -->
+  <div class="xivora-nav-wrap">
+    <nav class="xivora-nav">
+      <div class="xivora-nav-logo">XIVORA<span>.</span></div>
+      <div class="xivora-nav-links">
+        <a class="xivora-nav-link" href="#services">Услуги</a>
+        <a class="xivora-nav-link" href="#process">Процесс</a>
+        <a class="xivora-nav-link" href="#why">О нас</a>
+        <a class="xivora-nav-link" href="#pricing">Цены</a>
+        <a class="xivora-nav-link" href="#contacts">Контакты</a>
+        <a class="xivora-nav-link" href="#faq">FAQ</a>
+      </div>
+      <a class="xivora-nav-cta" href="https://t.me/Xivora" target="_blank" rel="noopener">Написать</a>
+    </nav>
+  </div>
+
+  <!-- HERO -->
+  <section class="xivora-hero">
+    <div class="xivora-hero-badge">
+      <span class="xivora-hero-badge-dot"></span>
+      Студия&nbsp;цифровых&nbsp;решений
+    </div>
+    <h1 class="xivora-hero-title">XIVORA<span>.</span></h1>
+    <p class="xivora-hero-sub">Цифровые решения для твоего бизнеса — быстро, чисто, с результатом.</p>
+    <div class="xivora-hero-actions">
+      <a class="xivora-btn-primary" href="https://t.me/Xivora" target="_blank" rel="noopener">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+          <path d="M22 2L11 13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Написать в Telegram
+      </a>
+      <a class="xivora-btn-secondary" href="https://t.me/Xivora" target="_blank" rel="noopener">@Xivora</a>
+    </div>
+    <div class="xivora-hero-scroll-hint" aria-hidden="true">
+      <div class="xivora-hero-scroll-line"></div>
+      <span class="xivora-hero-scroll-label">Скролл</span>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="xivora-stats">
+    <div class="xivora-stats-inner">
+      <div class="xivora-stat rise">
+        <div class="xivora-stat-value">15<span>+</span></div>
+        <div class="xivora-stat-label">проектов сдано в срок</div>
+      </div>
+      <div class="xivora-stat rise rise-d1">
+        <div class="xivora-stat-value">~<span>10</span> ч</div>
+        <div class="xivora-stat-label">среднее время на реализацию проекта</div>
+      </div>
+      <div class="xivora-stat rise rise-d2">
+        <div class="xivora-stat-value">&lt;<span>10</span> мин</div>
+        <div class="xivora-stat-label">время ответа в рабочее время</div>
+      </div>
+      <div class="xivora-stat rise rise-d3">
+        <div class="xivora-stat-value"><span>100</span>%</div>
+        <div class="xivora-stat-label">работ сдали в срок</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <section id="services" class="xivora-section">
+    <p class="xivora-eyebrow rise">Услуги</p>
+    <h2 class="xivora-section-title rise rise-d1">Чем поможем</h2>
+    <div class="xivora-services-grid">
+
+      <div class="xivora-service-card rise rise-d1">
+        <div class="xivora-service-icon-wrap">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <rect x="2" y="4" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M8 18v3M16 18v3M5 21h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M7 12h2M11 9l2 3-2 3M15 9l2 3-2 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="xivora-service-name">Разработка сайтов, скриптов, приложений</div>
+        <div class="xivora-service-desc">Лендинги, корпоративные сайты и веб-приложения — под ключ, с нуля до запуска.</div>
+        <div class="xivora-service-tag">Web Dev</div>
+      </div>
+
+      <div class="xivora-service-card rise rise-d2">
+        <div class="xivora-service-icon-wrap">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M22 2L11 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="xivora-service-name">Telegram Разработчик</div>
+        <div class="xivora-service-desc">Telegram Mini App, боты любой сложности, парсеры и автоматизация прямо внутри Telegram.</div>
+        <div class="xivora-service-tag">Telegram Dev</div>
+      </div>
+
+      <div class="xivora-service-card rise rise-d2">
+        <div class="xivora-service-icon-wrap">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M4 6h16M4 10h16M4 14h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            <circle cx="18" cy="17" r="4" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M16.5 17l1 1 2-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="xivora-service-name">Поддержка</div>
+        <div class="xivora-service-desc">Техническое сопровождение, плановые обновления и доработки вашего проекта без лишней суеты.</div>
+        <div class="xivora-service-tag">Support</div>
+      </div>
+
+      <div class="xivora-service-card rise rise-d3">
+        <div class="xivora-service-icon-wrap">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <rect x="2" y="3" width="20" height="15" rx="2" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M2 9h20" stroke="currentColor" stroke-width="1.8"/>
+            <rect x="5" y="12" width="6" height="4" rx="1" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M14 13h5M14 16h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="xivora-service-name">Интерфейс-дизайн</div>
+        <div class="xivora-service-desc">UI/UX для сайтов и приложений: продуманно, красиво и с фокусом на конверсию.</div>
+        <div class="xivora-service-tag">UI / UX</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section id="process" class="xivora-section">
+    <p class="xivora-eyebrow rise">Процесс</p>
+    <h2 class="xivora-section-title rise rise-d1">Как мы работаем</h2>
+    <div class="xivora-process-steps">
+      <div class="xivora-step rise rise-d1">
+        <div class="xivora-step-num">01</div>
+        <div class="xivora-step-title">Бриф</div>
+        <div class="xivora-step-desc">Пишешь в Telegram, рассказываешь о задаче. Мы задаём уточняющие вопросы и фиксируем цель.</div>
+        <div class="xivora-step-time">≈ 1 день</div>
+      </div>
+      <div class="xivora-step rise rise-d2">
+        <div class="xivora-step-num">02</div>
+        <div class="xivora-step-title">Предложение</div>
+        <div class="xivora-step-desc">Готовим план, сроки и стоимость. Согласовываем всё до старта — никаких сюрпризов в процессе.</div>
+        <div class="xivora-step-time">≈ 1 день</div>
+      </div>
+      <div class="xivora-step rise rise-d2">
+        <div class="xivora-step-num">03</div>
+        <div class="xivora-step-title">Работа</div>
+        <div class="xivora-step-desc">Реализуем проект, показываем промежуточные результаты и вносим правки прямо по ходу.</div>
+        <div class="xivora-step-time">1–14 дней</div>
+      </div>
+      <div class="xivora-step rise rise-d3">
+        <div class="xivora-step-num">04</div>
+        <div class="xivora-step-title">Сдача</div>
+        <div class="xivora-step-desc">Передаём готовый результат и помогаем с запуском. Остаёмся на связи — поддержка включена.</div>
+        <div class="xivora-step-time">1 день</div>
+      </div>
+    </div>
+    <p style="margin-top:28px;font-size:13px;font-weight:600;color:var(--fg-muted);text-align:center;">
+      Максимальный срок запуска любого проекта —&nbsp;<span style="color:var(--accent)">14 дней</span>. Работаем быстро, без лишних итераций.
+    </p>
+  </section> 
+
+  <!-- WHY XIVORA -->
+  <div id="why" class="xivora-why-bg">
+    <div class="xivora-section" style="padding-bottom:0">
+      <p class="xivora-eyebrow rise">Преимущества</p>
+      <h2 class="xivora-section-title rise rise-d1">Почему Xivora</h2>
+    </div>
+    <div style="max-width:1100px;margin:0 auto;padding:0 24px 100px">
+      <div class="xivora-why-grid">
+        <div class="xivora-why-card rise">
+          <p class="xivora-why-num">01</p>
+          <h3 class="xivora-why-title">Скорость работы</h3>
+          <p class="xivora-why-text">Первый результат — в течение 7 часов. Чёткие дедлайны без пустых обещаний и лишних согласований.</p>
+        </div>
+        <div class="xivora-why-card rise rise-d1">
+          <p class="xivora-why-num">02</p>
+          <h3 class="xivora-why-title">Фокус на твои задачи</h3>
+          <p class="xivora-why-text">Никаких шаблонов. Каждый проект разбираем с нуля и решаем конкретно твою задачу.</p>
+        </div>
+        <div class="xivora-why-card rise rise-d2">
+          <p class="xivora-why-num">03</p>
+          <h3 class="xivora-why-title">Всегда на связи</h3>
+          <p class="xivora-why-text">Telegram, быстрые ответы, прозрачный процесс. Ты всегда знаешь что происходит с проектом.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRICING -->
+  <section id="pricing" class="xivora-section">
+    <p class="xivora-eyebrow rise">Стоимость</p>
+    <h2 class="xivora-section-title rise rise-d1">Прозрачные цены</h2>
+    <div class="xivora-pricing-grid">
+
+      <div class="xivora-price-card rise rise-d1">
+        <div class="xivora-price-plan">Telegram Бот</div>
+        <div class="xivora-price-value"><sup>от </sup>1 000 ₽</div>
+        <div class="xivora-price-note">Идеально для первого проекта</div>
+        <div class="xivora-price-divider"></div>
+        <ul class="xivora-price-features">
+          <li>Бот любой сложности</li>
+          <li>API-интеграции и платёжные системы</li>
+          <li>Хостинг на вашем сервере</li>
+          <li>2 раунда правок</li>
+          <li>Поддержка 15 дней</li>
+        </ul>
+        <div class="xivora-price-time">Срок: 1–5 дней</div>
+        <a class="xivora-btn-outline" href="https://t.me/Xivora" target="_blank" rel="noopener">Обсудить</a>
+      </div>
+
+      <div class="xivora-price-card xivora-price-featured rise rise-d2">
+        <div class="xivora-price-badge">Популярный</div>
+        <div class="xivora-price-plan">Сайт</div>
+        <div class="xivora-price-value"><sup>от </sup>1 000 ₽</div>
+        <div class="xivora-price-note">Быстрый старт в интернете</div>
+        <div class="xivora-price-divider"></div>
+        <ul class="xivora-price-features">
+          <li>Лендинг или многостраничный сайт</li>
+          <li>Адаптивная вёрстка под любой экран</li>
+          <li>Базовая SEO-оптимизация</li>
+          <li>Подключение домена и деплой</li>
+          <li>2 раунда правок</li>
+          <li>Поддержка 15 дней</li>
+        </ul>
+        <div class="xivora-price-time">Срок: 1–14 дней</div>
+        <a class="xivora-btn-primary" href="https://t.me/Xivora" target="_blank" rel="noopener" style="justify-content:center;font-size:13.5px;padding:13px 20px;border-radius:999px">Обсудить</a>
+      </div>
+
+      <div class="xivora-price-card rise rise-d3">
+        <div class="xivora-price-plan">Скрипт</div>
+        <div class="xivora-price-value"><sup>от </sup>800 ₽</div>
+        <div class="xivora-price-note">Автоматизация под любую задачу</div>
+        <div class="xivora-price-divider"></div>
+        <ul class="xivora-price-features">
+          <li>Парсеры, авто-постинг, уведомления</li>
+          <li>Интеграция с внешними API и сервисами</li>
+          <li>Чистый читаемый код с документацией</li>
+          <li>2 раунда правок</li>
+          <li>Поддержка 15 дней</li>
+        </ul>
+        <div class="xivora-price-time">Срок: 1–14 дней</div>
+        <a class="xivora-btn-outline" href="https://t.me/Xivora" target="_blank" rel="noopener">Обсудить</a>
+      </div>
+
+    </div>
+    <p class="xivora-pricing-note">Нужно что-то нестандартное? <a href="https://t.me/Xivora" target="_blank" rel="noopener">Напишите</a> — рассчитаем индивидуально.</p>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="xivora-section" style="padding-top:0">
+    <p class="xivora-eyebrow rise">FAQ</p>
+    <h2 class="xivora-section-title rise rise-d1">Частые вопросы</h2>
+    <div class="xivora-faq-list rise rise-d1">
+
+      <div class="xivora-faq-item">
+        <button class="xivora-faq-q" aria-expanded="false">
+          <span class="xivora-faq-q-text">Как проходит оплата?</span>
+          <span class="xivora-faq-icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </span>
+        </button>
+        <div class="xivora-faq-a"><div class="xivora-faq-a-inner">Работаем по предоплате 50% при старте проекта, остаток — после сдачи. Принимаем перевод на карту или криптовалюту.</div></div>
+      </div>
+
+      <div class="xivora-faq-item">
+        <button class="xivora-faq-q" aria-expanded="false">
+          <span class="xivora-faq-q-text">Сколько правок входит в стоимость?</span>
+          <span class="xivora-faq-icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </span>
+        </button>
+        <div class="xivora-faq-a"><div class="xivora-faq-a-inner">Для всех проектов одинаково — 2 бесплатных раунда правок. Каждый раунд включает любое количество замечаний по текущей версии. Дополнительные правки обсуждаются отдельно.</div></div>
+      </div>
+
+      <div class="xivora-faq-item">
+        <button class="xivora-faq-q" aria-expanded="false">
+          <span class="xivora-faq-q-text">Что если мне нужен сайт срочно?</span>
+          <span class="xivora-faq-icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </span>
+        </button>
+        <div class="xivora-faq-a"><div class="xivora-faq-a-inner">Принимаем срочные заказы с доплатой 25% от стоимости проекта. Напишите в Telegram, назовите дедлайн — возьмём в работу в первую очередь.</div></div>
+      </div>
+
+      <div class="xivora-faq-item">
+        <button class="xivora-faq-q" aria-expanded="false">
+          <span class="xivora-faq-q-text">Предоставляете ли хостинг?</span>
+          <span class="xivora-faq-icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </span>
+        </button>
+        <div class="xivora-faq-a"><div class="xivora-faq-a-inner">Нет, хостинг не предоставляем — но всегда помогаем развернуть проект на вашем сервере бесплатно. Не знаете, какой хостинг выбрать? Подберём подходящий вариант под задачу и бюджет.</div></div>
+      </div>
+
+      <div class="xivora-faq-item">
+        <button class="xivora-faq-q" aria-expanded="false">
+          <span class="xivora-faq-q-text">Можно ли будет самому редактировать сайт?</span>
+          <span class="xivora-faq-icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </span>
+        </button>
+        <div class="xivora-faq-a"><div class="xivora-faq-a-inner">Да. По желанию подключаем удобную CMS (систему управления контентом), чтобы вы могли менять тексты, картинки и блоки без программиста. Обучим за 15 минут.</div></div>
+      </div>
+
+      <div class="xivora-faq-item">
+        <button class="xivora-faq-q" aria-expanded="false">
+          <span class="xivora-faq-q-text">Работаете ли вы с клиентами из других городов?</span>
+          <span class="xivora-faq-icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </span>
+        </button>
+        <div class="xivora-faq-a"><div class="xivora-faq-a-inner">Да, работаем полностью онлайн. Вся коммуникация через Telegram, созвоны при необходимости. Клиенты из любой точки мира — без проблем.</div></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SOCIALS -->
+  <section id="contacts" class="xivora-section" style="padding-top:0">
+    <p class="xivora-eyebrow rise">Контакты</p>
+    <h2 class="xivora-section-title rise rise-d1">Найти нас</h2>
+    <div class="xivora-socials-grid">
+
+      <a class="xivora-social-card rise rise-d1" href="https://t.me/Xivora" target="_blank" rel="noopener">
+        <div class="xivora-social-icon">
+          <!-- Telegram plane -->
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+          </svg>
+        </div>
+        <div class="xivora-social-platform">Telegram</div>
+        <div class="xivora-social-handle">@Xivora</div>
+        <div class="xivora-social-desc">Написать напрямую — обсудим задачу и стоимость.</div>
+      </a>
+
+      <a class="xivora-social-card rise rise-d2" href="https://t.me/Xivora_Service" target="_blank" rel="noopener">
+        <div class="xivora-social-icon">
+          <!-- Telegram channel (same icon, different context) -->
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+          </svg>
+        </div>
+        <div class="xivora-social-platform">Telegram канал</div>
+        <div class="xivora-social-handle">@Xivora_Service</div>
+        <div class="xivora-social-desc">Кейсы, обновления и новости студии — следи за нашей работой.</div>
+      </a>
+
+      <a class="xivora-social-card rise rise-d2" href="https://github.com/m1ghty13" target="_blank" rel="noopener">
+        <div class="xivora-social-icon">
+          <!-- GitHub mark -->
+          <svg width="20" height="20" viewBox="0 0 98 96" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M48.854 0C21.839 0 0 22 0 49.217c0 21.756 13.993 40.172 33.405 46.69 2.427.49 3.316-1.059 3.316-2.362 0-1.141-.08-5.052-.08-9.127-13.59 2.934-16.42-5.867-16.42-5.867-2.184-5.704-5.42-7.17-5.42-7.17-4.448-3.015.324-3.015.324-3.015 4.934.326 7.523 5.052 7.523 5.052 4.367 7.496 11.404 5.378 14.235 4.074.404-3.178 1.699-5.378 3.074-6.6-10.839-1.141-22.243-5.378-22.243-24.283 0-5.378 1.94-9.778 5.014-13.2-.485-1.222-2.184-6.275.486-13.038 0 0 4.125-1.304 13.426 5.052a46.97 46.97 0 0 1 12.214-1.63c4.125 0 8.33.571 12.213 1.63 9.302-6.356 13.427-5.052 13.427-5.052 2.67 6.763.97 11.816.485 13.038 3.155 3.422 5.015 7.822 5.015 13.2 0 18.905-11.404 23.06-22.324 24.283 1.78 1.548 3.316 4.481 3.316 9.126 0 6.6-.08 11.897-.08 13.526 0 1.304.89 2.853 3.316 2.364 19.412-6.52 33.405-24.935 33.405-46.691C97.707 22 75.788 0 48.854 0z"/>
+          </svg>
+        </div>
+        <div class="xivora-social-platform">GitHub</div>
+        <div class="xivora-social-handle">m1ghty13</div>
+        <div class="xivora-social-desc">Открытые проекты и примеры кода от нашей команды.</div>
+      </a>
+
+      <a class="xivora-social-card rise rise-d3" href="https://lolz.live/members/9765279/" target="_blank" rel="noopener">
+        <div class="xivora-social-icon">
+          <!-- Forum / Lolzteam - speech bubble with L -->
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9 10h.01M12 10h.01M15 10h.01" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="xivora-social-platform">Lolzteam</div>
+        <div class="xivora-social-handle">m1ghty13</div>
+        <div class="xivora-social-desc">Профиль на форуме — отзывы, репутация, история сделок.</div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="xivora-cta-section">
+    <div class="xivora-cta-card rise">
+      <div>
+        <h2 class="xivora-cta-heading">Готов начать?<br><span>Напиши нам.</span></h2>
+        <p class="xivora-cta-sub">Расскажи о задаче — ответим быстро.</p>
+      </div>
+      <a class="xivora-btn-primary" href="https://t.me/Xivora" target="_blank" rel="noopener" style="font-size:15px;padding:16px 32px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M22 2L11 13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Написать в Telegram
+      </a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="xivora-footer">
+    <div class="xivora-footer-inner">
+      <div class="xivora-footer-logo">XIVORA<span>.</span></div>
+      <a class="xivora-footer-tg" href="https://t.me/Xivora" target="_blank" rel="noopener">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+          <path d="M22 2L11 13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        @Xivora
+      </a>
+      <p class="xivora-footer-copy">&copy; 2026 Xivora. Все права защищены.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Rise on scroll
+    const xivoraObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); xivoraObserver.unobserve(e.target); } });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.rise').forEach(el => xivoraObserver.observe(el));
+
+    // FAQ accordion
+    document.querySelectorAll('.xivora-faq-q').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const isOpen = btn.classList.contains('open');
+        // close all
+        document.querySelectorAll('.xivora-faq-q').forEach(b => {
+          b.classList.remove('open');
+          b.setAttribute('aria-expanded', 'false');
+          b.nextElementSibling.style.maxHeight = '0';
+        });
+        // open clicked if was closed
+        if (!isOpen) {
+          btn.classList.add('open');
+          btn.setAttribute('aria-expanded', 'true');
+          const answer = btn.nextElementSibling;
+          answer.style.maxHeight = answer.scrollHeight + 'px';
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
