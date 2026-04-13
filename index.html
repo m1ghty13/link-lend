@@ -2200,6 +2200,22 @@
   const $mxFill = document.getElementById('mx-progress-fill');
   let matActive = false;
 
+  /* Reset matrix overlay on bfcache restore (back button) */
+  window.addEventListener('pageshow', function(e) {
+    if (e.persisted) {
+      matActive = false;
+      $matC.classList.remove('xm-on');
+      $matC.style.cssText = '';
+      $matL.style.cssText = 'display:none';
+      $matH.style.cssText = 'display:none';
+      $mxScan.style.display = 'none';
+      $mxVig.style.display = 'none';
+      $mxProg.style.cssText = 'display:none';
+      $mxFill.style.width = '0%';
+      document.body.style.filter = '';
+    }
+  });
+
   function typeText(el, text, speed, cb) {
     let i = 0;
     el.textContent = '';
