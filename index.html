@@ -2328,18 +2328,21 @@
     // Phase 2: After 1.5s, switch to terminal
     setTimeout(async () => {
       clearInterval(interval);
-      // Hide matrix elements
+
+      // Show terminal overlay FIRST (z-index 9910, above canvas 9900)
+      $mxTerm.classList.add('on');
+      $mxTInner.innerHTML = '';
+
+      // Now safely hide matrix elements behind the terminal
       $matL.style.display = 'none';
       $matH.style.display = 'none';
       $mxProg.style.display = 'none';
       $mxScan.style.display = 'none';
       $mxVig.style.display = 'none';
       $matC.classList.remove('xm-on');
+      $matC.style.transition = 'none';
       $matC.style.opacity = '0';
 
-      // Show terminal overlay
-      $mxTerm.classList.add('on');
-      $mxTInner.innerHTML = '';
       const T = $mxTInner;
 
       // Boot header
