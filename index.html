@@ -1861,7 +1861,7 @@
   <!-- MATRIX OVERLAY -->
   <canvas id="xivora-matrix-c" aria-hidden="true"></canvas>
   <div class="xivora-matrix-label" id="xivora-matrix-label" aria-hidden="true">XIVORA.EXE</div>
-  <div class="xivora-matrix-hint" id="xivora-matrix-hint" aria-hidden="true">нажми любую клавишу чтобы выйти</div>
+  <div class="xivora-matrix-hint" id="xivora-matrix-hint" aria-hidden="true">загрузка консольного режима...</div>
 
   <!-- TERMINAL WIDGET -->
   <div class="xivora-term-wrap" id="xivora-term-wrap">
@@ -2139,7 +2139,59 @@
   function triggerMatrix() {
     if (matActive) return;
     matActive = true;
-    window.location.href = 'console.html';
+
+    // Show overlay
+    $matC.width  = window.innerWidth;
+    $matC.height = window.innerHeight;
+    $matC.classList.add('xm-on');
+
+    const ctx = $matC.getContext('2d');
+    const cols = Math.floor($matC.width / 16);
+    const drops = Array(cols).fill(0).map(() => Math.random() * -40 | 0);
+    const chars = 'アイウエオカキクケコ0123456789XIVORA<>{}[]|/\\*#@$&';
+    let frame = 0;
+
+    // Matrix rain
+    const interval = setInterval(() => {
+      ctx.fillStyle = 'rgba(0,0,0,.07)';
+      ctx.fillRect(0, 0, $matC.width, $matC.height);
+      ctx.font = '14px monospace';
+      drops.forEach((y, i) => {
+        const brightness = Math.random();
+        ctx.fillStyle = brightness > .92 ? '#fff' : brightness > .6 ? '#00ff41' : 'rgba(0,255,65,.45)';
+        ctx.fillText(chars[Math.random()*chars.length|0], i*16, y*16);
+        if (y*16 > $matC.height && Math.random() > .965) drops[i] = 0;
+        drops[i]++;
+      });
+      frame++;
+    }, 33);
+
+    // Show label after 400ms
+    setTimeout(() => {
+      $matL.style.display = 'block';
+      $matL.style.animation = 'mx-pulse 1.1s ease-in-out infinite alternate';
+    }, 400);
+
+    // Show hint after 800ms
+    setTimeout(() => {
+      $matH.style.display = 'block';
+    }, 800);
+
+    // Glitch flicker before redirect
+    setTimeout(() => {
+      let flicker = 0;
+      const glitch = setInterval(() => {
+        document.body.style.filter = flicker % 2 === 0
+          ? 'brightness(3) saturate(0) contrast(2)'
+          : 'brightness(0.1)';
+        flicker++;
+        if (flicker >= 8) {
+          clearInterval(glitch);
+          document.body.style.filter = 'brightness(0)';
+          setTimeout(() => { window.location.href = 'console.html'; }, 150);
+        }
+      }, 60);
+    }, 2200);
   }
 
   /* ── KONAMI CODE ──────────────────────────────── */
