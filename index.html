@@ -1065,7 +1065,6 @@
       z-index: 9900;
       pointer-events: none;
       opacity: 0;
-      transition: opacity .5s ease;
       background: #000;
     }
     #xivora-matrix-c.xm-on { opacity: 1; pointer-events: all; }
@@ -2297,8 +2296,13 @@
     matActive = true;
 
     // Phase 1: Matrix rain (short)
+    $matC.style.transition = 'none';
     $matC.width  = window.innerWidth;
     $matC.height = window.innerHeight;
+    // Fill solid black immediately so site is fully covered
+    const preCtx = $matC.getContext('2d');
+    preCtx.fillStyle = '#000';
+    preCtx.fillRect(0, 0, $matC.width, $matC.height);
     $matC.classList.add('xm-on');
     $mxScan.style.display = 'block';
     $mxVig.style.display = 'block';
