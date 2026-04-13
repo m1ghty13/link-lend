@@ -1159,6 +1159,53 @@
       97%  { opacity: 1; }
     }
 
+    /* ─── TERMINAL BOOT OVERLAY ────────────────── */
+    .mx-terminal {
+      position: fixed;
+      inset: 0;
+      z-index: 9910;
+      background: #0a0a0a;
+      display: none;
+      padding: 40px 48px;
+      overflow: hidden;
+      font-family: 'Courier New', 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: #00ff41;
+    }
+    .mx-terminal.on { display: block; }
+    .mx-term-scanline {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.12) 2px, rgba(0,0,0,.12) 4px);
+      z-index: 1;
+    }
+    .mx-term-inner {
+      position: relative;
+      z-index: 2;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .mx-term-inner .t-dim { color: #1a5c28; }
+    .mx-term-inner .t-green { color: #00ff41; }
+    .mx-term-inner .t-cyan { color: #00e5ff; }
+    .mx-term-inner .t-yellow { color: #ffcc00; }
+    .mx-term-inner .t-white { color: #ccc; }
+    .mx-term-inner .t-red { color: #ff4444; }
+    .mx-term-inner .t-ok { color: #00ff41; font-weight: bold; }
+    .mx-term-cursor {
+      display: inline-block;
+      width: 8px;
+      height: 15px;
+      background: #00ff41;
+      box-shadow: 0 0 6px rgba(0,255,65,.5);
+      animation: cur-blink .6s step-end infinite;
+      position: relative;
+      z-index: 2;
+    }
+    @keyframes cur-blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
     /* ─── TERMINAL WIDGET ─────────────────────── */
     .xivora-term-wrap {
       position: fixed;
@@ -1923,6 +1970,13 @@
   <div class="mx-progress" id="mx-progress" aria-hidden="true"><div class="mx-progress-fill" id="mx-progress-fill"></div></div>
   <div class="xivora-matrix-hint" id="xivora-matrix-hint" aria-hidden="true"></div>
 
+  <!-- TERMINAL BOOT OVERLAY -->
+  <div id="mx-terminal" class="mx-terminal" aria-hidden="true">
+    <div class="mx-term-scanline"></div>
+    <div class="mx-term-inner" id="mx-term-inner"></div>
+    <div class="mx-term-cursor" id="mx-term-cursor"></div>
+  </div>
+
   <!-- TERMINAL WIDGET -->
   <div class="xivora-term-wrap" id="xivora-term-wrap">
     <div class="xivora-term-panel" id="xivora-term-panel">
@@ -2198,6 +2252,8 @@
   const $mxVig  = document.getElementById('mx-vignette');
   const $mxProg = document.getElementById('mx-progress');
   const $mxFill = document.getElementById('mx-progress-fill');
+  const $mxTerm = document.getElementById('mx-terminal');
+  const $mxTInner = document.getElementById('mx-term-inner');
   let matActive = false;
 
   /* Reset matrix overlay on bfcache restore (back button) */
@@ -2212,25 +2268,35 @@
       $mxVig.style.display = 'none';
       $mxProg.style.cssText = 'display:none';
       $mxFill.style.width = '0%';
+      $mxTerm.classList.remove('on');
+      $mxTerm.style.cssText = '';
+      $mxTInner.innerHTML = '';
       document.body.style.filter = '';
     }
   });
 
-  function typeText(el, text, speed, cb) {
-    let i = 0;
-    el.textContent = '';
-    const t = setInterval(() => {
-      el.textContent += text[i];
-      i++;
-      if (i >= text.length) { clearInterval(t); if (cb) cb(); }
-    }, speed);
+  function typeInTerminal(el, text, speed) {
+    return new Promise(resolve => {
+      let i = 0;
+      const t = setInterval(() => {
+        el.insertAdjacentText('beforeend', text[i]);
+        i++;
+        if (i >= text.length) { clearInterval(t); resolve(); }
+      }, speed);
+    });
   }
+
+  function printLine(el, html) {
+    el.insertAdjacentHTML('beforeend', html + '\n');
+  }
+
+  function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
 
   function triggerMatrix() {
     if (matActive) return;
     matActive = true;
 
-    // Show overlay with CRT effects
+    // Phase 1: Matrix rain (short)
     $matC.width  = window.innerWidth;
     $matC.height = window.innerHeight;
     $matC.classList.add('xm-on');
@@ -2238,102 +2304,111 @@
     $mxVig.style.display = 'block';
 
     const ctx = $matC.getContext('2d');
-    const fontSize = 15;
-    const cols = Math.floor($matC.width / fontSize);
-    const drops = Array(cols).fill(0).map(() => Math.random() * -50 | 0);
-    const chars = 'アイウエオカキクケコサシスセソタチツテト0123456789XIVORA<>{}[]|/\\*#@$&=+~';
-    let frame = 0;
-    let speed = 35;
+    const fs = 15;
+    const cols = Math.floor($matC.width / fs);
+    const drops = Array(cols).fill(0).map(() => Math.random() * -30 | 0);
+    const chars = 'アイウエオカキクケコ0123456789XIVORA<>{}[]';
 
-    // Matrix rain with varying density
     const interval = setInterval(() => {
-      ctx.fillStyle = frame < 30 ? 'rgba(0,0,0,.12)' : 'rgba(0,0,0,.06)';
+      ctx.fillStyle = 'rgba(0,0,0,.08)';
       ctx.fillRect(0, 0, $matC.width, $matC.height);
-      ctx.font = fontSize + 'px monospace';
+      ctx.font = fs + 'px monospace';
       drops.forEach((y, i) => {
         const r = Math.random();
-        if (r > .95) {
-          ctx.fillStyle = '#fff';
-          ctx.shadowColor = '#00ff41';
-          ctx.shadowBlur = 10;
-        } else if (r > .5) {
-          ctx.fillStyle = '#00ff41';
-          ctx.shadowColor = '#00ff41';
-          ctx.shadowBlur = 4;
-        } else {
-          ctx.fillStyle = 'rgba(0,255,65,.35)';
-          ctx.shadowBlur = 0;
-        }
-        ctx.fillText(chars[Math.random()*chars.length|0], i*fontSize, y*fontSize);
+        ctx.fillStyle = r > .93 ? '#fff' : r > .5 ? '#00ff41' : 'rgba(0,255,65,.3)';
+        ctx.shadowColor = '#00ff41';
+        ctx.shadowBlur = r > .93 ? 10 : 2;
+        ctx.fillText(chars[Math.random()*chars.length|0], i*fs, y*fs);
         ctx.shadowBlur = 0;
-        if (y*fontSize > $matC.height && Math.random() > .96) drops[i] = 0;
+        if (y*fs > $matC.height && Math.random() > .96) drops[i] = 0;
         drops[i]++;
       });
-      frame++;
-    }, speed);
+    }, 33);
 
-    // Phase 1: Type "SYSTEM OVERRIDE" (300ms)
-    setTimeout(() => {
-      $matL.style.display = 'block';
-      $matL.style.animation = 'mx-flicker 2s infinite';
-      typeText($matL, '> SYSTEM OVERRIDE', 45);
-    }, 300);
-
-    // Phase 2: Show progress bar + change label (1100ms)
-    setTimeout(() => {
-      $matL.style.animation = 'mx-glitch .3s ease 3';
-      setTimeout(() => {
-        $matL.innerHTML = '> LOADING CONSOLE MODE\n> XIVORA.EXE';
-        $matL.style.animation = 'mx-flicker 2s infinite';
-      }, 300);
-      $mxProg.style.display = 'block';
-      $matH.style.display = 'block';
-      typeText($matH, 'establishing connection...', 35);
-      // Animate progress bar
-      let prog = 0;
-      const pInt = setInterval(() => {
-        prog += Math.random() * 15 + 3;
-        if (prog > 100) prog = 100;
-        $mxFill.style.width = prog + '%';
-        if (prog >= 100) {
-          clearInterval(pInt);
-          $matH.textContent = 'connection established.';
-          $matH.style.color = '#00ff41';
-        }
-      }, 120);
-    }, 1100);
-
-    // Phase 3: Glitch collapse + redirect (2800ms)
-    setTimeout(() => {
+    // Phase 2: After 1.5s, switch to terminal
+    setTimeout(async () => {
       clearInterval(interval);
-      // Rapid glitch
-      let g = 0;
-      const glitch = setInterval(() => {
-        const skX = (Math.random() - .5) * 20;
-        const skY = (Math.random() - .5) * 10;
-        $matC.style.transform = `translate(${skX}px, ${skY}px) scaleY(${1 + Math.random()*.1})`;
-        ctx.fillStyle = g % 2 === 0 ? 'rgba(0,255,65,.15)' : 'rgba(255,0,0,.08)';
-        ctx.fillRect(0, Math.random()*$matC.height, $matC.width, 3 + Math.random()*8);
-        g++;
-        if (g >= 14) {
-          clearInterval(glitch);
-          $matC.style.transform = '';
-          // CRT shutdown: squeeze to line then fade
-          $matC.style.transition = 'transform .35s cubic-bezier(.4,0,1,1), opacity .3s .15s';
-          $matL.style.transition = 'opacity .15s';
-          $matH.style.transition = 'opacity .15s';
-          $mxProg.style.transition = 'opacity .15s';
-          $matL.style.opacity = '0';
-          $matH.style.opacity = '0';
-          $mxProg.style.opacity = '0';
-          $matC.style.transform = 'scaleY(0.003)';
-          setTimeout(() => {
-            $matC.style.opacity = '0';
-            setTimeout(() => { window.location.href = 'console.html'; }, 250);
-          }, 350);
-        }
-      }, 45);
-    }, 2800);
+      // Hide matrix elements
+      $matL.style.display = 'none';
+      $matH.style.display = 'none';
+      $mxProg.style.display = 'none';
+      $mxScan.style.display = 'none';
+      $mxVig.style.display = 'none';
+      $matC.classList.remove('xm-on');
+      $matC.style.opacity = '0';
+
+      // Show terminal overlay
+      $mxTerm.classList.add('on');
+      $mxTInner.innerHTML = '';
+      const T = $mxTInner;
+
+      // Boot header
+      printLine(T, '<span class="t-dim">XIVORA TERMINAL v2.1.0</span>');
+      printLine(T, '<span class="t-dim">Copyright (c) 2024-2025 Xivora Studio</span>');
+      printLine(T, '');
+      await wait(200);
+
+      // Command 1: cd
+      await typeInTerminal(T, '$ cd /opt/xivora/console', 28);
+      printLine(T, '');
+      await wait(150);
+
+      // Command 2: git pull
+      await typeInTerminal(T, '$ git pull origin main', 30);
+      printLine(T, '');
+      await wait(200);
+      printLine(T, '<span class="t-white">remote: Enumerating objects: 12, done.</span>');
+      await wait(80);
+      printLine(T, '<span class="t-white">remote: Counting objects: 100% (12/12), done.</span>');
+      await wait(80);
+      printLine(T, '<span class="t-white">remote: Compressing objects: 100% (8/8), done.</span>');
+      await wait(100);
+      printLine(T, '<span class="t-ok">Already up to date.</span>');
+      await wait(200);
+      printLine(T, '');
+
+      // Command 3: npm run build
+      await typeInTerminal(T, '$ npm run build', 32);
+      printLine(T, '');
+      await wait(250);
+      printLine(T, '<span class="t-cyan">vite v5.4.1</span> <span class="t-dim">building for production...</span>');
+      await wait(300);
+      printLine(T, '<span class="t-green">\u2713</span> <span class="t-white">142 modules transformed.</span>');
+      await wait(150);
+      printLine(T, '<span class="t-green">\u2713</span> <span class="t-white">dist/index.html    </span><span class="t-yellow">0.42 kB</span> <span class="t-dim">\u2502</span> <span class="t-dim">gzip: 0.28 kB</span>');
+      await wait(80);
+      printLine(T, '<span class="t-green">\u2713</span> <span class="t-white">dist/console.html  </span><span class="t-yellow">12.8 kB</span> <span class="t-dim">\u2502</span> <span class="t-dim">gzip: 4.10 kB</span>');
+      await wait(80);
+      printLine(T, '<span class="t-green">\u2713</span> <span class="t-white">built in </span><span class="t-yellow">1.24s</span>');
+      await wait(200);
+      printLine(T, '');
+
+      // Command 4: start server
+      await typeInTerminal(T, '$ node server.js --mode=console', 25);
+      printLine(T, '');
+      await wait(300);
+      printLine(T, '<span class="t-dim">[info]</span> <span class="t-white">Loading environment variables...</span>');
+      await wait(180);
+      printLine(T, '<span class="t-dim">[info]</span> <span class="t-white">Initializing console interface...</span>');
+      await wait(200);
+      printLine(T, '<span class="t-dim">[info]</span> <span class="t-white">Mounting routes...</span>');
+      await wait(120);
+      printLine(T, '<span class="t-dim">[info]</span> <span class="t-white">Connecting to database...</span>          <span class="t-ok">[OK]</span>');
+      await wait(180);
+      printLine(T, '<span class="t-dim">[info]</span> <span class="t-white">Starting HTTPS server...</span>           <span class="t-ok">[OK]</span>');
+      await wait(200);
+      printLine(T, '');
+      printLine(T, '<span class="t-green">\u2713</span> <span class="t-ok">Server ready on https://xivora.studio</span>');
+      printLine(T, '<span class="t-dim">[info]</span> <span class="t-white">Redirecting to console view...</span>');
+      await wait(500);
+      printLine(T, '');
+
+      // Final fade and redirect
+      $mxTerm.style.transition = 'opacity .3s';
+      $mxTerm.style.opacity = '0';
+      await wait(300);
+      window.location.href = 'console.html';
+    }, 1500);
   }
 
   /* ── KONAMI CODE ──────────────────────────────── */
