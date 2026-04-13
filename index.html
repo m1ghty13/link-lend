@@ -2139,39 +2139,7 @@
   function triggerMatrix() {
     if (matActive) return;
     matActive = true;
-    $matC.width  = window.innerWidth;
-    $matC.height = window.innerHeight;
-    $matC.classList.add('xm-on');
-    $matL.style.display = 'block';
-    $matH.style.display = 'block';
-
-    const ctx = $matC.getContext('2d');
-    const cols = Math.floor($matC.width / 16);
-    const drops = Array(cols).fill(1);
-    const chars = 'アイウエオカキクケコ0123456789XIVORA<>{}[]';
-    const interval = setInterval(() => {
-      ctx.fillStyle = 'rgba(0,0,0,.06)';
-      ctx.fillRect(0, 0, $matC.width, $matC.height);
-      ctx.fillStyle = '#00ff41';
-      ctx.font = '14px monospace';
-      drops.forEach((y, i) => {
-        ctx.fillText(chars[Math.random()*chars.length|0], i*16, y*16);
-        if (y*16 > $matC.height && Math.random() > .975) drops[i] = 0;
-        drops[i]++;
-      });
-    }, 38);
-
-    const close = () => {
-      clearInterval(interval);
-      $matC.classList.remove('xm-on');
-      $matL.style.display = 'none';
-      $matH.style.display = 'none';
-      matActive = false;
-      document.removeEventListener('keydown', close);
-      document.removeEventListener('click', close);
-    };
-    setTimeout(() => { document.addEventListener('keydown', close, { once: true }); document.addEventListener('click', close, { once: true }); }, 200);
-    setTimeout(close, 8000);
+    window.location.href = 'console.html';
   }
 
   /* ── KONAMI CODE ──────────────────────────────── */
