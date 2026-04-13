@@ -29,7 +29,7 @@
       --r-pill:      999px;
     }
 
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: auto; }
 
     body {
       background: var(--bg);
@@ -849,6 +849,381 @@
       line-height: 1.75;
     }
 
+    /* ─── CUSTOM CURSOR ─────────────────────── */
+    @media (hover: hover) and (pointer: fine) {
+      * { cursor: none !important; }
+    }
+    .xivora-cursor-dot {
+      position: fixed;
+      width: 7px; height: 7px;
+      background: var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      left: 0; top: 0;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 10px var(--accent), 0 0 22px rgba(232,25,10,.55);
+      transition: width .18s, height .18s, box-shadow .18s;
+      will-change: left, top;
+    }
+    .xivora-cursor-ring {
+      position: fixed;
+      width: 36px; height: 36px;
+      border: 1.5px solid rgba(232,25,10,.42);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      left: 0; top: 0;
+      transform: translate(-50%, -50%);
+      transition: width .28s ease, height .28s ease, border-color .28s, opacity .28s;
+      will-change: left, top;
+    }
+    .xivora-cursor-ring.is-hov {
+      width: 54px; height: 54px;
+      border-color: rgba(232,25,10,.75);
+    }
+    .xivora-cursor-dot.is-hov {
+      width: 4px; height: 4px;
+      box-shadow: 0 0 6px var(--accent);
+    }
+    @media (hover: none) {
+      .xivora-cursor-dot, .xivora-cursor-ring { display: none; }
+    }
+
+    /* ─── SCROLL PROGRESS ────────────────────── */
+    .xivora-scroll-prog {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent) 0%, rgba(232,25,10,.55) 100%);
+      transform-origin: left;
+      transform: scaleX(0);
+      z-index: 9997;
+      pointer-events: none;
+      box-shadow: 0 0 8px var(--accent), 0 0 18px rgba(232,25,10,.35);
+    }
+
+    /* ─── GRAIN OVERLAY ──────────────────────── */
+    .xivora-grain {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 299;
+      opacity: .032;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)'/%3E%3C/svg%3E");
+      background-size: 300px;
+      animation: grain-shift .45s steps(1) infinite;
+    }
+    @keyframes grain-shift {
+      0%   { background-position:   0px   0px; }
+      14%  { background-position: -90px  35px; }
+      28%  { background-position: 110px -55px; }
+      43%  { background-position: -35px  90px; }
+      57%  { background-position:  70px -40px; }
+      71%  { background-position:-120px  60px; }
+      86%  { background-position:  45px -80px; }
+      100% { background-position:   0px   0px; }
+    }
+
+    /* ─── HERO CANVAS ─────────────────────────── */
+    #xivora-hero-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .xivora-hero { position: relative; }
+    .xivora-hero > *:not(#xivora-hero-canvas) { position: relative; z-index: 1; }
+
+    /* ─── HERO GLITCH ─────────────────────────── */
+    .xivora-glitch { position: relative; }
+    .xivora-glitch::before,
+    .xivora-glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      pointer-events: none;
+      font: inherit;
+      letter-spacing: inherit;
+      line-height: inherit;
+    }
+    .xivora-glitch::before {
+      color: rgba(0,240,255,.3);
+      animation: glitch-a 6s infinite;
+    }
+    .xivora-glitch::after {
+      color: rgba(255,0,120,.22);
+      animation: glitch-b 6s infinite;
+    }
+    @keyframes glitch-a {
+      0%,85%,100% { transform:none; clip-path:none; opacity:0; }
+      87%  { transform:translateX(-5px) skewX(2deg); clip-path:polygon(0 18%,100% 18%,100% 42%,0 42%); opacity:1; }
+      89%  { transform:translateX(4px); clip-path:polygon(0 58%,100% 58%,100% 74%,0 74%); opacity:1; }
+      91%  { transform:translateX(-3px) skewX(-1deg); clip-path:polygon(0 80%,100% 80%,100% 96%,0 96%); opacity:1; }
+      93%  { opacity:0; }
+    }
+    @keyframes glitch-b {
+      0%,85%,100% { transform:none; clip-path:none; opacity:0; }
+      88%  { transform:translateX(5px) skewX(-2deg); clip-path:polygon(0 32%,100% 32%,100% 52%,0 52%); opacity:1; }
+      90%  { transform:translateX(-4px); clip-path:polygon(0 63%,100% 63%,100% 79%,0 79%); opacity:1; }
+      92%  { transform:translateX(3px); clip-path:polygon(0 8%,100% 8%,100% 22%,0 22%); opacity:1; }
+      94%  { opacity:0; }
+    }
+
+    /* ─── CARD TILT + SPOTLIGHT ───────────────── */
+    .xivora-tilt {
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+    .xivora-tilt:hover { transform: none; } /* JS takes over */
+
+    .xivora-spotlight { position: relative; overflow: hidden; }
+    .xivora-spotlight::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(480px circle at var(--sx,50%) var(--sy,50%),
+        rgba(232,25,10,.075) 0%, transparent 58%);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .35s;
+    }
+    .xivora-spotlight:hover::after { opacity: 1; }
+
+    /* ─── MAGNETIC BUTTON ─────────────────────── */
+    .xivora-magnetic {
+      will-change: transform;
+      transition: transform .45s cubic-bezier(.22,.84,.33,1),
+                  background .2s !important;
+    }
+
+    /* ─── FLOATING CODE CHARS ─────────────────── */
+    .xivora-code-char {
+      position: fixed;
+      pointer-events: none;
+      z-index: 0;
+      font-family: 'Courier New', monospace;
+      font-weight: 700;
+      color: rgba(232,25,10,.11);
+      animation: code-rise linear infinite;
+      user-select: none;
+    }
+    @keyframes code-rise {
+      0%   { transform: translateY(105vh); opacity: 0; }
+      4%   { opacity: 1; }
+      94%  { opacity: .5; }
+      100% { transform: translateY(-8vh); opacity: 0; }
+    }
+
+    /* ─── TYPEWRITER CURSOR ───────────────────── */
+    .xivora-tw::after {
+      content: '|';
+      animation: tw-blink .72s step-end infinite;
+      color: var(--accent);
+      margin-left: 1px;
+    }
+    @keyframes tw-blink { 50% { opacity: 0; } }
+
+    /* ─── SCRAMBLE CHAR ──────────────────────── */
+    .xivora-sc {
+      color: var(--accent);
+      opacity: .65;
+      font-style: normal;
+    }
+
+    /* ─── CURSOR TRAIL ───────────────────────── */
+    .xivora-trail-dot {
+      position: fixed;
+      border-radius: 50%;
+      background: var(--accent);
+      pointer-events: none;
+      z-index: 9990;
+      left: 0; top: 0;
+      transform: translate(-50%,-50%);
+      will-change: left, top;
+    }
+
+    /* ─── CLICK BURST ────────────────────────── */
+    .xivora-burst-p {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9995;
+      transform: translate(-50%,-50%);
+      animation: burst-fly var(--dur,.55s) ease-out forwards;
+    }
+    @keyframes burst-fly {
+      0%   { transform:translate(-50%,-50%) scale(1.3); opacity:1; }
+      100% { transform:translate(calc(-50% + var(--bx,0px)),calc(-50% + var(--by,0px))) scale(0); opacity:0; }
+    }
+
+    /* ─── MATRIX OVERLAY ─────────────────────── */
+    #xivora-matrix-c {
+      position: fixed;
+      inset: 0;
+      z-index: 9900;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .4s;
+      background: rgba(0,0,0,.94);
+    }
+    #xivora-matrix-c.xm-on { opacity: 1; pointer-events: all; }
+    .xivora-matrix-label {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      font-family: var(--font-display);
+      font-size: clamp(22px, 5vw, 56px);
+      font-weight: 900;
+      letter-spacing: .14em;
+      color: #00ff41;
+      text-shadow: 0 0 18px #00ff41, 0 0 50px rgba(0,255,65,.5);
+      z-index: 9901;
+      pointer-events: none;
+      display: none;
+      animation: mx-pulse 1.1s ease-in-out infinite alternate;
+      text-align: center;
+    }
+    .xivora-matrix-hint {
+      position: fixed;
+      bottom: 10%; left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      color: rgba(0,255,65,.55);
+      z-index: 9901;
+      pointer-events: none;
+      display: none;
+      letter-spacing: .08em;
+    }
+    @keyframes mx-pulse {
+      from { opacity:.65; text-shadow: 0 0 14px #00ff41; }
+      to   { opacity:1;   text-shadow: 0 0 28px #00ff41, 0 0 70px rgba(0,255,65,.6); }
+    }
+
+    /* ─── TERMINAL WIDGET ─────────────────────── */
+    .xivora-term-wrap {
+      position: fixed;
+      bottom: 28px; right: 28px;
+      z-index: 9800;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
+    .xivora-term-panel {
+      width: 440px;
+      max-width: calc(100vw - 40px);
+      background: rgba(7,7,7,.97);
+      border: 1px solid rgba(232,25,10,.22);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 0 0 1px rgba(232,25,10,.06),
+                  0 32px 80px rgba(0,0,0,.88),
+                  0 0 48px rgba(232,25,10,.07);
+      display: none;
+      flex-direction: column;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+    }
+    .xivora-term-panel.xtp-on { display: flex; animation: tslide .22s cubic-bezier(.22,.84,.33,1); }
+    @keyframes tslide {
+      from { opacity:0; transform:translateY(16px) scale(.97); }
+      to   { opacity:1; transform:translateY(0) scale(1); }
+    }
+    .xivora-term-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: rgba(255,255,255,.025);
+      border-bottom: 1px solid rgba(255,255,255,.055);
+      user-select: none;
+      flex-shrink: 0;
+    }
+    .xivora-term-dots { display: flex; gap: 6px; }
+    .xivora-term-dots span { width: 11px; height: 11px; border-radius: 50%; }
+    .xtd-r { background: #ff5f56; }
+    .xtd-y { background: #ffbd2e; }
+    .xtd-g { background: #27c93f; }
+    .xivora-term-titlebar {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      color: rgba(255,255,255,.25);
+      flex: 1;
+      text-align: center;
+      letter-spacing: .04em;
+    }
+    .xivora-term-out {
+      padding: 14px 16px;
+      font-family: 'Courier New', monospace;
+      font-size: 12.5px;
+      line-height: 1.8;
+      color: rgba(255,255,255,.7);
+      max-height: 270px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(232,25,10,.22) transparent;
+    }
+    .xivora-term-out .tc-a { color: var(--accent); }
+    .xivora-term-out .tc-g { color: #27c93f; }
+    .xivora-term-out .tc-m { color: rgba(255,255,255,.28); }
+    .xivora-term-out .tc-w { color: #fff; font-weight: 700; }
+    .xivora-term-out .tc-y { color: #ffbd2e; }
+    .xivora-term-inp-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-top: 1px solid rgba(255,255,255,.055);
+      background: rgba(0,0,0,.4);
+      flex-shrink: 0;
+    }
+    .xivora-term-sym { color: var(--accent); font-family: 'Courier New', monospace; font-size: 14px; flex-shrink: 0; }
+    .xivora-term-inp {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      color: #fff;
+      caret-color: var(--accent);
+    }
+    .xivora-term-inp::placeholder { color: rgba(255,255,255,.16); }
+    .xivora-term-btn {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: rgba(10,10,10,.92);
+      border: 1px solid rgba(232,25,10,.28);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 0 0 1px rgba(232,25,10,.07), 0 8px 28px rgba(0,0,0,.55);
+      transition: background .2s, border-color .2s, transform .2s, box-shadow .2s;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .xivora-term-btn:hover {
+      background: rgba(232,25,10,.12);
+      border-color: var(--accent);
+      transform: scale(1.08);
+      box-shadow: 0 0 0 1px var(--accent), 0 0 20px rgba(232,25,10,.28), 0 8px 28px rgba(0,0,0,.55);
+    }
+    .xivora-term-btn.xtp-on {
+      background: rgba(232,25,10,.13);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent), 0 0 16px rgba(232,25,10,.24);
+    }
+    @media (max-width: 500px) {
+      .xivora-term-wrap { bottom: 16px; right: 14px; }
+    }
+
     /* ─── RISE ANIMATION ──────────────────────── */
     .rise {
       opacity: 0;
@@ -886,9 +1261,164 @@
       .xivora-process-steps { grid-template-columns: 1fr; }
       .xivora-socials-grid { grid-template-columns: 1fr; }
     }
+
+    /* ─── CUSTOM SCROLLBAR ───────────────────── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb {
+      background: var(--accent);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent-hover); }
+    * { scrollbar-width: thin; scrollbar-color: var(--accent) transparent; }
+
+    /* ─── MARQUEE ────────────────────────────── */
+    .xivora-marquee-wrap {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-panel);
+      padding: 17px 0;
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 9%, #000 91%, transparent 100%);
+      mask-image: linear-gradient(to right, transparent 0%, #000 9%, #000 91%, transparent 100%);
+    }
+    .xivora-marquee-track {
+      display: flex;
+      width: max-content;
+      align-items: center;
+      animation: mq-scroll 38s linear infinite;
+    }
+    .xivora-marquee-wrap:hover .xivora-marquee-track {
+      animation-play-state: paused;
+    }
+    @keyframes mq-scroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .xivora-mq-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 14px;
+      margin: 0 6px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--r-pill);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+      white-space: nowrap;
+      transition: color .2s, border-color .2s, background .2s;
+    }
+    .xivora-mq-tag:hover {
+      color: var(--fg);
+      border-color: rgba(232,25,10,.35);
+      background: var(--accent-soft);
+    }
+    .xivora-mq-tag::before {
+      content: '';
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+      box-shadow: 0 0 5px var(--accent);
+    }
+    .xivora-mq-sep {
+      color: rgba(255,255,255,.1);
+      font-size: 18px;
+      padding: 0 4px;
+      flex-shrink: 0;
+    }
+
+    /* ─── COMPILE BUTTON ─────────────────────── */
+    .xivora-compile-btn {
+      position: relative;
+      overflow: hidden;
+    }
+    .xivora-compile-btn::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      height: 2px;
+      width: 0;
+      background: currentColor;
+      opacity: .5;
+    }
+    .xivora-compile-btn.xc-on::after {
+      animation: compile-bar 1.5s cubic-bezier(.4,0,.2,1) forwards;
+    }
+    @keyframes compile-bar {
+      0%   { width: 0; }
+      55%  { width: 75%; }
+      85%  { width: 90%; }
+      100% { width: 100%; }
+    }
+    .xivora-compile-btn .xc-text { transition: opacity .15s; }
+    .xivora-compile-btn.xc-on .xc-text { opacity: 0; }
+    .xivora-compile-lbl {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Courier New', monospace;
+      font-size: 10.5px;
+      letter-spacing: .04em;
+      opacity: 0;
+      transition: opacity .15s;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .xivora-compile-btn.xc-on .xivora-compile-lbl { opacity: 1; }
+
+    /* ─── DVD EASTER EGG ─────────────────────── */
+    #xivora-dvd {
+      position: fixed;
+      z-index: 9850;
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 30px;
+      letter-spacing: .06em;
+      pointer-events: none;
+      user-select: none;
+      transition: color .25s;
+      text-shadow: 0 0 18px currentColor;
+    }
+    #xivora-dvd-hint {
+      position: fixed;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9851;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.2);
+      pointer-events: none;
+      user-select: none;
+      animation: dvd-hint-blink 2s ease-in-out infinite alternate;
+    }
+    @keyframes dvd-hint-blink {
+      from { opacity: .4; }
+      to   { opacity: 1; }
+    }
   </style>
 </head>
 <body>
+
+  <!-- CURSOR -->
+  <div class="xivora-cursor-dot" aria-hidden="true"></div>
+  <div class="xivora-cursor-ring" aria-hidden="true"></div>
+
+  <!-- SCROLL PROGRESS -->
+  <div class="xivora-scroll-prog" aria-hidden="true"></div>
+
+  <!-- GRAIN + FLOATING CODE -->
+  <div class="xivora-grain" aria-hidden="true"></div>
 
   <!-- BG EFFECTS -->
   <div class="xivora-bg-grid" aria-hidden="true"></div>
@@ -913,14 +1443,15 @@
 
   <!-- HERO -->
   <section class="xivora-hero">
+    <canvas id="xivora-hero-canvas" aria-hidden="true"></canvas>
     <div class="xivora-hero-badge">
       <span class="xivora-hero-badge-dot"></span>
       Студия&nbsp;цифровых&nbsp;решений
     </div>
-    <h1 class="xivora-hero-title">XIVORA<span>.</span></h1>
+    <h1 class="xivora-hero-title xivora-glitch" data-text="XIVORA.">XIVORA<span>.</span></h1>
     <p class="xivora-hero-sub">Цифровые решения для твоего бизнеса — быстро, чисто, с результатом.</p>
     <div class="xivora-hero-actions">
-      <a class="xivora-btn-primary" href="https://t.me/Xivora" target="_blank" rel="noopener">
+      <a class="xivora-btn-primary xivora-magnetic" href="https://t.me/Xivora" target="_blank" rel="noopener">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
           <path d="M22 2L11 13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
           <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -939,21 +1470,64 @@
   <div class="xivora-stats">
     <div class="xivora-stats-inner">
       <div class="xivora-stat rise">
-        <div class="xivora-stat-value">15<span>+</span></div>
+        <div class="xivora-stat-value xivora-counter" data-to="15" data-tmpl="{n}<span>+</span>">15<span>+</span></div>
         <div class="xivora-stat-label">проектов сдано в срок</div>
       </div>
       <div class="xivora-stat rise rise-d1">
-        <div class="xivora-stat-value">~<span>10</span> ч</div>
+        <div class="xivora-stat-value xivora-counter" data-to="10" data-tmpl="~<span>{n}</span>&thinsp;ч">~<span>10</span> ч</div>
         <div class="xivora-stat-label">среднее время на реализацию проекта</div>
       </div>
       <div class="xivora-stat rise rise-d2">
-        <div class="xivora-stat-value">&lt;<span>10</span> мин</div>
+        <div class="xivora-stat-value xivora-counter" data-to="10" data-tmpl="&lt;<span>{n}</span>&thinsp;мин">&lt;<span>10</span> мин</div>
         <div class="xivora-stat-label">время ответа в рабочее время</div>
       </div>
       <div class="xivora-stat rise rise-d3">
-        <div class="xivora-stat-value"><span>100</span>%</div>
+        <div class="xivora-stat-value xivora-counter" data-to="100" data-tmpl="<span>{n}</span>%"><span>100</span>%</div>
         <div class="xivora-stat-label">работ сдали в срок</div>
       </div>
+    </div>
+  </div>
+
+  <!-- MARQUEE -->
+  <div class="xivora-marquee-wrap" aria-hidden="true">
+    <div class="xivora-marquee-track">
+      <span class="xivora-mq-tag">Python</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">JavaScript</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">TypeScript</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">React</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">Vue.js</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">FastAPI</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">Node.js</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">aiogram</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">Telegram API</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">Docker</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">Nginx</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">Git</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">Figma</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">PostgreSQL</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">Redis</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">HTML / CSS</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">REST API</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">WebSocket</span><span class="xivora-mq-sep">|</span>
+      <!-- duplicate for seamless loop -->
+      <span class="xivora-mq-tag">Python</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">JavaScript</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">TypeScript</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">React</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">Vue.js</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">FastAPI</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">Node.js</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">aiogram</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">Telegram API</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">Docker</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">Nginx</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">Git</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">Figma</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">PostgreSQL</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">Redis</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">HTML / CSS</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">REST API</span><span class="xivora-mq-sep">|</span>
+      <span class="xivora-mq-tag">WebSocket</span><span class="xivora-mq-sep">|</span>
     </div>
   </div>
 
@@ -963,7 +1537,7 @@
     <h2 class="xivora-section-title rise rise-d1">Чем поможем</h2>
     <div class="xivora-services-grid">
 
-      <div class="xivora-service-card rise rise-d1">
+      <div class="xivora-service-card xivora-tilt xivora-spotlight rise rise-d1">
         <div class="xivora-service-icon-wrap">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
             <rect x="2" y="4" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.8"/>
@@ -976,7 +1550,7 @@
         <div class="xivora-service-tag">Web Dev</div>
       </div>
 
-      <div class="xivora-service-card rise rise-d2">
+      <div class="xivora-service-card xivora-tilt xivora-spotlight rise rise-d2">
         <div class="xivora-service-icon-wrap">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
             <path d="M22 2L11 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -988,7 +1562,7 @@
         <div class="xivora-service-tag">Telegram Dev</div>
       </div>
 
-      <div class="xivora-service-card rise rise-d2">
+      <div class="xivora-service-card xivora-tilt xivora-spotlight rise rise-d2">
         <div class="xivora-service-icon-wrap">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
             <path d="M4 6h16M4 10h16M4 14h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
@@ -1001,7 +1575,7 @@
         <div class="xivora-service-tag">Support</div>
       </div>
 
-      <div class="xivora-service-card rise rise-d3">
+      <div class="xivora-service-card xivora-tilt xivora-spotlight rise rise-d3">
         <div class="xivora-service-icon-wrap">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
             <rect x="2" y="3" width="20" height="15" rx="2" stroke="currentColor" stroke-width="1.8"/>
@@ -1086,7 +1660,7 @@
     <h2 class="xivora-section-title rise rise-d1">Прозрачные цены</h2>
     <div class="xivora-pricing-grid">
 
-      <div class="xivora-price-card rise rise-d1">
+      <div class="xivora-price-card xivora-tilt xivora-spotlight rise rise-d1">
         <div class="xivora-price-plan">Telegram Бот</div>
         <div class="xivora-price-value"><sup>от </sup>1 000 ₽</div>
         <div class="xivora-price-note">Идеально для первого проекта</div>
@@ -1099,10 +1673,10 @@
           <li>Поддержка 15 дней</li>
         </ul>
         <div class="xivora-price-time">Срок: 1–5 дней</div>
-        <a class="xivora-btn-outline" href="https://t.me/Xivora" target="_blank" rel="noopener">Обсудить</a>
+        <a class="xivora-btn-outline xivora-compile-btn" href="https://t.me/Xivora" target="_blank" rel="noopener"><span class="xivora-compile-lbl"></span><span class="xc-text">Обсудить</span></a>
       </div>
 
-      <div class="xivora-price-card xivora-price-featured rise rise-d2">
+      <div class="xivora-price-card xivora-price-featured xivora-tilt xivora-spotlight rise rise-d2">
         <div class="xivora-price-badge">Популярный</div>
         <div class="xivora-price-plan">Сайт</div>
         <div class="xivora-price-value"><sup>от </sup>1 000 ₽</div>
@@ -1117,10 +1691,10 @@
           <li>Поддержка 15 дней</li>
         </ul>
         <div class="xivora-price-time">Срок: 1–14 дней</div>
-        <a class="xivora-btn-primary" href="https://t.me/Xivora" target="_blank" rel="noopener" style="justify-content:center;font-size:13.5px;padding:13px 20px;border-radius:999px">Обсудить</a>
+        <a class="xivora-btn-primary xivora-compile-btn" href="https://t.me/Xivora" target="_blank" rel="noopener" style="justify-content:center;font-size:13.5px;padding:13px 20px;border-radius:999px"><span class="xivora-compile-lbl"></span><span class="xc-text">Обсудить</span></a>
       </div>
 
-      <div class="xivora-price-card rise rise-d3">
+      <div class="xivora-price-card xivora-tilt xivora-spotlight rise rise-d3">
         <div class="xivora-price-plan">Скрипт</div>
         <div class="xivora-price-value"><sup>от </sup>800 ₽</div>
         <div class="xivora-price-note">Автоматизация под любую задачу</div>
@@ -1133,7 +1707,7 @@
           <li>Поддержка 15 дней</li>
         </ul>
         <div class="xivora-price-time">Срок: 1–14 дней</div>
-        <a class="xivora-btn-outline" href="https://t.me/Xivora" target="_blank" rel="noopener">Обсудить</a>
+        <a class="xivora-btn-outline xivora-compile-btn" href="https://t.me/Xivora" target="_blank" rel="noopener"><span class="xivora-compile-lbl"></span><span class="xc-text">Обсудить</span></a>
       </div>
 
     </div>
@@ -1274,7 +1848,7 @@
         <h2 class="xivora-cta-heading">Готов начать?<br><span>Напиши нам.</span></h2>
         <p class="xivora-cta-sub">Расскажи о задаче — ответим быстро.</p>
       </div>
-      <a class="xivora-btn-primary" href="https://t.me/Xivora" target="_blank" rel="noopener" style="font-size:15px;padding:16px 32px">
+      <a class="xivora-btn-primary xivora-magnetic" href="https://t.me/Xivora" target="_blank" rel="noopener" style="font-size:15px;padding:16px 32px">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
           <path d="M22 2L11 13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
           <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1282,6 +1856,39 @@
         Написать в Telegram
       </a>
     </div>
+  </div>
+
+  <!-- MATRIX OVERLAY -->
+  <canvas id="xivora-matrix-c" aria-hidden="true"></canvas>
+  <div class="xivora-matrix-label" id="xivora-matrix-label" aria-hidden="true">XIVORA.EXE</div>
+  <div class="xivora-matrix-hint" id="xivora-matrix-hint" aria-hidden="true">нажми любую клавишу чтобы выйти</div>
+
+  <!-- TERMINAL WIDGET -->
+  <div class="xivora-term-wrap" id="xivora-term-wrap">
+    <div class="xivora-term-panel" id="xivora-term-panel">
+      <div class="xivora-term-head">
+        <div class="xivora-term-dots">
+          <span class="xtd-r"></span>
+          <span class="xtd-y"></span>
+          <span class="xtd-g"></span>
+        </div>
+        <span class="xivora-term-titlebar">xivora ~ bash</span>
+      </div>
+      <div class="xivora-term-out" id="xivora-term-out">
+        <div>Привет! Я <span class="tc-a">Xivora Terminal</span> v1.0</div>
+        <div class="tc-m">Введи <span class="tc-g">help</span> для списка команд.</div>
+      </div>
+      <div class="xivora-term-inp-row">
+        <span class="xivora-term-sym">❯</span>
+        <input class="xivora-term-inp" id="xivora-term-inp" type="text" placeholder="type a command..." autocomplete="off" spellcheck="false" />
+      </div>
+    </div>
+    <button class="xivora-term-btn" id="xivora-term-btn" title="Открыть терминал" aria-label="Открыть терминал">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <path d="M4 17l5-5-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M12 19h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
   </div>
 
   <!-- FOOTER -->
@@ -1300,31 +1907,493 @@
   </footer>
 
   <script>
-    // Rise on scroll
-    const xivoraObserver = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); xivoraObserver.unobserve(e.target); } });
-    }, { threshold: 0.08 });
-    document.querySelectorAll('.rise').forEach(el => xivoraObserver.observe(el));
+  /* ═══════════════════════════════════════════════
+     XIVORA — Visual Engine v2
+  ═══════════════════════════════════════════════ */
 
-    // FAQ accordion
-    document.querySelectorAll('.xivora-faq-q').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const isOpen = btn.classList.contains('open');
-        // close all
-        document.querySelectorAll('.xivora-faq-q').forEach(b => {
-          b.classList.remove('open');
-          b.setAttribute('aria-expanded', 'false');
-          b.nextElementSibling.style.maxHeight = '0';
-        });
-        // open clicked if was closed
-        if (!isOpen) {
-          btn.classList.add('open');
-          btn.setAttribute('aria-expanded', 'true');
-          const answer = btn.nextElementSibling;
-          answer.style.maxHeight = answer.scrollHeight + 'px';
-        }
-      });
+  /* ── SHARED MOUSE POSITION ───────────────────── */
+  let mx = -300, my = -300;
+
+  /* ── CURSOR + RING ───────────────────────────── */
+  const $dot  = document.querySelector('.xivora-cursor-dot');
+  const $ring = document.querySelector('.xivora-cursor-ring');
+  let rx = -300, ry = -300;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    $dot.style.left = mx + 'px';
+    $dot.style.top  = my + 'px';
+  });
+  (function animRing() {
+    rx += (mx - rx) * .11; ry += (my - ry) * .11;
+    $ring.style.left = rx + 'px'; $ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  })();
+  document.querySelectorAll('a, button, [role="button"]').forEach(el => {
+    el.addEventListener('mouseenter', () => { $dot.classList.add('is-hov'); $ring.classList.add('is-hov'); });
+    el.addEventListener('mouseleave', () => { $dot.classList.remove('is-hov'); $ring.classList.remove('is-hov'); });
+  });
+
+  /* ── CURSOR TRAIL ────────────────────────────── */
+  const TRAIL = 8;
+  const trailEls  = Array.from({ length: TRAIL }, (_, i) => {
+    const d = document.createElement('div');
+    d.className = 'xivora-trail-dot';
+    document.body.appendChild(d);
+    return d;
+  });
+  const trailPos = Array.from({ length: TRAIL }, () => ({ x: -300, y: -300 }));
+  (function animTrail() {
+    trailPos[0].x = mx; trailPos[0].y = my;
+    for (let i = 0; i < TRAIL; i++) {
+      if (i > 0) {
+        trailPos[i].x += (trailPos[i-1].x - trailPos[i].x) * .18;
+        trailPos[i].y += (trailPos[i-1].y - trailPos[i].y) * .18;
+      }
+      const sz = (5 - i * .38) + 'px';
+      trailEls[i].style.cssText = 'left:' + trailPos[i].x + 'px;top:' + trailPos[i].y +
+        'px;width:' + sz + ';height:' + sz + ';opacity:' + ((1 - i / TRAIL) * .42);
+    }
+    requestAnimationFrame(animTrail);
+  })();
+
+  /* ── SCROLL PROGRESS ─────────────────────────── */
+  const $prog = document.querySelector('.xivora-scroll-prog');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    $prog.style.transform = 'scaleX(' + (h ? window.scrollY / h : 0) + ')';
+  }, { passive: true });
+
+  /* ── PARALLAX ORBS ───────────────────────────── */
+  const $orb1 = document.querySelector('.xivora-orb-1');
+  const $orb2 = document.querySelector('.xivora-orb-2');
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if ($orb1) $orb1.style.transform = 'translateY(' + y * .17 + 'px)';
+    if ($orb2) $orb2.style.transform = 'translateY(' + -y * .11 + 'px)';
+  }, { passive: true });
+
+  /* ── HERO PARTICLE MESH ──────────────────────── */
+  const $hc = document.getElementById('xivora-hero-canvas');
+  if ($hc) {
+    const hctx = $hc.getContext('2d');
+    let hW, hH;
+    const hmouse = { x: -999, y: -999 };
+    const pts = [];
+    const resize = () => { hW = $hc.width = $hc.offsetWidth; hH = $hc.height = $hc.offsetHeight; };
+    resize();
+    new ResizeObserver(resize).observe($hc.parentElement);
+    $hc.parentElement.addEventListener('mousemove', e => {
+      const r = $hc.getBoundingClientRect();
+      hmouse.x = e.clientX - r.left; hmouse.y = e.clientY - r.top;
     });
+    $hc.parentElement.addEventListener('mouseleave', () => { hmouse.x = -999; hmouse.y = -999; });
+    for (let i = 0; i < 95; i++) pts.push({
+      x: Math.random()*1920, y: Math.random()*950,
+      vx: (Math.random()-.5)*.4, vy: (Math.random()-.5)*.4,
+      r: Math.random()*1.7+.4,
+    });
+    (function drawPts() {
+      hctx.clearRect(0, 0, hW, hH);
+      pts.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x<0||p.x>hW) p.vx*=-1; if (p.y<0||p.y>hH) p.vy*=-1;
+        const dx=p.x-hmouse.x, dy=p.y-hmouse.y, d=Math.sqrt(dx*dx+dy*dy);
+        if (d<130) { p.x+=(dx/d)*.9; p.y+=(dy/d)*.9; }
+      });
+      for (let i=0; i<pts.length; i++) for (let j=i+1; j<pts.length; j++) {
+        const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y, d=Math.sqrt(dx*dx+dy*dy);
+        if (d<165) {
+          hctx.beginPath();
+          hctx.strokeStyle='rgba(232,25,10,'+((1-d/165)*.2)+')';
+          hctx.lineWidth=.65;
+          hctx.moveTo(pts[i].x,pts[i].y); hctx.lineTo(pts[j].x,pts[j].y);
+          hctx.stroke();
+        }
+      }
+      pts.forEach(p => {
+        hctx.beginPath(); hctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        hctx.fillStyle='rgba(232,25,10,.52)'; hctx.fill();
+      });
+      requestAnimationFrame(drawPts);
+    })();
+  }
+
+  /* ── CARD SPOTLIGHT ──────────────────────────── */
+  document.querySelectorAll('.xivora-spotlight').forEach(c => {
+    c.addEventListener('mousemove', e => {
+      const r = c.getBoundingClientRect();
+      c.style.setProperty('--sx', ((e.clientX-r.left)/r.width*100)+'%');
+      c.style.setProperty('--sy', ((e.clientY-r.top)/r.height*100)+'%');
+    });
+  });
+
+  /* ── 3D TILT ─────────────────────────────────── */
+  document.querySelectorAll('.xivora-tilt').forEach(c => {
+    c.addEventListener('mouseenter', () => { c.style.transition = 'transform .08s ease'; });
+    c.addEventListener('mousemove', e => {
+      const r = c.getBoundingClientRect();
+      const dx = (e.clientX-r.left-r.width/2)/(r.width/2);
+      const dy = (e.clientY-r.top-r.height/2)/(r.height/2);
+      c.style.transform = 'perspective(900px) translateY(-5px) rotateY('+(dx*7)+'deg) rotateX('+(-dy*7)+'deg)';
+    });
+    c.addEventListener('mouseleave', () => {
+      c.style.transition = 'transform .55s cubic-bezier(.22,.84,.33,1)';
+      c.style.transform  = 'perspective(900px) translateY(0) rotateY(0deg) rotateX(0deg)';
+      setTimeout(() => { c.style.transition=''; c.style.transform=''; }, 560);
+    });
+  });
+
+  /* ── MAGNETIC BUTTONS ────────────────────────── */
+  document.querySelectorAll('.xivora-magnetic').forEach(btn => {
+    btn.addEventListener('mousemove', e => {
+      const r = btn.getBoundingClientRect();
+      btn.style.transform = 'translate('+((e.clientX-r.left-r.width/2)*.28)+'px,'+((e.clientY-r.top-r.height/2)*.28)+'px)';
+    });
+    btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
+  });
+
+  /* ── FLOATING CODE CHARS ─────────────────────── */
+  ['{ }','//','=>','&&','||','()','[]','++','/**','*/','async','await','const','fn()','...','</>','null','0x1F'].forEach((tok, i) => {
+    if (i > 13) return;
+    const el = document.createElement('div');
+    el.className = 'xivora-code-char';
+    el.textContent = tok;
+    const dur = 20 + Math.random() * 24;
+    el.style.cssText = 'left:'+(Math.random()*100)+'vw;animation-duration:'+dur+'s;animation-delay:'+(-(Math.random()*dur))+'s;font-size:'+(9+Math.random()*5)+'px';
+    document.body.appendChild(el);
+  });
+
+  /* ── TYPEWRITER HERO SUBTITLE ────────────────── */
+  const $twEl = document.querySelector('.xivora-hero-sub');
+  if ($twEl) {
+    const full = $twEl.textContent.trim();
+    $twEl.textContent = ''; $twEl.classList.add('xivora-tw');
+    let twI = 0;
+    const type = () => {
+      if (twI < full.length) { $twEl.textContent = full.slice(0, ++twI); requestAnimationFrame(() => setTimeout(type, 30)); }
+      else setTimeout(() => $twEl.classList.remove('xivora-tw'), 900);
+    };
+    setTimeout(type, 700);
+  }
+
+  /* ── TEXT SCRAMBLE ON REVEAL ─────────────────── */
+  const SC_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&<>/{}[]!?';
+  class Scramble {
+    constructor(el) { this.el = el; }
+    run(text) {
+      this.q = Array.from(text, (ch, i) => ({
+        to:    ch,
+        start: Math.floor(Math.random() * 8),
+        end:   Math.floor(Math.random() * 8) + 10 + (i * .6 | 0),
+        char:  '',
+      }));
+      this.f = 0;
+      cancelAnimationFrame(this.raf);
+      this._tick();
+    }
+    _tick() {
+      let out = '', done = 0;
+      for (const q of this.q) {
+        if (this.f >= q.end) { done++; out += q.to; }
+        else if (this.f >= q.start) {
+          if (!q.char || Math.random() < .28) q.char = SC_CHARS[Math.random() * SC_CHARS.length | 0];
+          out += '<span class="xivora-sc">' + q.char + '</span>';
+        } else { out += q.to === ' ' ? ' ' : '&nbsp;'; }
+      }
+      this.el.innerHTML = out;
+      if (done < this.q.length) { this.f++; this.raf = requestAnimationFrame(() => this._tick()); }
+    }
+  }
+  const scrObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      scrObs.unobserve(e.target);
+      const text = e.target.textContent.trim();
+      if (text) new Scramble(e.target).run(text);
+    });
+  }, { threshold: .18 });
+  document.querySelectorAll('.xivora-section-title, .xivora-eyebrow').forEach(el => scrObs.observe(el));
+
+  /* ── CLICK BURST ──────────────────────────────── */
+  document.addEventListener('click', e => {
+    const n = 10 + Math.random() * 6 | 0;
+    for (let i = 0; i < n; i++) {
+      const p = document.createElement('div');
+      p.className = 'xivora-burst-p';
+      const angle = (i/n) * Math.PI * 2 + Math.random() * .9;
+      const dist  = 28 + Math.random() * 52;
+      const dur   = (.35 + Math.random() * .35) + 's';
+      p.style.cssText = 'left:'+e.clientX+'px;top:'+e.clientY+'px;--bx:'+(Math.cos(angle)*dist)+'px;--by:'+(Math.sin(angle)*dist)+'px;--dur:'+dur+';width:'+(2+Math.random()*4)+'px;height:'+(2+Math.random()*4)+'px;background:'+(Math.random()>.3?'var(--accent)':'#fff');
+      document.body.appendChild(p);
+      p.addEventListener('animationend', () => p.remove(), { once: true });
+    }
+  });
+
+  /* ── MATRIX RAIN ──────────────────────────────── */
+  const $matC = document.getElementById('xivora-matrix-c');
+  const $matL = document.getElementById('xivora-matrix-label');
+  const $matH = document.getElementById('xivora-matrix-hint');
+  let matActive = false;
+
+  function triggerMatrix() {
+    if (matActive) return;
+    matActive = true;
+    $matC.width  = window.innerWidth;
+    $matC.height = window.innerHeight;
+    $matC.classList.add('xm-on');
+    $matL.style.display = 'block';
+    $matH.style.display = 'block';
+
+    const ctx = $matC.getContext('2d');
+    const cols = Math.floor($matC.width / 16);
+    const drops = Array(cols).fill(1);
+    const chars = 'アイウエオカキクケコ0123456789XIVORA<>{}[]';
+    const interval = setInterval(() => {
+      ctx.fillStyle = 'rgba(0,0,0,.06)';
+      ctx.fillRect(0, 0, $matC.width, $matC.height);
+      ctx.fillStyle = '#00ff41';
+      ctx.font = '14px monospace';
+      drops.forEach((y, i) => {
+        ctx.fillText(chars[Math.random()*chars.length|0], i*16, y*16);
+        if (y*16 > $matC.height && Math.random() > .975) drops[i] = 0;
+        drops[i]++;
+      });
+    }, 38);
+
+    const close = () => {
+      clearInterval(interval);
+      $matC.classList.remove('xm-on');
+      $matL.style.display = 'none';
+      $matH.style.display = 'none';
+      matActive = false;
+      document.removeEventListener('keydown', close);
+      document.removeEventListener('click', close);
+    };
+    setTimeout(() => { document.addEventListener('keydown', close, { once: true }); document.addEventListener('click', close, { once: true }); }, 200);
+    setTimeout(close, 8000);
+  }
+
+  /* ── KONAMI CODE ──────────────────────────────── */
+  const KONAMI = [38,38,40,40,37,39,37,39,66,65];
+  let kIdx = 0;
+  document.addEventListener('keydown', e => {
+    kIdx = e.keyCode === KONAMI[kIdx] ? kIdx + 1 : 0;
+    if (kIdx === KONAMI.length) { kIdx = 0; triggerMatrix(); }
+  });
+
+  /* ── LOGO EASTER EGG (click 5× fast) ────────── */
+  let logoClicks = 0, logoTimer;
+  document.querySelector('.xivora-nav-logo').addEventListener('click', () => {
+    logoClicks++;
+    clearTimeout(logoTimer);
+    logoTimer = setTimeout(() => { logoClicks = 0; }, 800);
+    if (logoClicks >= 5) { logoClicks = 0; triggerMatrix(); }
+  });
+
+  /* ── TERMINAL WIDGET ──────────────────────────── */
+  const $tBtn   = document.getElementById('xivora-term-btn');
+  const $tPanel = document.getElementById('xivora-term-panel');
+  const $tOut   = document.getElementById('xivora-term-out');
+  const $tInp   = document.getElementById('xivora-term-inp');
+
+  $tBtn.addEventListener('click', () => {
+    const open = $tPanel.classList.toggle('xtp-on');
+    $tBtn.classList.toggle('xtp-on', open);
+    if (open) { $tPanel.style.animation=''; void $tPanel.offsetWidth; $tPanel.style.animation='tslide .22s cubic-bezier(.22,.84,.33,1)'; $tInp.focus(); }
+  });
+
+  const CMDS = {
+    help:     () => ['<span class="tc-a">Команды:</span>','  <span class="tc-g">whoami</span>   — о студии','  <span class="tc-g">services</span> — что делаем','  <span class="tc-g">price</span>    — стоимость','  <span class="tc-g">stack</span>    — технологии','  <span class="tc-g">contact</span>  — как связаться','  <span class="tc-g">ping</span>     — тест связи','  <span class="tc-g">matrix</span>   — ???','  <span class="tc-g">clear</span>    — очистить','  <span class="tc-m">...и ещё кое-что. Поищи ;)</span>'],
+    whoami:   () => ['<span class="tc-a">Xivora</span> — студия цифровых решений.','Сайты, боты, скрипты и интерфейсы.','<span class="tc-m">Быстро. Чисто. Без лишних слов.</span>'],
+    services: () => ['<span class="tc-g">[1]</span> Web Dev     — лендинги, сайты, приложения','<span class="tc-g">[2]</span> Telegram Dev — боты, Mini Apps, парсеры','<span class="tc-g">[3]</span> Scripts      — автоматизация, API-интеграции','<span class="tc-g">[4]</span> UI/UX Design — интерфейсы на конверсию'],
+    price:    () => ['Бот:    <span class="tc-a">от 1 000 ₽</span>  | 1–5 дней','Сайт:   <span class="tc-a">от 1 000 ₽</span>  | 1–14 дней','Скрипт: <span class="tc-a">от 800 ₽</span>    | 1–14 дней','<span class="tc-m">Нестандарт? Напишите — рассчитаем.</span>'],
+    stack:    () => ['<span class="tc-a">Lang:</span>    Python, JS/TS, HTML/CSS','<span class="tc-a">Backend:</span> FastAPI, Node.js, aiogram','<span class="tc-a">Frontend:</span> React, Vue, vanilla','<span class="tc-a">Tools:</span>   Git, Docker, Nginx, VPS','<span class="tc-a">Design:</span>  Figma'],
+    contact:  () => ['Telegram: <span class="tc-a">@Xivora</span>','Канал:    <span class="tc-a">@Xivora_Service</span>','GitHub:   <span class="tc-a">m1ghty13</span>','Lolzteam: <span class="tc-a">m1ghty13</span>'],
+    ping:     () => ['<span class="tc-g">pong</span> — 2ms'],
+    matrix:   () => { triggerMatrix(); return ['<span class="tc-g">Инициализация матрицы...</span>']; },
+    'sudo':               () => ['<span class="tc-a">Permission denied.</span> Хорошая попытка.'],
+    'sudo rm -rf /':      () => ['<span class="tc-a">Нет.</span>'],
+    'git status':         () => ['On branch <span class="tc-a">main</span>','nothing to commit, working tree clean'],
+    'git push':           () => ['<span class="tc-g">✓</span>  pushed to origin/main'],
+    'npm run dev':        () => ['Starting...','<span class="tc-g">✓</span>  ready in 89ms','<span class="tc-m">➜  Local: http://localhost:3000</span>'],
+    'npm run build':      () => ['Building...','<span class="tc-g">✓</span>  built in 1.2s  (dist/ 142kb)'],
+    xivora:               () => ['<span class="tc-a"> ██╗  ██╗██╗██╗   ██╗ ██████╗ ██████╗  █████╗ </span>','<span class="tc-a"> ╚██╗██╔╝██║██║   ██║██╔═══██╗██╔══██╗██╔══██╗</span>','<span class="tc-a">  ╚███╔╝ ██║██║   ██║██║   ██║██████╔╝███████║</span>','<span class="tc-a">  ██╔██╗ ██║╚██╗ ██╔╝██║   ██║██╔══██╗██╔══██║</span>','<span class="tc-a"> ██╔╝ ██╗██║ ╚████╔╝ ╚██████╔╝██║  ██║██║  ██║</span>','<span class="tc-a"> ╚═╝  ╚═╝╚═╝  ╚═══╝   ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝</span>'],
+  };
+
+  function tPrint(lines) {
+    if (!lines) { $tOut.innerHTML = ''; return; }
+    lines.forEach(l => { const d = document.createElement('div'); d.innerHTML = l; $tOut.appendChild(d); });
+    $tOut.scrollTop = $tOut.scrollHeight;
+  }
+
+  $tInp.addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    const raw = $tInp.value.trim();
+    if (!raw) return;
+    $tInp.value = '';
+    const echo = document.createElement('div');
+    echo.innerHTML = '<span class="tc-a">❯</span> <span class="tc-w">' + raw.replace(/</g,'&lt;') + '</span>';
+    $tOut.appendChild(echo);
+    const key = raw.toLowerCase();
+    if (key === 'clear') { tPrint(null); }
+    else if (CMDS[key]) { tPrint(CMDS[key]()); }
+    else {
+      const d = document.createElement('div');
+      d.innerHTML = '<span class="tc-a">command not found:</span> ' + raw.replace(/</g,'&lt;') + ' — попробуй <span class="tc-g">help</span>';
+      $tOut.appendChild(d);
+      $tOut.scrollTop = $tOut.scrollHeight;
+    }
+  });
+
+  /* ── INERTIAL SCROLL (desktop only) ─────────────── */
+  if (!('ontouchstart' in window)) {
+    let iEase = window.scrollY, iTarget = window.scrollY, iRunning = false;
+    const iMax = () => document.body.scrollHeight - window.innerHeight;
+
+    window.addEventListener('wheel', e => {
+      e.preventDefault();
+      iTarget = Math.max(0, Math.min(iTarget + e.deltaY * 0.88, iMax()));
+      if (!iRunning) { iRunning = true; iSmoothTick(); }
+    }, { passive: false });
+
+    // sync when anchor links or keyboard change scroll position externally
+    window.addEventListener('scroll', () => {
+      if (Math.abs(window.scrollY - iEase) > 60) { iEase = window.scrollY; iTarget = window.scrollY; }
+    }, { passive: true });
+
+    function iSmoothTick() {
+      const diff = iTarget - iEase;
+      if (Math.abs(diff) < 0.5) { iEase = iTarget; window.scrollTo(0, iEase); iRunning = false; return; }
+      iEase += diff * 0.1;
+      window.scrollTo(0, iEase);
+      requestAnimationFrame(iSmoothTick);
+    }
+  }
+
+  /* ── STAT COUNTER ────────────────────────────────── */
+  const cntObs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      cntObs.unobserve(entry.target);
+      const el   = entry.target;
+      const to   = +el.dataset.to;
+      const tmpl = el.dataset.tmpl;
+      const dur  = 1800;
+      const t0   = performance.now();
+      (function tick(now) {
+        const t = Math.min((now - t0) / dur, 1);
+        const v = Math.round((1 - Math.pow(1 - t, 3)) * to);
+        el.innerHTML = tmpl.replace('{n}', v);
+        if (t < 1) requestAnimationFrame(tick);
+        else {
+          // final value flash
+          el.style.transition = 'color .15s';
+          el.style.color = 'var(--accent)';
+          setTimeout(() => { el.style.color = ''; el.style.transition = ''; }, 300);
+        }
+      })(performance.now());
+    });
+  }, { threshold: 0.6 });
+  document.querySelectorAll('.xivora-counter').forEach(el => cntObs.observe(el));
+
+  /* ── COMPILE BUTTON ──────────────────────────────── */
+  const COMPILE_STEPS = ['Компилируется...', 'Сборка... ▓▓░░░', 'Линковка... ▓▓▓▓░', 'Готово! ✓'];
+  document.querySelectorAll('.xivora-compile-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      if (btn.classList.contains('xc-on')) return;
+      e.preventDefault();
+      const href = btn.href, tgt = btn.target;
+      const lbl  = btn.querySelector('.xivora-compile-lbl');
+      btn.classList.add('xc-on');
+      let step = 0;
+      lbl.textContent = COMPILE_STEPS[0];
+      const iv = setInterval(() => {
+        step++;
+        if (step < COMPILE_STEPS.length) lbl.textContent = COMPILE_STEPS[step];
+        else clearInterval(iv);
+      }, 380);
+      setTimeout(() => {
+        btn.classList.remove('xc-on');
+        clearInterval(iv);
+        tgt === '_blank' ? window.open(href, '_blank', 'noopener,noreferrer') : (window.location.href = href);
+      }, 1600);
+    });
+  });
+
+  /* ── DVD IDLE EASTER EGG ─────────────────────────── */
+  let dvdActive = false, dvdRaf, dvdTimer;
+  const DVD_COLORS = ['#e8190a','#ff6b35','#ffd700','#27c93f','#00bfff','#bf5af2','#ff2d55','#fff'];
+  let dvdColorIdx = 0;
+
+  function startDVD() {
+    if (dvdActive) return;
+    dvdActive = true;
+
+    const el   = document.createElement('div'); el.id = 'xivora-dvd';
+    el.textContent = 'XIVORA.';
+    el.style.color = DVD_COLORS[0];
+    document.body.appendChild(el);
+
+    const hint = document.createElement('div'); hint.id = 'xivora-dvd-hint';
+    hint.textContent = 'нажми любую клавишу или кликни';
+    document.body.appendChild(hint);
+
+    let x = 80, y = 80, vx = 1.8, vy = 1.4;
+
+    (function moveDVD() {
+      const W = window.innerWidth  - el.offsetWidth  - 10;
+      const H = window.innerHeight - el.offsetHeight - 10;
+      x += vx; y += vy;
+      let hit = false;
+      if (x <= 0 || x >= W) { vx *= -1; x = Math.max(0, Math.min(x, W)); hit = true; }
+      if (y <= 0 || y >= H) { vy *= -1; y = Math.max(0, Math.min(y, H)); hit = true; }
+      if (hit) { dvdColorIdx = (dvdColorIdx + 1) % DVD_COLORS.length; el.style.color = DVD_COLORS[dvdColorIdx]; }
+      el.style.left = x + 'px'; el.style.top = y + 'px';
+      dvdRaf = requestAnimationFrame(moveDVD);
+    })();
+  }
+
+  function stopDVD() {
+    if (!dvdActive) return;
+    dvdActive = false;
+    cancelAnimationFrame(dvdRaf);
+    document.getElementById('xivora-dvd')?.remove();
+    document.getElementById('xivora-dvd-hint')?.remove();
+    resetDVDTimer();
+  }
+
+  function resetDVDTimer() {
+    clearTimeout(dvdTimer);
+    if (!dvdActive) dvdTimer = setTimeout(startDVD, 28000);
+  }
+
+  ['mousemove','keydown','click','scroll','touchstart'].forEach(ev =>
+    document.addEventListener(ev, () => { stopDVD(); resetDVDTimer(); }, { passive: true })
+  );
+  resetDVDTimer();
+
+  /* ── SCROLL RISE ──────────────────────────────── */
+  const riseObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); riseObs.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.rise').forEach(el => riseObs.observe(el));
+
+  /* ── FAQ ACCORDION ────────────────────────────── */
+  document.querySelectorAll('.xivora-faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const isOpen = btn.classList.contains('open');
+      document.querySelectorAll('.xivora-faq-q').forEach(b => {
+        b.classList.remove('open'); b.setAttribute('aria-expanded','false');
+        b.nextElementSibling.style.maxHeight = '0';
+      });
+      if (!isOpen) {
+        btn.classList.add('open'); btn.setAttribute('aria-expanded','true');
+        const a = btn.nextElementSibling;
+        a.style.maxHeight = a.scrollHeight + 'px';
+      }
+    });
+  });
   </script>
 
 </body>
