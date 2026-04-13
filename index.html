@@ -2211,7 +2211,7 @@
     stack:    () => ['<span class="tc-a">Lang:</span>    Python, JS/TS, HTML/CSS','<span class="tc-a">Backend:</span> FastAPI, Node.js, aiogram','<span class="tc-a">Frontend:</span> React, Vue, vanilla','<span class="tc-a">Tools:</span>   Git, Docker, Nginx, VPS','<span class="tc-a">Design:</span>  Figma'],
     contact:  () => ['Telegram: <span class="tc-a">@Xivora</span>','Канал:    <span class="tc-a">@Xivora_Service</span>','GitHub:   <span class="tc-a">m1ghty13</span>','Lolzteam: <span class="tc-a">m1ghty13</span>'],
     ping:     () => ['<span class="tc-g">pong</span> — 2ms'],
-    matrix:   () => { triggerMatrix(); return ['<span class="tc-g">Инициализация матрицы...</span>']; },
+    matrix:   () => { setTimeout(() => { window.location.href = 'console.html'; }, 800); return ['<span class="tc-g">Инициализация матрицы...</span>', '<span class="tc-m">Переход в консольный режим...</span>']; },
     'sudo':               () => ['<span class="tc-a">Permission denied.</span> Хорошая попытка.'],
     'sudo rm -rf /':      () => ['<span class="tc-a">Нет.</span>'],
     'git status':         () => ['On branch <span class="tc-a">main</span>','nothing to commit, working tree clean'],

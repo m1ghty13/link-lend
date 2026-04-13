@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Xivora — цифровые решения</title>
+  <meta name="description" content="Xivora — студия цифровых решений. Разработка сайтов, Telegram-ботов, скриптов." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #0b0c10;
+      --bg-raised:   #11131a;
+      --bg-inset:    #080910;
+      --border:      #1c1f2e;
+      --border-2:    #272b3e;
+
+      --text:        #b8c2d4;
+      --text-dim:    #606880;
+      --text-muted:  #363d56;
+
+      --green:       #3ddc84;
+      --blue:        #7eb8ff;
+      --red:         #3ddc84;
+      --yellow:      #e3b341;
+      --cyan:        #4dd9ec;
+      --magenta:     #c397f8;
+      --orange:      #ffab70;
+
+      --font:        'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+      --fs-xs:       11px;
+      --fs-sm:       13px;
+      --fs-base:     14px;
+      --fs-lg:       16px;
+      --titlebar-h:  44px;
+      --statusbar-h: 26px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border-2) transparent;
+    }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 3px; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: var(--fs-base);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* scanlines */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(0,0,0,.018) 3px,
+        rgba(0,0,0,.018) 4px
+      );
+    }
+
+    a { color: inherit; text-decoration: none; }
+    a:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; border-radius: 2px; }
+
+    /* ── TITLEBAR ──────────────────────────────────── */
+    .c-titlebar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--titlebar-h);
+      background: var(--bg-raised);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 18px;
+      gap: 14px;
+      z-index: 200;
+      user-select: none;
+    }
+
+    .c-dots { display: flex; gap: 7px; flex-shrink: 0; }
+    .c-dot { width: 12px; height: 12px; border-radius: 50%; display: block; }
+    .c-dot-r { background: #ff5f56; }
+    .c-dot-y { background: #ffbd2e; }
+    .c-dot-g { background: #27c93f; box-shadow: 0 0 6px rgba(39,201,63,.4); }
+
+    .c-titlebar-center {
+      flex: 1;
+      text-align: center;
+      font-size: var(--fs-xs);
+      color: var(--text-dim);
+      letter-spacing: .04em;
+    }
+
+    .c-nav {
+      display: flex;
+      gap: 22px;
+      flex-shrink: 0;
+    }
+    .c-nav-link {
+      font-size: var(--fs-xs);
+      color: var(--text-dim);
+      letter-spacing: .03em;
+      transition: color .15s;
+    }
+    .c-nav-link::before { content: '--'; color: var(--text-muted); }
+    .c-nav-link:hover, .c-nav-link.active { color: var(--green); }
+    .c-nav-link.active::before { color: var(--green); }
+
+    @media (max-width: 640px) {
+      .c-nav { display: none; }
+      .c-titlebar-center { text-align: left; }
+    }
+
+    /* ── STATUS BAR ─────────────────────────────────── */
+    .c-statusbar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: var(--statusbar-h);
+      background: var(--green);
+      color: #0b0c10;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      z-index: 200;
+      font-size: var(--fs-xs);
+      font-weight: 600;
+      overflow: hidden;
+    }
+    .c-sb-seg {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 10px;
+      height: 100%;
+    }
+    .c-sb-seg + .c-sb-seg { border-left: 1px solid rgba(0,0,0,.18); }
+    .c-sb-right { margin-left: auto; display: flex; height: 100%; }
+
+    /* ── MAIN ───────────────────────────────────────── */
+    .c-main {
+      padding-top: calc(var(--titlebar-h) + 48px);
+      padding-bottom: calc(var(--statusbar-h) + 48px);
+      max-width: 880px;
+      margin: 0 auto;
+      padding-left: 28px;
+      padding-right: 28px;
+    }
+
+    /* ── SECTION ────────────────────────────────────── */
+    .c-sec {
+      padding: 56px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .c-sec:last-of-type { border-bottom: none; }
+
+    /* ── PROMPT LINE ────────────────────────────────── */
+    .c-prompt {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      font-size: var(--fs-sm);
+    }
+    .cp-sym   { color: var(--green);   font-weight: 600; }
+    .cp-path  { color: var(--orange); }
+    .cp-cmd   { color: var(--blue);    font-weight: 500; }
+    .cp-flag  { color: var(--cyan); }
+    .cp-arg   { color: var(--magenta); }
+
+    /* ── SCROLL REVEAL ──────────────────────────────── */
+    .rv {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .48s ease, transform .48s ease;
+    }
+    .rv.in { opacity: 1; transform: none; }
+    .rv-d1 { transition-delay: .07s; }
+    .rv-d2 { transition-delay: .14s; }
+    .rv-d3 { transition-delay: .21s; }
+    .rv-d4 { transition-delay: .28s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .rv { opacity: 1; transform: none; transition: none; }
+    }
+
+    /* ── HERO ───────────────────────────────────────── */
+    .c-hero {
+      min-height: calc(100vh - var(--titlebar-h) - var(--statusbar-h) - 96px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0;
+      padding: 24px 0 64px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .c-boot {
+      margin-bottom: 44px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .c-boot-line {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: var(--fs-sm);
+      color: var(--text-dim);
+      opacity: 0;
+      transition: opacity .2s;
+    }
+    .c-boot-line.show { opacity: 1; }
+    .c-boot-label { min-width: 200px; }
+    .c-boot-ok { color: var(--green); font-weight: 600; font-size: var(--fs-xs); letter-spacing: .08em; }
+    .c-boot-bar-wrap {
+      width: 160px; height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .c-boot-bar-fill {
+      height: 100%;
+      background: var(--green);
+      width: 0%;
+      transition: width .7s cubic-bezier(.22,.84,.33,1);
+      border-radius: 2px;
+    }
+
+    /* hero frame */
+    .c-hero-frame {
+      border: 1px solid var(--border-2);
+      padding: 36px 40px;
+      margin-bottom: 28px;
+      position: relative;
+    }
+    .c-hero-frame::before {
+      content: 'XIVORA.STUDIO';
+      position: absolute;
+      top: -9px; left: 18px;
+      background: var(--bg);
+      padding: 0 8px;
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: .12em;
+    }
+    @media (max-width: 480px) {
+      .c-hero-frame { padding: 24px 20px; }
+    }
+
+    .c-hero-title {
+      font-size: clamp(32px, 7vw, 64px);
+      font-weight: 700;
+      color: #e8edf5;
+      line-height: 1;
+      letter-spacing: -.02em;
+      margin-bottom: 18px;
+    }
+    .c-hero-title em { color: var(--green); font-style: normal; }
+    .c-hero-sub {
+      font-size: clamp(13px, 1.4vw, 15px);
+      color: var(--text-dim);
+      max-width: 520px;
+      line-height: 1.65;
+      margin-bottom: 6px;
+    }
+    .c-hero-comment {
+      font-size: var(--fs-xs);
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* blinking block cursor */
+    .c-cursor::after {
+      content: '█';
+      color: var(--green);
+      animation: cur-blink 1s step-end infinite;
+    }
+    @keyframes cur-blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    .c-hero-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    /* ── BUTTONS ────────────────────────────────────── */
+    .c-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 18px;
+      font-family: var(--font);
+      font-size: var(--fs-sm);
+      font-weight: 600;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: background .15s, border-color .15s, color .15s;
+      letter-spacing: .02em;
+      border: 1px solid transparent;
+      text-decoration: none;
+    }
+    .c-btn:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+    .c-btn-red {
+      background: var(--green);
+      color: #0b0c10;
+      border-color: var(--green);
+    }
+    .c-btn-red:hover { background: #2ec872; border-color: #2ec872; }
+    .c-btn-ghost {
+      background: transparent;
+      color: var(--green);
+      border-color: var(--green);
+    }
+    .c-btn-ghost:hover { background: rgba(61,220,132,.1); }
+    .c-btn-dim {
+      background: transparent;
+      color: var(--text-dim);
+      border-color: var(--border-2);
+    }
+    .c-btn-dim:hover { color: var(--text); border-color: var(--text-dim); }
+
+    /* ── STATS ──────────────────────────────────────── */
+    .c-stats { display: flex; flex-direction: column; gap: 12px; }
+    .c-stat-row {
+      display: grid;
+      grid-template-columns: 1fr 120px 180px 90px;
+      align-items: center;
+      gap: 14px;
+      padding: 13px 16px;
+      background: var(--bg-raised);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--green);
+    }
+    .c-stat-lbl { font-size: var(--fs-sm); color: var(--text-dim); }
+    .c-stat-val { font-size: var(--fs-lg); font-weight: 700; color: var(--yellow); }
+    .c-stat-bar-wrap { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+    .c-stat-bar-fill { height: 100%; background: var(--green); width: 0%; transition: width 1.6s cubic-bezier(.22,.84,.33,1); border-radius: 2px; }
+    .c-stat-note { font-size: var(--fs-xs); color: var(--text-muted); text-align: right; }
+
+    @media (max-width: 580px) {
+      .c-stat-row { grid-template-columns: 1fr auto; }
+      .c-stat-bar-wrap, .c-stat-note { display: none; }
+    }
+
+    /* ── SERVICES TABLE ─────────────────────────────── */
+    .c-tbl {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--fs-sm);
+    }
+    .c-tbl th {
+      text-align: left;
+      padding: 8px 14px;
+      font-size: var(--fs-xs);
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+    }
+    .c-tbl td {
+      padding: 15px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .c-tbl tr:last-child td { border-bottom: none; }
+    .c-tbl tbody tr:hover td { background: rgba(255,255,255,.018); }
+    .c-tbl-name { color: var(--cyan); font-weight: 500; white-space: nowrap; }
+    .c-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      font-size: var(--fs-xs);
+      border: 1px solid;
+      border-radius: 2px;
+      letter-spacing: .03em;
+      white-space: nowrap;
+    }
+    .c-tag-web { color: var(--blue);    border-color: rgba(126,184,255,.4); background: rgba(126,184,255,.07); }
+    .c-tag-tg  { color: var(--cyan);    border-color: rgba(77,217,236,.4);  background: rgba(77,217,236,.07); }
+    .c-tag-sup { color: var(--green);   border-color: rgba(61,220,132,.4);  background: rgba(61,220,132,.07); }
+    .c-tag-ui  { color: var(--magenta); border-color: rgba(195,151,248,.4); background: rgba(195,151,248,.07); }
+    .c-tbl-desc { color: var(--text-dim); line-height: 1.55; }
+
+    @media (max-width: 540px) {
+      .c-tbl thead { display: none; }
+      .c-tbl, .c-tbl tbody, .c-tbl tr, .c-tbl td { display: block; }
+      .c-tbl td { padding: 6px 0; border-bottom: none; }
+      .c-tbl tr { border-bottom: 1px solid var(--border); padding: 12px 0; }
+      .c-tbl tr:last-child { border-bottom: none; }
+    }
+
+    /* ── PROCESS ────────────────────────────────────── */
+    .c-process { display: flex; flex-direction: column; }
+    .c-proc-item {
+      display: grid;
+      grid-template-columns: 36px 1fr auto;
+      gap: 16px;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+    }
+    .c-proc-item:last-child { border-bottom: none; }
+    .c-proc-num { color: var(--text-muted); font-size: var(--fs-sm); font-weight: 600; padding-top: 2px; }
+    .c-proc-title { color: var(--text); font-weight: 600; font-size: var(--fs-base); margin-bottom: 4px; }
+    .c-proc-desc { color: var(--text-dim); font-size: var(--fs-sm); line-height: 1.6; }
+    .c-proc-time {
+      font-size: var(--fs-xs);
+      font-weight: 500;
+      color: var(--yellow);
+      background: rgba(227,179,65,.08);
+      border: 1px solid rgba(227,179,65,.22);
+      padding: 3px 10px;
+      border-radius: 2px;
+      white-space: nowrap;
+      margin-top: 2px;
+    }
+    @media (max-width: 480px) {
+      .c-proc-item { grid-template-columns: 28px 1fr; }
+      .c-proc-time { grid-column: 2; margin-top: 6px; align-self: auto; }
+    }
+
+    /* ── WHY CARDS ──────────────────────────────────── */
+    .c-why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+    }
+    .c-why-card {
+      padding: 22px 20px;
+      background: var(--bg-raised);
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--border-2);
+    }
+    .c-why-card:nth-child(1) { border-top-color: var(--green); }
+    .c-why-card:nth-child(2) { border-top-color: var(--blue); }
+    .c-why-card:nth-child(3) { border-top-color: var(--cyan); }
+    .c-why-n { font-size: var(--fs-xs); color: var(--text-muted); margin-bottom: 12px; letter-spacing: .06em; }
+    .c-why-title { color: var(--text); font-weight: 600; font-size: 15px; margin-bottom: 8px; }
+    .c-why-text { color: var(--text-dim); font-size: var(--fs-sm); line-height: 1.6; }
+
+    /* ── PRICING ────────────────────────────────────── */
+    .c-pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+    .c-price-card {
+      padding: 26px 22px;
+      background: var(--bg-raised);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+    }
+    .c-price-card.featured {
+      border-color: rgba(61,220,132,.35);
+      background: rgba(61,220,132,.03);
+    }
+    .c-price-badge {
+      display: inline-block;
+      padding: 2px 9px;
+      font-size: var(--fs-xs);
+      background: var(--green);
+      color: #0b0c10;
+      font-weight: 600;
+      border-radius: 2px;
+      margin-bottom: 14px;
+      align-self: flex-start;
+      letter-spacing: .04em;
+    }
+    .c-price-plan {
+      font-size: var(--fs-xs);
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin-bottom: 8px;
+    }
+    .c-price-val {
+      font-size: clamp(22px, 3vw, 28px);
+      font-weight: 700;
+      color: var(--yellow);
+      margin-bottom: 4px;
+      line-height: 1.1;
+    }
+    .c-price-val sup { font-size: 13px; font-weight: 400; color: var(--text-dim); }
+    .c-price-note { color: var(--text-muted); font-size: 12px; margin-bottom: 20px; }
+    .c-price-features {
+      list-style: none;
+      margin-bottom: 18px;
+      flex: 1;
+    }
+    .c-price-features li {
+      color: var(--text-dim);
+      font-size: var(--fs-sm);
+      padding: 5px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      line-height: 1.5;
+    }
+    .c-price-features li:last-child { border-bottom: none; }
+    .c-price-features li::before { content: '›'; color: var(--green); flex-shrink: 0; }
+    .c-price-deadline {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .c-price-deadline strong { color: var(--yellow); }
+
+    /* ── FAQ ────────────────────────────────────────── */
+    .c-faq { display: flex; flex-direction: column; }
+    .c-faq-item { border-bottom: 1px solid var(--border); }
+    .c-faq-item:last-child { border-bottom: none; }
+    .c-faq-btn {
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      padding: 16px 0;
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: var(--fs-sm);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: color .15s;
+    }
+    .c-faq-btn::before { content: '>'; color: var(--text-muted); flex-shrink: 0; transition: color .15s; }
+    .c-faq-btn:hover { color: var(--cyan); }
+    .c-faq-btn[aria-expanded="true"] { color: var(--cyan); }
+    .c-faq-btn[aria-expanded="true"]::before { content: 'v'; color: var(--cyan); }
+    .c-faq-arrow { margin-left: auto; font-size: 18px; color: var(--text-muted); transition: transform .2s, color .15s; flex-shrink: 0; }
+    .c-faq-btn[aria-expanded="true"] .c-faq-arrow { transform: rotate(90deg); color: var(--cyan); }
+    .c-faq-btn:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+    .c-faq-ans { max-height: 0; overflow: hidden; transition: max-height .3s ease; }
+    .c-faq-ans-inner {
+      padding: 0 0 18px 22px;
+      color: var(--text-dim);
+      font-size: var(--fs-sm);
+      line-height: 1.7;
+      border-left: 2px solid var(--border-2);
+    }
+
+    /* ── CONTACT ────────────────────────────────────── */
+    .c-contact-block {
+      background: var(--bg-raised);
+      border: 1px solid var(--border);
+      padding: 28px;
+    }
+    .c-contact-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: var(--fs-sm);
+    }
+    .c-contact-row:last-of-type { border-bottom: none; }
+    .c-contact-key { color: var(--text-muted); min-width: 90px; flex-shrink: 0; }
+    .c-contact-val { color: var(--cyan); }
+    .c-contact-val a:hover { color: var(--green); }
+    .c-contact-cta {
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    /* ── COMMENT / INLINE ELEMENTS ──────────────────── */
+    .c-comment { color: var(--text-muted); font-style: italic; font-size: var(--fs-sm); }
+    .c-val { color: var(--yellow); }
+    .c-link { color: var(--cyan); }
+    .c-link:hover { color: var(--green); }
+
+    .c-inline-note {
+      margin-top: 18px;
+      font-size: var(--fs-sm);
+      color: var(--text-muted);
+    }
+
+    /* ── FOOTER ─────────────────────────────────────── */
+    .c-footer {
+      padding: 28px 0 8px;
+      text-align: center;
+      font-size: var(--fs-xs);
+      color: var(--text-muted);
+      font-style: italic;
+      letter-spacing: .03em;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TITLEBAR -->
+  <header class="c-titlebar" role="banner">
+    <div class="c-dots" aria-hidden="true">
+      <span class="c-dot c-dot-r"></span>
+      <span class="c-dot c-dot-y"></span>
+      <span class="c-dot c-dot-g"></span>
+    </div>
+    <div class="c-titlebar-center">xivora@studio:~</div>
+    <nav class="c-nav" aria-label="Навигация">
+      <a class="c-nav-link" href="#services">services</a>
+      <a class="c-nav-link" href="#process">process</a>
+      <a class="c-nav-link" href="#pricing">pricing</a>
+      <a class="c-nav-link" href="#faq">faq</a>
+      <a class="c-nav-link" href="#contact">contact</a>
+    </nav>
+  </header>
+
+  <!-- MAIN -->
+  <main class="c-main" id="top">
+
+    <!-- ═══ HERO ════════════════════════════════════ -->
+    <section class="c-hero" id="home" aria-label="Главный экран">
+
+      <div class="c-boot" aria-live="polite" aria-label="Инициализация системы">
+        <div class="c-boot-line" id="bl-1">
+          <span class="c-boot-label">initializing system...</span>
+          <span class="c-boot-ok">[  OK  ]</span>
+        </div>
+        <div class="c-boot-line" id="bl-2">
+          <span class="c-boot-label">loading modules...</span>
+          <span class="c-boot-ok">[  OK  ]</span>
+        </div>
+        <div class="c-boot-line" id="bl-3">
+          <span class="c-boot-label">connecting services...</span>
+          <span class="c-boot-ok">[  OK  ]</span>
+        </div>
+        <div class="c-boot-line" id="bl-4">
+          <span class="c-boot-label">xivora.studio v1.0.0</span>
+          <div class="c-boot-bar-wrap" aria-hidden="true"><div class="c-boot-bar-fill" id="boot-bar"></div></div>
+        </div>
+      </div>
+
+      <div class="c-hero-frame rv" id="hero-frame">
+        <h1 class="c-hero-title">XIVORA<em>.</em></h1>
+        <p class="c-hero-sub">Цифровые решения для твоего бизнеса — быстро, чисто, с результатом.</p>
+        <p class="c-hero-comment">// студия цифровых решений · Telegram: @Xivora</p>
+      </div>
+
+      <div class="c-prompt rv rv-d1" id="hero-prompt">
+        <span class="cp-sym">$</span>
+        <span class="cp-path">xivora</span>
+        <span class="cp-cmd">contact</span>
+        <span class="cp-flag">--telegram</span>
+        <span class="c-cursor" aria-hidden="true"></span>
+      </div>
+
+      <div class="c-hero-actions rv rv-d2" id="hero-actions">
+        <a class="c-btn c-btn-red" href="https://t.me/Xivora" target="_blank" rel="noopener">
+          ↗ Написать в Telegram
+        </a>
+        <a class="c-btn c-btn-dim" href="https://t.me/Xivora" target="_blank" rel="noopener">
+          @Xivora
+        </a>
+      </div>
+    </section>
+
+    <!-- ═══ STATS ════════════════════════════════════ -->
+    <section class="c-sec" id="stats" aria-label="Статистика">
+      <div class="c-prompt rv">
+        <span class="cp-sym">$</span>
+        <span class="cp-path">xivora</span>
+        <span class="cp-cmd">stat</span>
+        <span class="cp-flag">--all</span>
+      </div>
+
+      <div class="c-stats">
+        <div class="c-stat-row rv rv-d1" data-bar="88">
+          <div class="c-stat-lbl">проектов сдано в срок</div>
+          <div class="c-stat-val">15<span style="font-size:14px;color:var(--text-muted)">+</span></div>
+          <div class="c-stat-bar-wrap"><div class="c-stat-bar-fill"></div></div>
+          <div class="c-stat-note">проектов</div>
+        </div>
+        <div class="c-stat-row rv rv-d2" data-bar="72">
+          <div class="c-stat-lbl">среднее время реализации</div>
+          <div class="c-stat-val">~10ч</div>
+          <div class="c-stat-bar-wrap"><div class="c-stat-bar-fill"></div></div>
+          <div class="c-stat-note">per project</div>
+        </div>
+        <div class="c-stat-row rv rv-d3" data-bar="95">
+          <div class="c-stat-lbl">время ответа</div>
+          <div class="c-stat-val">&lt;10мин</div>
+          <div class="c-stat-bar-wrap"><div class="c-stat-bar-fill"></div></div>
+          <div class="c-stat-note">рабочее время</div>
+        </div>
+        <div class="c-stat-row rv rv-d4" data-bar="100">
+          <div class="c-stat-lbl">сдача в срок</div>
+          <div class="c-stat-val">100%</div>
+          <div class="c-stat-bar-wrap"><div class="c-stat-bar-fill"></div></div>
+          <div class="c-stat-note">гарантия</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ SERVICES ═════════════════════════════════ -->
+    <section class="c-sec" id="services" aria-labelledby="sec-services-h">
+      <div class="c-prompt rv">
+        <span class="cp-sym">$</span>
+        <span class="cp-path">xivora</span>
+        <span class="cp-cmd">services</span>
+        <span class="cp-flag">--list</span>
+      </div>
+
+      <div class="rv rv-d1">
+        <table class="c-tbl" aria-label="Список услуг">
+          <thead>
+            <tr>
+              <th scope="col">NAME</th>
+              <th scope="col">TAG</th>
+              <th scope="col">DESCRIPTION</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="c-tbl-name">web-dev</td>
+              <td><span class="c-tag c-tag-web">Web Dev</span></td>
+              <td class="c-tbl-desc">Лендинги, корпоративные сайты и веб-приложения — под ключ, с нуля до запуска.</td>
+            </tr>
+            <tr>
+              <td class="c-tbl-name">telegram-dev</td>
+              <td><span class="c-tag c-tag-tg">Tg Dev</span></td>
+              <td class="c-tbl-desc">Telegram Mini App, боты любой сложности, парсеры и автоматизация внутри Telegram.</td>
+            </tr>
+            <tr>
+              <td class="c-tbl-name">support</td>
+              <td><span class="c-tag c-tag-sup">Support</span></td>
+              <td class="c-tbl-desc">Техническое сопровождение, плановые обновления и доработки без лишней суеты.</td>
+            </tr>
+            <tr>
+              <td class="c-tbl-name">ui-ux</td>
+              <td><span class="c-tag c-tag-ui">UI / UX</span></td>
+              <td class="c-tbl-desc">Дизайн интерфейсов для сайтов и приложений: продуманно, красиво, с фокусом на конверсию.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══ PROCESS ══════════════════════════════════ -->
+    <section class="c-sec" id="process" aria-labelledby="sec-process-h">
+      <div class="c-prompt rv">
+        <span class="cp-sym">$</span>
+        <span class="cp-path">xivora</span>
+        <span class="cp-cmd">workflow</span>
+        <span class="cp-flag">--show</span>
+      </div>
+
+      <div class="c-process">
+        <div class="c-proc-item rv rv-d1">
+          <div class="c-proc-num">01</div>
+          <div>
+            <div class="c-proc-title">Бриф</div>
+            <div class="c-proc-desc">Пишешь в Telegram, рассказываешь о задаче. Мы задаём уточняющие вопросы и фиксируем цель.</div>
+          </div>
+          <div class="c-proc-time">≈&thinsp;1 день</div>
+        </div>
+        <div class="c-proc-item rv rv-d2">
+          <div class="c-proc-num">02</div>
+          <div>
+            <div class="c-proc-title">Предложение</div>
+            <div class="c-proc-desc">Готовим план, сроки и стоимость. Согласовываем всё до старта — никаких сюрпризов в процессе.</div>
+          </div>
+          <div class="c-proc-time">≈&thinsp;1 день</div>
+        </div>
+        <div class="c-proc-item rv rv-d3">
+          <div class="c-proc-num">03</div>
+          <div>
+            <div class="c-proc-title">Работа</div>
+            <div class="c-proc-desc">Реализуем проект, показываем промежуточные результаты и вносим правки прямо по ходу.</div>
+          </div>
+          <div class="c-proc-time">1–14 дней</div>
+        </div>
+        <div class="c-proc-item rv rv-d4">
+          <div class="c-proc-num">04</div>
+          <div>
+            <div class="c-proc-title">Сдача</div>
+            <div class="c-proc-desc">Передаём готовый результат и помогаем с запуском. Остаёмся на связи — поддержка включена.</div>
+          </div>
+          <div class="c-proc-time">1 день</div>
+        </div>
+      </div>
+
+      <div class="c-inline-note rv">
+        <span class="c-comment">// Максимальный срок запуска любого проекта —&nbsp;</span><span class="c-val">14 дней</span>
+      </div>
+    </section>
+
+    <!-- ═══ WHY ═══════════════════════════════════════ -->
+    <section class="c-sec" id="why" aria-labelledby="sec-why-h">
+      <div class="c-prompt rv">
+        <span class="cp-sym">$</span>
+        <span class="cp-path">xivora</span>
+        <span class="cp-cmd">about</span>
+        <span class="cp-flag">--why-us</span>
+      </div>
+
+      <div class="c-why-grid">
+        <div class="c-why-card rv rv-d1">
+          <div class="c-why-n">// 01</div>
+          <div class="c-why-title">Скорость работы</div>
+          <div class="c-why-text">Первый результат — в течение 7 часов. Чёткие дедлайны без пустых обещаний и лишних согласований.</div>
+        </div>
+        <div class="c-why-card rv rv-d2">
+          <div class="c-why-n">// 02</div>
+          <div class="c-why-title">Фокус на задачи</div>
+          <div class="c-why-text">Никаких шаблонов. Каждый проект разбираем с нуля и решаем конкретно твою задачу.</div>
+        </div>
+        <div class="c-why-card rv rv-d3">
+          <div class="c-why-n">// 03</div>
+          <div class="c-why-title">Всегда на связи</div>
+          <div class="c-why-text">Telegram, быстрые ответы, прозрачный процесс. Ты всегда знаешь, что происходит с проектом.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ PRICING ═══════════════════════════════════ -->
+    <section class="c-sec" id="pricing" aria-labelledby="sec-pricing-h">
+      <div class="c-prompt rv">
+        <span class="cp-sym">$</span>
+        <span class="cp-path">xivora</span>
+        <span class="cp-cmd">pricing</span>
+        <span class="cp-flag">--table</span>
+      </div>
+
+      <div class="c-pricing-grid">
+        <div class="c-price-card rv rv-d1">
+          <div class="c-price-plan">Telegram Бот</div>
+          <div class="c-price-val"><sup>от </sup>1&thinsp;000&thinsp;₽</div>
+          <div class="c-price-note">Идеально для первого проекта</div>
+          <ul class="c-price-features">
+            <li>Бот любой сложности</li>
+            <li>API-интеграции и платёжные системы</li>
+            <li>Хостинг на вашем сервере</li>
+            <li>2 раунда правок</li>
+            <li>Поддержка 15 дней</li>
+          </ul>
+          <div class="c-price-deadline">Срок: <strong>1–5 дней</strong></div>
+          <a class="c-btn c-btn-ghost" href="https://t.me/Xivora" target="_blank" rel="noopener">→ Обсудить</a>
+        </div>
+
+        <div class="c-price-card featured rv rv-d2">
+          <div class="c-price-badge">★ Популярный</div>
+          <div class="c-price-plan">Сайт</div>
+          <div class="c-price-val"><sup>от </sup>1&thinsp;000&thinsp;₽</div>
+          <div class="c-price-note">Быстрый старт в интернете</div>
+          <ul class="c-price-features">
+            <li>Лендинг или многостраничный сайт</li>
+            <li>Адаптивная вёрстка под любой экран</li>
+            <li>Базовая SEO-оптимизация</li>
+            <li>Подключение домена и деплой</li>
+            <li>2 раунда правок</li>
+            <li>Поддержка 15 дней</li>
+          </ul>
+          <div class="c-price-deadline">Срок: <strong>1–14 дней</strong></div>
+          <a class="c-btn c-btn-red" href="https://t.me/Xivora" target="_blank" rel="noopener">→ Обсудить</a>
+        </div>
+
+        <div class="c-price-card rv rv-d3">
+          <div class="c-price-plan">Скрипт</div>
+          <div class="c-price-val"><sup>от </sup>800&thinsp;₽</div>
+          <div class="c-price-note">Автоматизация под любую задачу</div>
+          <ul class="c-price-features">
+            <li>Парсеры, авто-постинг, уведомления</li>
+            <li>Интеграция с внешними API и сервисами</li>
+            <li>Чистый читаемый код с документацией</li>
+            <li>2 раунда правок</li>
+            <li>Поддержка 15 дней</li>
+          </ul>
+          <div class="c-price-deadline">Срок: <strong>1–14 дней</strong></div>
+          <a class="c-btn c-btn-ghost" href="https://t.me/Xivora" target="_blank" rel="noopener">→ Обсудить</a>
+        </div>
+      </div>
+
+      <div class="c-inline-note rv">
+        <span class="c-comment">// Нестандартный проект?&nbsp;</span>
+        <a class="c-link" href="https://t.me/Xivora" target="_blank" rel="noopener">Напишите</a>
+        <span class="c-comment">&nbsp;— рассчитаем индивидуально</span>
+      </div>
+    </section>
+
+    <!-- ═══ FAQ ════════════════════════════════════════ -->
+    <section class="c-sec" id="faq" aria-labelledby="sec-faq-h">
+      <div class="c-prompt rv">
+        <span class="cp-sym">$</span>
+        <span class="cp-path">xivora</span>
+        <span class="cp-cmd">faq</span>
+        <span class="cp-flag">--query</span>
+        <span class="cp-arg">"*"</span>
+      </div>
+
+      <div class="c-faq rv rv-d1">
+
+        <div class="c-faq-item">
+          <button class="c-faq-btn" aria-expanded="false">
+            <span>Как проходит оплата?</span>
+            <span class="c-faq-arrow" aria-hidden="true">›</span>
+          </button>
+          <div class="c-faq-ans" role="region">
+            <div class="c-faq-ans-inner">
+              Работаем по предоплате 50% при старте проекта, остаток — после сдачи. Принимаем перевод на карту или криптовалюту.
+            </div>
+          </div>
+        </div>
+
+        <div class="c-faq-item">
+          <button class="c-faq-btn" aria-expanded="false">
+            <span>Сколько правок входит в стоимость?</span>
+            <span class="c-faq-arrow" aria-hidden="true">›</span>
+          </button>
+          <div class="c-faq-ans" role="region">
+            <div class="c-faq-ans-inner">
+              Для всех проектов — 2 бесплатных раунда правок. Каждый раунд включает любое количество замечаний по текущей версии. Дополнительные правки обсуждаются отдельно.
+            </div>
+          </div>
+        </div>
+
+        <div class="c-faq-item">
+          <button class="c-faq-btn" aria-expanded="false">
+            <span>Что если нужен сайт срочно?</span>
+            <span class="c-faq-arrow" aria-hidden="true">›</span>
+          </button>
+          <div class="c-faq-ans" role="region">
+            <div class="c-faq-ans-inner">
+              Принимаем срочные заказы с доплатой 25% от стоимости проекта. Напишите в Telegram, назовите дедлайн — возьмём в работу в первую очередь.
+            </div>
+          </div>
+        </div>
+
+        <div class="c-faq-item">
+          <button class="c-faq-btn" aria-expanded="false">
+            <span>Предоставляете ли хостинг?</span>
+            <span class="c-faq-arrow" aria-hidden="true">›</span>
+          </button>
+          <div class="c-faq-ans" role="region">
+            <div class="c-faq-ans-inner">
+              Нет, но всегда помогаем развернуть проект на вашем сервере бесплатно. Не знаете, какой выбрать? Подберём подходящий вариант под задачу и бюджет.
+            </div>
+          </div>
+        </div>
+
+        <div class="c-faq-item">
+          <button class="c-faq-btn" aria-expanded="false">
+            <span>Можно ли будет самому редактировать сайт?</span>
+            <span class="c-faq-arrow" aria-hidden="true">›</span>
+          </button>
+          <div class="c-faq-ans" role="region">
+            <div class="c-faq-ans-inner">
+              Да. По желанию подключаем CMS, чтобы вы могли менять тексты и блоки без программиста. Обучим за 15 минут.
+            </div>
+          </div>
+        </div>
+
+        <div class="c-faq-item">
+          <button class="c-faq-btn" aria-expanded="false">
+            <span>Работаете ли с клиентами из других городов?</span>
+            <span class="c-faq-arrow" aria-hidden="true">›</span>
+          </button>
+          <div class="c-faq-ans" role="region">
+            <div class="c-faq-ans-inner">
+              Да, работаем полностью онлайн. Вся коммуникация через Telegram, созвоны при необходимости. Клиенты из любой точки мира — без проблем.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══ CONTACT ═══════════════════════════════════ -->
+    <section class="c-sec" id="contact" aria-labelledby="sec-contact-h">
+      <div class="c-prompt rv">
+        <span class="cp-sym">$</span>
+        <span class="cp-path">xivora</span>
+        <span class="cp-cmd">contact</span>
+        <span class="cp-flag">--info</span>
+      </div>
+
+      <div class="c-contact-block rv rv-d1">
+        <div class="c-contact-row">
+          <span class="c-contact-key">telegram</span>
+          <span class="c-contact-val"><a href="https://t.me/Xivora" target="_blank" rel="noopener">@Xivora</a></span>
+        </div>
+        <div class="c-contact-row">
+          <span class="c-contact-key">response</span>
+          <span class="c-contact-val">&lt; 10 минут в рабочее время</span>
+        </div>
+        <div class="c-contact-row">
+          <span class="c-contact-key">location</span>
+          <span class="c-contact-val">онлайн · по всему миру</span>
+        </div>
+        <div class="c-contact-cta">
+          <a class="c-btn c-btn-red" href="https://t.me/Xivora" target="_blank" rel="noopener">
+            ↗ Написать в Telegram
+          </a>
+          <span class="c-comment">// ответим за &lt;10 минут</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="c-footer">
+      <span class="c-comment">// XIVORA.STUDIO · 2024–2025 · все права защищены</span>
+    </div>
+
+  </main>
+
+  <!-- STATUS BAR -->
+  <footer class="c-statusbar" aria-label="Строка состояния">
+    <div class="c-sb-seg">
+      <span>⬡</span>
+      <span>xivora</span>
+    </div>
+    <div class="c-sb-seg">studio</div>
+    <div class="c-sb-right">
+      <div class="c-sb-seg" id="sb-sec">HOME</div>
+      <div class="c-sb-seg">UTF-8</div>
+      <div class="c-sb-seg" id="sb-time" aria-live="off"></div>
+    </div>
+  </footer>
+
+  <script>
+    'use strict';
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* ── BOOT SEQUENCE ───────────────────────────────── */
+    const bootLines = Array.from(document.querySelectorAll('.c-boot-line'));
+    const bootBar   = document.getElementById('boot-bar');
+    const heroEls   = ['hero-frame', 'hero-prompt', 'hero-actions'].map(id => document.getElementById(id));
+
+    function revealHero() {
+      heroEls.forEach((el, i) => {
+        if (!el) return;
+        setTimeout(() => el.classList.add('in'), reduced ? 0 : i * 110);
+      });
+    }
+
+    if (reduced) {
+      bootLines.forEach(l => l.classList.add('show'));
+      if (bootBar) bootBar.style.width = '100%';
+      revealHero();
+    } else {
+      bootLines.forEach((line, i) => {
+        setTimeout(() => {
+          line.classList.add('show');
+          if (i === bootLines.length - 1 && bootBar) {
+            setTimeout(() => { bootBar.style.width = '100%'; }, 120);
+            setTimeout(revealHero, 820);
+          }
+        }, 140 + i * 260);
+      });
+    }
+
+    /* ── SCROLL REVEAL ───────────────────────────────── */
+    const revObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          revObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -32px 0px' });
+
+    document.querySelectorAll('.rv').forEach(el => {
+      if (!heroEls.includes(el)) revObs.observe(el);
+    });
+
+    /* ── STAT BARS ───────────────────────────────────── */
+    const barObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const pct  = e.target.dataset.bar;
+          const fill = e.target.querySelector('.c-stat-bar-fill');
+          if (fill && pct) setTimeout(() => { fill.style.width = pct + '%'; }, 250);
+          barObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.4 });
+
+    document.querySelectorAll('[data-bar]').forEach(el => barObs.observe(el));
+
+    /* ── FAQ ACCORDION ───────────────────────────────── */
+    document.querySelectorAll('.c-faq-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const open = btn.getAttribute('aria-expanded') === 'true';
+        document.querySelectorAll('.c-faq-btn').forEach(b => {
+          b.setAttribute('aria-expanded', 'false');
+          b.nextElementSibling.style.maxHeight = '0';
+        });
+        if (!open) {
+          btn.setAttribute('aria-expanded', 'true');
+          const panel = btn.nextElementSibling;
+          panel.style.maxHeight = panel.scrollHeight + 'px';
+        }
+      });
+    });
+
+    /* ── ACTIVE NAV + STATUS BAR SECTION ─────────────── */
+    const navLinks  = document.querySelectorAll('.c-nav-link');
+    const sbSec     = document.getElementById('sb-sec');
+    const secIds    = ['home', 'stats', 'services', 'process', 'why', 'pricing', 'faq', 'contact'];
+
+    const secObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        const id = e.target.id;
+        if (sbSec) sbSec.textContent = id.toUpperCase();
+        navLinks.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+        });
+      });
+    }, { threshold: 0.35 });
+
+    secIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) secObs.observe(el);
+    });
+
+    /* ── STATUS BAR CLOCK ────────────────────────────── */
+    const sbTime = document.getElementById('sb-time');
+    function tick() {
+      if (!sbTime) return;
+      const d = new Date();
+      sbTime.textContent =
+        String(d.getHours()).padStart(2, '0') + ':' +
+        String(d.getMinutes()).padStart(2, '0');
+    }
+    tick();
+    setInterval(tick, 30000);
+  </script>
+</body>
+</html>
