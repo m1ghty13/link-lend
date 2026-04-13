@@ -12,31 +12,31 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:          #0b0c10;
-      --bg-raised:   #11131a;
-      --bg-inset:    #080910;
-      --border:      #1c1f2e;
-      --border-2:    #272b3e;
+      --bg:          #0a0a0a;
+      --bg-raised:   #0f1014;
+      --bg-inset:    #060608;
+      --border:      #1a1d28;
+      --border-2:    #222638;
 
-      --text:        #b8c2d4;
-      --text-dim:    #606880;
-      --text-muted:  #363d56;
+      --text:        #a8b8c8;
+      --text-dim:    #4a5568;
+      --text-muted:  #2a3040;
 
-      --green:       #3ddc84;
-      --blue:        #7eb8ff;
-      --red:         #3ddc84;
-      --yellow:      #e3b341;
-      --cyan:        #4dd9ec;
-      --magenta:     #c397f8;
-      --orange:      #ffab70;
+      --green:       #00ff41;
+      --blue:        #5eaaff;
+      --red:         #ff4444;
+      --yellow:      #ffcc00;
+      --cyan:        #00e5ff;
+      --magenta:     #b388ff;
+      --orange:      #ff9140;
 
       --font:        'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
       --fs-xs:       11px;
       --fs-sm:       13px;
       --fs-base:     14px;
       --fs-lg:       16px;
-      --titlebar-h:  44px;
-      --statusbar-h: 26px;
+      --titlebar-h:  38px;
+      --statusbar-h: 24px;
     }
 
     html {
@@ -59,7 +59,7 @@
       min-height: 100vh;
     }
 
-    /* scanlines */
+    /* CRT scanlines */
     body::after {
       content: '';
       position: fixed;
@@ -69,10 +69,25 @@
       background: repeating-linear-gradient(
         0deg,
         transparent,
-        transparent 3px,
-        rgba(0,0,0,.018) 3px,
-        rgba(0,0,0,.018) 4px
+        transparent 2px,
+        rgba(0,0,0,.04) 2px,
+        rgba(0,0,0,.04) 4px
       );
+    }
+
+    /* CRT vignette */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9998;
+      background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,.45) 100%);
+    }
+
+    /* Phosphor glow on text */
+    .c-main {
+      text-shadow: 0 0 1px rgba(0,255,65,.06);
     }
 
     a { color: inherit; text-decoration: none; }
@@ -103,8 +118,9 @@
       flex: 1;
       text-align: center;
       font-size: var(--fs-xs);
-      color: var(--text-dim);
-      letter-spacing: .04em;
+      color: var(--green);
+      letter-spacing: .06em;
+      opacity: .7;
     }
 
     .c-nav {
@@ -118,8 +134,8 @@
       letter-spacing: .03em;
       transition: color .15s;
     }
-    .c-nav-link::before { content: '--'; color: var(--text-muted); }
-    .c-nav-link:hover, .c-nav-link.active { color: var(--green); }
+    .c-nav-link::before { content: '> '; color: var(--text-muted); }
+    .c-nav-link:hover, .c-nav-link.active { color: var(--green); text-shadow: 0 0 8px rgba(0,255,65,.3); }
     .c-nav-link.active::before { color: var(--green); }
 
     @media (max-width: 640px) {
@@ -178,10 +194,10 @@
       flex-wrap: wrap;
       font-size: var(--fs-sm);
     }
-    .cp-sym   { color: var(--green);   font-weight: 600; }
+    .cp-sym   { color: var(--green);   font-weight: 600; text-shadow: 0 0 6px rgba(0,255,65,.3); }
     .cp-path  { color: var(--orange); }
-    .cp-cmd   { color: var(--blue);    font-weight: 500; }
-    .cp-flag  { color: var(--cyan); }
+    .cp-cmd   { color: var(--cyan);    font-weight: 500; }
+    .cp-flag  { color: var(--blue); }
     .cp-arg   { color: var(--magenta); }
 
     /* ── SCROLL REVEAL ──────────────────────────────── */
@@ -265,14 +281,15 @@
     }
 
     .c-hero-title {
-      font-size: clamp(32px, 7vw, 64px);
+      font-size: clamp(28px, 6vw, 56px);
       font-weight: 700;
-      color: #e8edf5;
+      color: var(--green);
       line-height: 1;
-      letter-spacing: -.02em;
+      letter-spacing: .04em;
       margin-bottom: 18px;
+      text-shadow: 0 0 20px rgba(0,255,65,.25), 0 0 60px rgba(0,255,65,.1);
     }
-    .c-hero-title em { color: var(--green); font-style: normal; }
+    .c-hero-title em { color: #fff; font-style: normal; }
     .c-hero-sub {
       font-size: clamp(13px, 1.4vw, 15px);
       color: var(--text-dim);
@@ -290,7 +307,8 @@
     .c-cursor::after {
       content: '█';
       color: var(--green);
-      animation: cur-blink 1s step-end infinite;
+      text-shadow: 0 0 6px rgba(0,255,65,.5);
+      animation: cur-blink .8s step-end infinite;
     }
     @keyframes cur-blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
@@ -319,17 +337,18 @@
     }
     .c-btn:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
     .c-btn-red {
-      background: var(--green);
-      color: #0b0c10;
-      border-color: var(--green);
-    }
-    .c-btn-red:hover { background: #2ec872; border-color: #2ec872; }
-    .c-btn-ghost {
       background: transparent;
       color: var(--green);
       border-color: var(--green);
+      text-shadow: 0 0 6px rgba(0,255,65,.2);
     }
-    .c-btn-ghost:hover { background: rgba(61,220,132,.1); }
+    .c-btn-red:hover { background: rgba(0,255,65,.08); border-color: var(--green); box-shadow: 0 0 12px rgba(0,255,65,.15); }
+    .c-btn-ghost {
+      background: transparent;
+      color: var(--green);
+      border-color: rgba(0,255,65,.3);
+    }
+    .c-btn-ghost:hover { background: rgba(0,255,65,.06); border-color: var(--green); }
     .c-btn-dim {
       background: transparent;
       color: var(--text-dim);
@@ -345,14 +364,14 @@
       align-items: center;
       gap: 14px;
       padding: 13px 16px;
-      background: var(--bg-raised);
+      background: var(--bg-inset);
       border: 1px solid var(--border);
       border-left: 3px solid var(--green);
     }
     .c-stat-lbl { font-size: var(--fs-sm); color: var(--text-dim); }
-    .c-stat-val { font-size: var(--fs-lg); font-weight: 700; color: var(--yellow); }
-    .c-stat-bar-wrap { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
-    .c-stat-bar-fill { height: 100%; background: var(--green); width: 0%; transition: width 1.6s cubic-bezier(.22,.84,.33,1); border-radius: 2px; }
+    .c-stat-val { font-size: var(--fs-lg); font-weight: 700; color: var(--green); text-shadow: 0 0 8px rgba(0,255,65,.2); }
+    .c-stat-bar-wrap { height: 2px; background: var(--border); border-radius: 2px; overflow: hidden; }
+    .c-stat-bar-fill { height: 100%; background: var(--green); width: 0%; transition: width 1.6s cubic-bezier(.22,.84,.33,1); border-radius: 2px; box-shadow: 0 0 6px rgba(0,255,65,.3); }
     .c-stat-note { font-size: var(--fs-xs); color: var(--text-muted); text-align: right; }
 
     @media (max-width: 580px) {
@@ -445,13 +464,13 @@
     }
     .c-why-card {
       padding: 22px 20px;
-      background: var(--bg-raised);
+      background: var(--bg-inset);
       border: 1px solid var(--border);
       border-top: 2px solid var(--border-2);
     }
     .c-why-card:nth-child(1) { border-top-color: var(--green); }
-    .c-why-card:nth-child(2) { border-top-color: var(--blue); }
-    .c-why-card:nth-child(3) { border-top-color: var(--cyan); }
+    .c-why-card:nth-child(2) { border-top-color: var(--cyan); }
+    .c-why-card:nth-child(3) { border-top-color: var(--blue); }
     .c-why-n { font-size: var(--fs-xs); color: var(--text-muted); margin-bottom: 12px; letter-spacing: .06em; }
     .c-why-title { color: var(--text); font-weight: 600; font-size: 15px; margin-bottom: 8px; }
     .c-why-text { color: var(--text-dim); font-size: var(--fs-sm); line-height: 1.6; }
@@ -464,26 +483,29 @@
     }
     .c-price-card {
       padding: 26px 22px;
-      background: var(--bg-raised);
+      background: var(--bg-inset);
       border: 1px solid var(--border);
       display: flex;
       flex-direction: column;
     }
     .c-price-card.featured {
-      border-color: rgba(61,220,132,.35);
-      background: rgba(61,220,132,.03);
+      border-color: rgba(0,255,65,.3);
+      background: rgba(0,255,65,.02);
+      box-shadow: 0 0 20px rgba(0,255,65,.04);
     }
     .c-price-badge {
       display: inline-block;
       padding: 2px 9px;
       font-size: var(--fs-xs);
-      background: var(--green);
-      color: #0b0c10;
+      background: transparent;
+      color: var(--green);
+      border: 1px solid var(--green);
       font-weight: 600;
       border-radius: 2px;
       margin-bottom: 14px;
       align-self: flex-start;
       letter-spacing: .04em;
+      text-shadow: 0 0 6px rgba(0,255,65,.3);
     }
     .c-price-plan {
       font-size: var(--fs-xs);
@@ -495,9 +517,10 @@
     .c-price-val {
       font-size: clamp(22px, 3vw, 28px);
       font-weight: 700;
-      color: var(--yellow);
+      color: var(--green);
       margin-bottom: 4px;
       line-height: 1.1;
+      text-shadow: 0 0 10px rgba(0,255,65,.2);
     }
     .c-price-val sup { font-size: 13px; font-weight: 400; color: var(--text-dim); }
     .c-price-note { color: var(--text-muted); font-size: 12px; margin-bottom: 20px; }
@@ -517,7 +540,7 @@
       line-height: 1.5;
     }
     .c-price-features li:last-child { border-bottom: none; }
-    .c-price-features li::before { content: '›'; color: var(--green); flex-shrink: 0; }
+    .c-price-features li::before { content: '$ '; color: var(--green); flex-shrink: 0; opacity: .5; }
     .c-price-deadline {
       font-size: 12px;
       color: var(--text-muted);
@@ -562,7 +585,7 @@
 
     /* ── CONTACT ────────────────────────────────────── */
     .c-contact-block {
-      background: var(--bg-raised);
+      background: var(--bg-inset);
       border: 1px solid var(--border);
       padding: 28px;
     }
@@ -576,8 +599,8 @@
     }
     .c-contact-row:last-of-type { border-bottom: none; }
     .c-contact-key { color: var(--text-muted); min-width: 90px; flex-shrink: 0; }
-    .c-contact-val { color: var(--cyan); }
-    .c-contact-val a:hover { color: var(--green); }
+    .c-contact-val { color: var(--green); }
+    .c-contact-val a:hover { color: #fff; text-shadow: 0 0 8px rgba(0,255,65,.3); }
     .c-contact-cta {
       margin-top: 24px;
       padding-top: 24px;
@@ -609,9 +632,45 @@
       font-style: italic;
       letter-spacing: .03em;
     }
+
+    /* ── CRT BOOT OVERLAY ─────────────────────────── */
+    .crt-boot {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity .4s;
+    }
+    .crt-boot.hide { opacity: 0; pointer-events: none; }
+    .crt-boot-inner {
+      font-family: var(--font);
+      font-size: var(--fs-sm);
+      color: var(--green);
+      text-shadow: 0 0 4px rgba(0,255,65,.4);
+      max-width: 500px;
+      padding: 40px;
+      white-space: pre-wrap;
+      line-height: 1.8;
+    }
+    .crt-boot-cursor {
+      display: inline-block;
+      width: 8px; height: 14px;
+      background: var(--green);
+      animation: cur-blink .6s step-end infinite;
+      vertical-align: text-bottom;
+      box-shadow: 0 0 4px rgba(0,255,65,.5);
+    }
   </style>
 </head>
 <body>
+
+  <!-- CRT BOOT OVERLAY -->
+  <div class="crt-boot" id="crt-boot">
+    <div class="crt-boot-inner" id="crt-boot-inner"><span class="crt-boot-cursor"></span></div>
+  </div>
 
   <!-- TITLEBAR -->
   <header class="c-titlebar" role="banner">
@@ -620,7 +679,7 @@
       <span class="c-dot c-dot-y"></span>
       <span class="c-dot c-dot-g"></span>
     </div>
-    <div class="c-titlebar-center">xivora@studio:~</div>
+    <div class="c-titlebar-center">xivora@studio:~/console — bash</div>
     <nav class="c-nav" aria-label="Навигация">
       <a class="c-nav-link" href="#services">services</a>
       <a class="c-nav-link" href="#process">process</a>
@@ -656,7 +715,7 @@
       </div>
 
       <div class="c-hero-frame rv" id="hero-frame">
-        <h1 class="c-hero-title">XIVORA<em>.</em></h1>
+        <h1 class="c-hero-title">XIVORA<em>_</em></h1>
         <p class="c-hero-sub">Цифровые решения для твоего бизнеса — быстро, чисто, с результатом.</p>
         <p class="c-hero-comment">// студия цифровых решений · Telegram: @Xivora</p>
       </div>
@@ -1045,33 +1104,95 @@
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    /* ── BOOT SEQUENCE ───────────────────────────────── */
-    const bootLines = Array.from(document.querySelectorAll('.c-boot-line'));
-    const bootBar   = document.getElementById('boot-bar');
-    const heroEls   = ['hero-frame', 'hero-prompt', 'hero-actions'].map(id => document.getElementById(id));
+    /* ── CRT BOOT ANIMATION ──────────────────────────── */
+    const $crtBoot  = document.getElementById('crt-boot');
+    const $crtInner = document.getElementById('crt-boot-inner');
 
-    function revealHero() {
-      heroEls.forEach((el, i) => {
-        if (!el) return;
-        setTimeout(() => el.classList.add('in'), reduced ? 0 : i * 110);
-      });
-    }
+    const bootMessages = [
+      { text: 'XIVORA TERMINAL v2.1.0', delay: 0 },
+      { text: 'Copyright (c) 2024-2025 Xivora Studio', delay: 80 },
+      { text: '', delay: 40 },
+      { text: 'Initializing kernel modules...     [OK]', delay: 200 },
+      { text: 'Loading display driver...           [OK]', delay: 150 },
+      { text: 'Mounting filesystem...              [OK]', delay: 180 },
+      { text: 'Starting network services...        [OK]', delay: 220 },
+      { text: 'Connecting to xivora.studio...      [OK]', delay: 300 },
+      { text: '', delay: 40 },
+      { text: 'System ready. Welcome back.', delay: 100 },
+    ];
 
-    if (reduced) {
-      bootLines.forEach(l => l.classList.add('show'));
-      if (bootBar) bootBar.style.width = '100%';
-      revealHero();
-    } else {
-      bootLines.forEach((line, i) => {
+    function runCrtBoot() {
+      if (reduced) {
+        $crtBoot.classList.add('hide');
+        setTimeout(() => $crtBoot.remove(), 400);
+        startMainBoot();
+        return;
+      }
+
+      let total = 0;
+      bootMessages.forEach((msg, i) => {
+        total += msg.delay;
         setTimeout(() => {
-          line.classList.add('show');
-          if (i === bootLines.length - 1 && bootBar) {
-            setTimeout(() => { bootBar.style.width = '100%'; }, 120);
-            setTimeout(revealHero, 820);
+          // Remove old cursor
+          const oldCur = $crtInner.querySelector('.crt-boot-cursor');
+          if (oldCur) oldCur.remove();
+          // Add line
+          if (msg.text) {
+            const ok = msg.text.includes('[OK]');
+            if (ok) {
+              const parts = msg.text.split('[OK]');
+              $crtInner.insertAdjacentHTML('beforeend',
+                parts[0] + '<span style="color:#00ff41;text-shadow:0 0 8px rgba(0,255,65,.5)">[OK]</span>\n'
+              );
+            } else {
+              $crtInner.insertAdjacentText('beforeend', msg.text + '\n');
+            }
+          } else {
+            $crtInner.insertAdjacentText('beforeend', '\n');
           }
-        }, 140 + i * 260);
+          // Re-add cursor at end
+          $crtInner.insertAdjacentHTML('beforeend', '<span class="crt-boot-cursor"></span>');
+        }, total);
       });
+
+      total += 500;
+      setTimeout(() => {
+        $crtBoot.classList.add('hide');
+        setTimeout(() => $crtBoot.remove(), 400);
+        startMainBoot();
+      }, total);
     }
+
+    function startMainBoot() {
+      const bootLines = Array.from(document.querySelectorAll('.c-boot-line'));
+      const bootBar   = document.getElementById('boot-bar');
+      const heroEls   = ['hero-frame', 'hero-prompt', 'hero-actions'].map(id => document.getElementById(id));
+
+      function revealHero() {
+        heroEls.forEach((el, i) => {
+          if (!el) return;
+          setTimeout(() => el.classList.add('in'), reduced ? 0 : i * 110);
+        });
+      }
+
+      if (reduced) {
+        bootLines.forEach(l => l.classList.add('show'));
+        if (bootBar) bootBar.style.width = '100%';
+        revealHero();
+      } else {
+        bootLines.forEach((line, i) => {
+          setTimeout(() => {
+            line.classList.add('show');
+            if (i === bootLines.length - 1 && bootBar) {
+              setTimeout(() => { bootBar.style.width = '100%'; }, 120);
+              setTimeout(revealHero, 820);
+            }
+          }, 140 + i * 260);
+        });
+      }
+    }
+
+    runCrtBoot();
 
     /* ── SCROLL REVEAL ───────────────────────────────── */
     const revObs = new IntersectionObserver((entries) => {
@@ -1084,6 +1205,7 @@
     }, { threshold: 0.1, rootMargin: '0px 0px -32px 0px' });
 
     document.querySelectorAll('.rv').forEach(el => {
+      const heroEls = ['hero-frame', 'hero-prompt', 'hero-actions'].map(id => document.getElementById(id));
       if (!heroEls.includes(el)) revObs.observe(el);
     });
 
