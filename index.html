@@ -39,6 +39,85 @@
       --statusbar-h: 24px;
     }
 
+    /* ── LIGHT THEME ────────────────────────────── */
+    [data-theme="light"] {
+      --bg:          #f4f4f6;
+      --bg-raised:   #ffffff;
+      --bg-inset:    #eaeaee;
+      --border:      #d4d4da;
+      --border-2:    #c0c0c8;
+
+      --text:        #1a1a2e;
+      --text-dim:    #555568;
+      --text-muted:  #8a8a9a;
+
+      --green:       #00a832;
+      --blue:        #2a7fff;
+      --red:         #d42020;
+      --yellow:      #b38a00;
+      --cyan:        #0097a7;
+      --magenta:     #7c3aed;
+      --orange:      #c96a00;
+    }
+    @media (prefers-color-scheme: light) {
+      :root:not([data-theme="dark"]) {
+        --bg:          #f4f4f6;
+        --bg-raised:   #ffffff;
+        --bg-inset:    #eaeaee;
+        --border:      #d4d4da;
+        --border-2:    #c0c0c8;
+
+        --text:        #1a1a2e;
+        --text-dim:    #555568;
+        --text-muted:  #8a8a9a;
+
+        --green:       #00a832;
+        --blue:        #2a7fff;
+        --red:         #d42020;
+        --yellow:      #b38a00;
+        --cyan:        #0097a7;
+        --magenta:     #7c3aed;
+        --orange:      #c96a00;
+      }
+    }
+
+    /* ── LIGHT THEME: kill glows & adjust elements ─── */
+    [data-theme="light"] .cp-sym,
+    [data-theme="light"] .c-cursor::after,
+    [data-theme="light"] .c-btn-red,
+    [data-theme="light"] .c-price-badge,
+    [data-theme="light"] .c-price-val,
+    [data-theme="light"] .c-stat-val,
+    [data-theme="light"] .c-nav-link:hover,
+    [data-theme="light"] .c-nav-link.active { text-shadow: none !important; }
+
+    [data-theme="light"] .c-btn-red:hover,
+    [data-theme="light"] .c-stat-bar-fill,
+    [data-theme="light"] .c-price-card.featured { box-shadow: none !important; }
+
+    [data-theme="light"] .c-contact-val a:hover { color: var(--green); text-shadow: none; }
+    [data-theme="light"] .c-boot-bar-fill { box-shadow: none; }
+    [data-theme="light"] .c-dot-g { box-shadow: none; }
+
+    @media (prefers-color-scheme: light) {
+      :root:not([data-theme="dark"]) .cp-sym,
+      :root:not([data-theme="dark"]) .c-cursor::after,
+      :root:not([data-theme="dark"]) .c-btn-red,
+      :root:not([data-theme="dark"]) .c-price-badge,
+      :root:not([data-theme="dark"]) .c-price-val,
+      :root:not([data-theme="dark"]) .c-stat-val,
+      :root:not([data-theme="dark"]) .c-nav-link:hover,
+      :root:not([data-theme="dark"]) .c-nav-link.active { text-shadow: none !important; }
+
+      :root:not([data-theme="dark"]) .c-btn-red:hover,
+      :root:not([data-theme="dark"]) .c-stat-bar-fill,
+      :root:not([data-theme="dark"]) .c-price-card.featured { box-shadow: none !important; }
+
+      :root:not([data-theme="dark"]) .c-contact-val a:hover { color: var(--green); text-shadow: none; }
+      :root:not([data-theme="dark"]) .c-boot-bar-fill { box-shadow: none; }
+      :root:not([data-theme="dark"]) .c-dot-g { box-shadow: none; }
+    }
+
     html {
       scroll-behavior: smooth;
       scrollbar-width: thin;
@@ -74,6 +153,9 @@
         rgba(0,0,0,.04) 4px
       );
     }
+    [data-theme="light"] body::after,
+    :root:not([data-theme="dark"]) body::after { background: none; }
+    @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) body::after { background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.04) 2px, rgba(0,0,0,.04) 4px); } }
 
     /* CRT vignette */
     body::before {
@@ -84,11 +166,15 @@
       z-index: 9998;
       background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,.45) 100%);
     }
+    [data-theme="light"] body::before { background: none; }
+    @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) body::before { background: none; } }
 
     /* Phosphor glow on text */
     .c-main {
       text-shadow: 0 0 1px rgba(0,255,65,.06);
     }
+    [data-theme="light"] .c-main { text-shadow: none; }
+    @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .c-main { text-shadow: none; } }
 
     a { color: inherit; text-decoration: none; }
     a:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; border-radius: 2px; }
@@ -136,7 +222,27 @@
     }
     .c-nav-link::before { content: '> '; color: var(--text-muted); }
     .c-nav-link:hover, .c-nav-link.active { color: var(--green); text-shadow: 0 0 8px rgba(0,255,65,.3); }
+    [data-theme="light"] .c-nav-link:hover, [data-theme="light"] .c-nav-link.active { text-shadow: none; }
     .c-nav-link.active::before { color: var(--green); }
+
+    /* theme toggle */
+    .c-theme-toggle {
+      background: none;
+      border: 1px solid var(--border-2);
+      color: var(--text-dim);
+      font-family: var(--font);
+      font-size: 14px;
+      cursor: pointer;
+      padding: 2px 7px;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color .15s, border-color .15s;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+    .c-theme-toggle:hover { color: var(--green); border-color: var(--green); }
 
     @media (max-width: 640px) {
       .c-nav { display: none; }
@@ -267,7 +373,7 @@
       position: relative;
     }
     .c-hero-frame::before {
-      content: 'XIVORA.STUDIO';
+      content: '— XIVORA.STUDIO —';
       position: absolute;
       top: -9px; left: 18px;
       background: var(--bg);
@@ -290,6 +396,10 @@
       text-shadow: 0 0 20px rgba(0,255,65,.25), 0 0 60px rgba(0,255,65,.1);
     }
     .c-hero-title em { color: #fff; font-style: normal; }
+    [data-theme="light"] .c-hero-title em { color: #1a1a2e; }
+    @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .c-hero-title em { color: #1a1a2e; } }
+    [data-theme="light"] .c-hero-title { text-shadow: none; }
+    @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .c-hero-title { text-shadow: none; } }
     .c-hero-sub {
       font-size: clamp(13px, 1.4vw, 15px);
       color: var(--text-dim);
@@ -370,8 +480,12 @@
     }
     .c-stat-lbl { font-size: var(--fs-sm); color: var(--text-dim); }
     .c-stat-val { font-size: var(--fs-lg); font-weight: 700; color: var(--green); text-shadow: 0 0 8px rgba(0,255,65,.2); }
+    [data-theme="light"] .c-stat-val { text-shadow: none; }
+    @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .c-stat-val { text-shadow: none; } }
     .c-stat-bar-wrap { height: 2px; background: var(--border); border-radius: 2px; overflow: hidden; }
     .c-stat-bar-fill { height: 100%; background: var(--green); width: 0%; transition: width 1.6s cubic-bezier(.22,.84,.33,1); border-radius: 2px; box-shadow: 0 0 6px rgba(0,255,65,.3); }
+    [data-theme="light"] .c-stat-bar-fill { box-shadow: none; }
+    @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .c-stat-bar-fill { box-shadow: none; } }
     .c-stat-note { font-size: var(--fs-xs); color: var(--text-muted); text-align: right; }
 
     @media (max-width: 580px) {
@@ -648,7 +762,7 @@
     .crt-boot-inner {
       font-family: var(--font);
       font-size: var(--fs-sm);
-      color: var(--green);
+      color: #00ff41;
       text-shadow: 0 0 4px rgba(0,255,65,.4);
       max-width: 500px;
       padding: 40px;
@@ -658,7 +772,7 @@
     .crt-boot-cursor {
       display: inline-block;
       width: 8px; height: 14px;
-      background: var(--green);
+      background: #00ff41;
       animation: cur-blink .6s step-end infinite;
       vertical-align: text-bottom;
       box-shadow: 0 0 4px rgba(0,255,65,.5);
@@ -688,6 +802,7 @@
       <a class="c-nav-link" href="#faq">faq</a>
       <a class="c-nav-link" href="#contact">contact</a>
     </nav>
+    <button class="c-theme-toggle" id="theme-toggle" aria-label="Переключить тему" title="Переключить тему">☀</button>
   </header>
 
   <!-- MAIN -->
@@ -1102,6 +1217,40 @@
 
   <script>
     'use strict';
+
+    /* ── THEME TOGGLE ─────────────────────────────────── */
+    (function initTheme() {
+      const saved = localStorage.getItem('xivora-theme');
+      if (saved) {
+        document.documentElement.setAttribute('data-theme', saved);
+      }
+      // Update icon
+      updateThemeIcon();
+    })();
+
+    function getEffectiveTheme() {
+      const dt = document.documentElement.getAttribute('data-theme');
+      if (dt) return dt;
+      return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+
+    function updateThemeIcon() {
+      const btn = document.getElementById('theme-toggle');
+      if (!btn) return;
+      btn.textContent = getEffectiveTheme() === 'light' ? '☾' : '☀';
+    }
+
+    document.getElementById('theme-toggle')?.addEventListener('click', () => {
+      const current = getEffectiveTheme();
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('xivora-theme', next);
+      updateThemeIcon();
+    });
+
+    window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
+      if (!localStorage.getItem('xivora-theme')) updateThemeIcon();
+    });
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
