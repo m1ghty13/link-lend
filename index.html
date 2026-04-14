@@ -1,2644 +1,1276 @@
 <!DOCTYPE html>
-<html lang="ru" data-theme="dark">
+<html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Xivora — цифровые решения для бизнеса</title>
-  <meta name="description" content="Xivora — студия цифровых решений. Разработка сайтов, брендинг, UI/UX дизайн." />
+  <title>Xivora — цифровые решения</title>
+  <meta name="description" content="Xivora — студия цифровых решений. Разработка сайтов, Telegram-ботов, скриптов." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:          #080808;
-      --bg-panel:    #101010;
-      --bg-panel-2:  #141414;
-      --border:      rgba(255,255,255,.07);
-      --border-strong: rgba(255,255,255,.13);
-      --fg:          #ffffff;
-      --fg-soft:     rgba(255,255,255,.55);
-      --fg-muted:    rgba(255,255,255,.28);
-      --accent:      #e8190a;
-      --accent-soft: rgba(232,25,10,.09);
-      --accent-hover:#c91408;
-      --font-body:   'Manrope', system-ui, sans-serif;
-      --font-display:'Unbounded', sans-serif;
-      --r-card:      1.75rem;
-      --r-pill:      999px;
+      --bg:          #0a0a0a;
+      --bg-raised:   #0f1014;
+      --bg-inset:    #060608;
+      --border:      #1a1d28;
+      --border-2:    #222638;
+
+      --text:        #a8b8c8;
+      --text-dim:    #4a5568;
+      --text-muted:  #2a3040;
+
+      --green:       #00ff41;
+      --blue:        #5eaaff;
+      --red:         #ff4444;
+      --yellow:      #ffcc00;
+      --cyan:        #00e5ff;
+      --magenta:     #b388ff;
+      --orange:      #ff9140;
+
+      --font:        'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+      --fs-xs:       11px;
+      --fs-sm:       13px;
+      --fs-base:     14px;
+      --fs-lg:       16px;
+      --titlebar-h:  38px;
+      --statusbar-h: 24px;
     }
 
-    html { scroll-behavior: auto; }
+    html {
+      scroll-behavior: smooth;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border-2) transparent;
+    }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 3px; }
 
     body {
       background: var(--bg);
-      color: var(--fg);
-      font-family: var(--font-body);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: var(--fs-base);
+      line-height: 1.7;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
       min-height: 100vh;
     }
 
-    a { color: inherit; text-decoration: none; }
-
-    /* ─── BACKGROUND GRID ─────────────────────── */
-    .xivora-bg-grid {
+    /* CRT scanlines */
+    body::after {
+      content: '';
       position: fixed;
       inset: 0;
-      pointer-events: none;
-      z-index: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,.028) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px);
-      background-size: 40px 40px;
-      opacity: .7;
-    }
-
-    /* ─── ORBS ────────────────────────────────── */
-    .xivora-orb {
-      position: fixed;
-      pointer-events: none;
-      border-radius: 50%;
-      z-index: 0;
-      filter: blur(90px);
-    }
-    .xivora-orb-1 {
-      width: 520px; height: 520px;
-      background: radial-gradient(circle, rgba(232,25,10,.18) 0%, transparent 70%);
-      top: -120px; right: -120px;
-    }
-    .xivora-orb-2 {
-      width: 380px; height: 380px;
-      background: radial-gradient(circle, rgba(232,25,10,.10) 0%, transparent 70%);
-      bottom: 20%; left: -100px;
-    }
-
-    /* ─── NAV ─────────────────────────────────── */
-    .xivora-nav-wrap {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      padding: 18px 24px;
-      display: flex;
-      justify-content: center;
-    }
-    .xivora-nav {
-      width: 100%;
-      max-width: 900px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: rgba(12,12,12,.72);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--border);
-      border-radius: var(--r-pill);
-      padding: 10px 10px 10px 22px;
-      box-shadow: 0 0 0 1px rgba(232,25,10,.06), 0 16px 48px rgba(0,0,0,.45);
-      transition: background .3s;
-    }
-    .xivora-nav-logo {
-      font-family: var(--font-display);
-      font-size: 15px;
-      font-weight: 900;
-      letter-spacing: .06em;
-      color: var(--fg);
-    }
-    .xivora-nav-logo span { color: var(--accent); }
-    .xivora-nav-links {
-      display: flex;
-      align-items: center;
-      gap: 2px;
-    }
-    .xivora-nav-link {
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: .06em;
-      color: var(--fg-soft);
-      padding: 7px 15px;
-      border-radius: var(--r-pill);
-      transition: color .2s, background .2s;
-    }
-    .xivora-nav-link:hover {
-      color: var(--fg);
-      background: rgba(255,255,255,.06);
-    }
-    .xivora-nav-cta {
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: .04em;
-      color: var(--fg);
-      background: var(--accent);
-      padding: 9px 20px;
-      border-radius: var(--r-pill);
-      transition: background .2s;
-    }
-    .xivora-nav-cta:hover { background: var(--accent-hover); }
-
-    /* ─── HERO ────────────────────────────────── */
-    .xivora-hero {
-      position: relative;
-      z-index: 1;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 140px 24px 80px;
-    }
-    .xivora-hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      border: 1px solid var(--border-strong);
-      background: rgba(255,255,255,.04);
-      border-radius: var(--r-pill);
-      padding: 6px 16px;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: .22em;
-      text-transform: uppercase;
-      color: var(--fg-muted);
-      margin-bottom: 40px;
-    }
-    .xivora-hero-badge-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--accent);
-      flex-shrink: 0;
-      box-shadow: 0 0 8px var(--accent);
-    }
-    .xivora-hero-title {
-      font-family: var(--font-display);
-      font-size: clamp(52px, 9vw, 108px);
-      font-weight: 900;
-      letter-spacing: -.03em;
-      line-height: 1;
-      color: var(--fg);
-      margin-bottom: 24px;
-    }
-    .xivora-hero-title span { color: var(--accent); }
-    .xivora-hero-sub {
-      font-size: clamp(15px, 1.8vw, 18px);
-      font-weight: 400;
-      color: var(--fg-soft);
-      max-width: 420px;
-      line-height: 1.7;
-      margin-bottom: 52px;
-    }
-    .xivora-hero-actions {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .xivora-btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      background: var(--accent);
-      color: #fff;
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: .02em;
-      padding: 14px 28px;
-      border-radius: var(--r-pill);
-      transition: background .2s, transform .15s;
-    }
-    .xivora-btn-primary:hover {
-      background: var(--accent-hover);
-      transform: translateY(-1px);
-    }
-    .xivora-btn-secondary {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      background: transparent;
-      color: var(--fg-soft);
-      font-size: 14px;
-      font-weight: 500;
-      padding: 14px 24px;
-      border-radius: var(--r-pill);
-      border: 1px solid var(--border-strong);
-      transition: color .2s, border-color .2s;
-    }
-    .xivora-btn-secondary:hover {
-      color: var(--fg);
-      border-color: rgba(255,255,255,.28);
-    }
-    .xivora-hero-scroll-hint {
-      position: absolute;
-      bottom: 36px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-    }
-    .xivora-hero-scroll-line {
-      width: 1px;
-      height: 40px;
-      background: linear-gradient(to bottom, transparent, rgba(255,255,255,.2));
-    }
-    .xivora-hero-scroll-label {
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      color: var(--fg-muted);
-    }
-
-    /* ─── SECTION COMMON ──────────────────────── */
-    .xivora-section {
-      position: relative;
-      z-index: 1;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 100px 24px;
-    }
-    .xivora-eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: .22em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 18px;
-    }
-    .xivora-eyebrow::before {
-      content: '';
-      display: block;
-      width: 18px; height: 1px;
-      background: var(--accent);
-    }
-    .xivora-section-title {
-      font-family: var(--font-display);
-      font-size: clamp(28px, 4vw, 44px);
-      font-weight: 900;
-      letter-spacing: -.03em;
-      line-height: 1.1;
-      color: var(--fg);
-      margin-bottom: 56px;
-    }
-
-    /* ─── SERVICES ────────────────────────────── */
-    .xivora-services-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-    }
-    .xivora-service-card {
-      background: var(--bg-panel);
-      border: 1px solid var(--border);
-      border-radius: var(--r-card);
-      padding: 36px 32px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      transition: border-color .25s, background .25s, transform .25s;
-      cursor: default;
-    }
-    .xivora-service-card:hover {
-      border-color: rgba(232,25,10,.28);
-      background: var(--bg-panel-2);
-      transform: translateY(-3px);
-    }
-    .xivora-service-icon-wrap {
-      width: 48px; height: 48px;
-      border-radius: 14px;
-      background: var(--accent-soft);
-      border: 1px solid rgba(232,25,10,.18);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--accent);
-      flex-shrink: 0;
-    }
-    .xivora-service-name {
-      font-size: 17px;
-      font-weight: 800;
-      color: var(--fg);
-      letter-spacing: -.3px;
-    }
-    .xivora-service-desc {
-      font-size: 13.5px;
-      font-weight: 400;
-      color: var(--fg-muted);
-      line-height: 1.65;
-    }
-    .xivora-service-tag {
-      align-self: flex-start;
-      margin-top: auto;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: .08em;
-      color: var(--fg-muted);
-      border: 1px solid var(--border-strong);
-      border-radius: var(--r-pill);
-      padding: 4px 12px;
-    }
-
-    /* ─── WHY ─────────────────────────────────── */
-    .xivora-why-bg {
-      background: var(--bg-panel);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-    .xivora-why-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0;
-    }
-    .xivora-why-card {
-      padding: 48px 36px;
-      border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .xivora-why-card:last-child { border-right: none; }
-    .xivora-why-num {
-      font-family: var(--font-display);
-      font-size: 13px;
-      font-weight: 900;
-      letter-spacing: .1em;
-      color: var(--accent);
-    }
-    .xivora-why-title {
-      font-size: 19px;
-      font-weight: 800;
-      letter-spacing: -.3px;
-      color: var(--fg);
-      line-height: 1.3;
-    }
-    .xivora-why-text {
-      font-size: 13.5px;
-      font-weight: 400;
-      color: var(--fg-muted);
-      line-height: 1.7;
-    }
-
-    /* ─── CTA BAND ────────────────────────────── */
-    .xivora-cta-section {
-      position: relative;
-      z-index: 1;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 80px 24px 100px;
-    }
-    .xivora-cta-card {
-      background: var(--bg-panel);
-      border: 1px solid var(--border);
-      border-radius: calc(var(--r-card) + .5rem);
-      padding: 72px 64px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 40px;
-      flex-wrap: wrap;
-      overflow: hidden;
-      position: relative;
-    }
-    .xivora-cta-card::before {
-      content: '';
-      position: absolute;
-      top: -80px; right: -80px;
-      width: 340px; height: 340px;
-      background: radial-gradient(circle, rgba(232,25,10,.14) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .xivora-cta-heading {
-      font-family: var(--font-display);
-      font-size: clamp(26px, 3.5vw, 40px);
-      font-weight: 900;
-      letter-spacing: -.03em;
-      line-height: 1.15;
-      color: var(--fg);
-    }
-    .xivora-cta-heading span { color: var(--accent); }
-    .xivora-cta-sub {
-      font-size: 14px;
-      color: var(--fg-muted);
-      margin-top: 10px;
-      line-height: 1.6;
-    }
-
-    /* ─── FOOTER ──────────────────────────────── */
-    .xivora-footer {
-      position: relative;
-      z-index: 1;
-      border-top: 1px solid var(--border);
-      padding: 48px 24px 36px;
-    }
-    .xivora-footer-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 24px;
-    }
-    .xivora-footer-logo {
-      font-family: var(--font-display);
-      font-size: 18px;
-      font-weight: 900;
-      letter-spacing: .05em;
-      color: var(--fg);
-    }
-    .xivora-footer-logo span { color: var(--accent); }
-    .xivora-footer-tg {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      font-family: var(--font-display);
-      font-size: 17px;
-      font-weight: 900;
-      letter-spacing: .02em;
-      color: var(--fg);
-      border: 1px solid var(--border-strong);
-      border-radius: var(--r-pill);
-      padding: 12px 24px;
-      transition: border-color .2s, color .2s, background .2s;
-    }
-    .xivora-footer-tg:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: var(--accent-soft);
-    }
-    /* ─── SOCIALS BLOCK ───────────────────────── */
-    .xivora-socials-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-    }
-    .xivora-social-card {
-      background: var(--bg-panel);
-      border: 1px solid var(--border);
-      border-radius: var(--r-card);
-      padding: 28px 26px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      transition: border-color .25s, transform .25s, background .25s;
-      text-decoration: none;
-    }
-    .xivora-social-card:hover {
-      border-color: rgba(232,25,10,.30);
-      background: var(--bg-panel-2);
-      transform: translateY(-3px);
-    }
-    .xivora-social-icon {
-      width: 44px; height: 44px;
-      border-radius: 12px;
-      background: var(--accent-soft);
-      border: 1px solid rgba(232,25,10,.18);
-      display: flex; align-items: center; justify-content: center;
-      color: var(--accent);
-      flex-shrink: 0;
-    }
-    .xivora-social-platform {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: .16em;
-      text-transform: uppercase;
-      color: var(--fg-muted);
-    }
-    .xivora-social-handle {
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--fg);
-      letter-spacing: -.3px;
-    }
-    .xivora-social-desc {
-      font-size: 12.5px;
-      font-weight: 400;
-      color: var(--fg-muted);
-      line-height: 1.55;
-      margin-top: auto;
-    }
-    .xivora-footer-copy {
-      width: 100%;
-      text-align: center;
-      font-size: 12px;
-      color: var(--fg-muted);
-      padding-top: 32px;
-      border-top: 1px solid var(--border);
-      margin-top: 16px;
-    }
-
-    /* ─── STATS STRIP ────────────────────────── */
-    .xivora-stats {
-      position: relative;
-      z-index: 1;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      background: var(--bg-panel);
-    }
-    .xivora-stats-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 24px;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-    }
-    .xivora-stat {
-      padding: 36px 28px;
-      border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .xivora-stat:last-child { border-right: none; }
-    .xivora-stat-value {
-      font-family: var(--font-display);
-      font-size: clamp(26px, 3vw, 36px);
-      font-weight: 900;
-      letter-spacing: -.04em;
-      color: var(--fg);
-    }
-    .xivora-stat-value span { color: var(--accent); }
-    .xivora-stat-label {
-      font-size: 12.5px;
-      font-weight: 500;
-      color: var(--fg-muted);
-      line-height: 1.4;
-    }
-
-    /* ─── PROCESS ─────────────────────────────── */
-    .xivora-process-steps {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      position: relative;
-    }
-    .xivora-process-steps::before {
-      content: '';
-      position: absolute;
-      top: 32px; left: calc(12.5% + 16px); right: calc(12.5% + 16px);
-      height: 1px;
-      background: linear-gradient(to right, var(--accent) 0%, rgba(232,25,10,.15) 100%);
-      pointer-events: none;
-    }
-    .xivora-step {
-      background: var(--bg-panel);
-      border: 1px solid var(--border);
-      border-radius: var(--r-card);
-      padding: 32px 24px 28px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      transition: border-color .25s, transform .25s;
-    }
-    .xivora-step:hover {
-      border-color: rgba(232,25,10,.22);
-      transform: translateY(-3px);
-    }
-    .xivora-step-num {
-      width: 44px; height: 44px;
-      border-radius: 50%;
-      background: var(--accent-soft);
-      border: 1px solid rgba(232,25,10,.22);
-      display: flex; align-items: center; justify-content: center;
-      font-family: var(--font-display);
-      font-size: 13px;
-      font-weight: 900;
-      color: var(--accent);
-      flex-shrink: 0;
-    }
-    .xivora-step-title {
-      font-size: 15px;
-      font-weight: 800;
-      color: var(--fg);
-      letter-spacing: -.2px;
-    }
-    .xivora-step-desc {
-      font-size: 13px;
-      font-weight: 400;
-      color: var(--fg-muted);
-      line-height: 1.65;
-    }
-    .xivora-step-time {
-      margin-top: auto;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: .08em;
-      color: var(--accent);
-      text-transform: uppercase;
-    }
-
-    /* ─── PRICING ─────────────────────────────── */
-    .xivora-pricing-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      align-items: start;
-    }
-    .xivora-price-card {
-      background: var(--bg-panel);
-      border: 1px solid var(--border);
-      border-radius: var(--r-card);
-      padding: 36px 32px;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-      transition: border-color .25s, transform .25s;
-      position: relative;
-      overflow: hidden;
-    }
-    .xivora-price-card:hover {
-      border-color: rgba(232,25,10,.22);
-      transform: translateY(-4px);
-    }
-    .xivora-price-card.xivora-price-featured {
-      border-color: rgba(232,25,10,.35);
-      background: var(--bg-panel-2);
-    }
-    .xivora-price-card.xivora-price-featured::before {
-      content: '';
-      position: absolute;
-      top: -60px; right: -60px;
-      width: 180px; height: 180px;
-      background: radial-gradient(circle, rgba(232,25,10,.16) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .xivora-price-badge {
-      display: inline-flex;
-      align-self: flex-start;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-      color: var(--accent);
-      background: var(--accent-soft);
-      border: 1px solid rgba(232,25,10,.22);
-      border-radius: var(--r-pill);
-      padding: 4px 12px;
-      margin-bottom: 24px;
-    }
-    .xivora-price-plan {
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      color: var(--fg-muted);
-      margin-bottom: 10px;
-    }
-    .xivora-price-value {
-      font-family: var(--font-display);
-      font-size: clamp(32px, 3.5vw, 42px);
-      font-weight: 900;
-      letter-spacing: -.04em;
-      color: var(--fg);
-      line-height: 1;
-      margin-bottom: 6px;
-    }
-    .xivora-price-value sup {
-      font-size: .45em;
-      vertical-align: super;
-      font-weight: 700;
-      color: var(--fg-soft);
-    }
-    .xivora-price-note {
-      font-size: 12px;
-      color: var(--fg-muted);
-      margin-bottom: 28px;
-    }
-    .xivora-price-divider {
-      height: 1px;
-      background: var(--border);
-      margin-bottom: 24px;
-    }
-    .xivora-price-features {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-bottom: 32px;
-    }
-    .xivora-price-features li {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      font-size: 13.5px;
-      font-weight: 400;
-      color: var(--fg-soft);
-      line-height: 1.45;
-    }
-    .xivora-price-features li::before {
-      content: '';
-      display: block;
-      width: 16px; height: 16px;
-      border-radius: 50%;
-      background: var(--accent-soft);
-      border: 1px solid rgba(232,25,10,.25);
-      flex-shrink: 0;
-      margin-top: 1px;
-      background-image: url("data:image/svg+xml,%3Csvg width='10' height='10' viewBox='0 0 10 10' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 5l2 2 4-4' stroke='%23e8190a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: center;
-    }
-    .xivora-price-time {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--fg-muted);
-      margin-bottom: 18px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .xivora-price-time::before {
-      content: '⏱';
-      font-size: 12px;
-    }
-    .xivora-btn-outline {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      color: var(--fg);
-      font-size: 13.5px;
-      font-weight: 700;
-      padding: 13px 20px;
-      border-radius: var(--r-pill);
-      border: 1px solid var(--border-strong);
-      transition: border-color .2s, background .2s;
-      margin-top: auto;
-    }
-    .xivora-btn-outline:hover {
-      border-color: rgba(232,25,10,.4);
-      background: var(--accent-soft);
-    }
-    .xivora-pricing-note {
-      text-align: center;
-      font-size: 13px;
-      color: var(--fg-muted);
-      margin-top: 20px;
-    }
-    .xivora-pricing-note a {
-      color: var(--accent);
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-
-    /* ─── FAQ ─────────────────────────────────── */
-    .xivora-faq-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-      border: 1px solid var(--border);
-      border-radius: var(--r-card);
-      overflow: hidden;
-    }
-    .xivora-faq-item {
-      border-bottom: 1px solid var(--border);
-    }
-    .xivora-faq-item:last-child { border-bottom: none; }
-    .xivora-faq-q {
-      width: 100%;
-      background: none;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      padding: 26px 32px;
-      text-align: left;
-      transition: background .2s;
-    }
-    .xivora-faq-q:hover { background: rgba(255,255,255,.03); }
-    .xivora-faq-q.open { background: rgba(255,255,255,.03); }
-    .xivora-faq-q-text {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--fg);
-      letter-spacing: -.2px;
-      line-height: 1.35;
-    }
-    .xivora-faq-icon {
-      width: 28px; height: 28px;
-      flex-shrink: 0;
-      border-radius: 50%;
-      border: 1px solid var(--border-strong);
-      display: flex; align-items: center; justify-content: center;
-      color: var(--fg-muted);
-      transition: transform .3s, border-color .2s, color .2s;
-    }
-    .xivora-faq-q.open .xivora-faq-icon {
-      transform: rotate(45deg);
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-    .xivora-faq-a {
-      overflow: hidden;
-      max-height: 0;
-      transition: max-height .4s cubic-bezier(.22,.84,.33,1);
-    }
-    .xivora-faq-a-inner {
-      padding: 0 32px 26px;
-      font-size: 14px;
-      font-weight: 400;
-      color: var(--fg-muted);
-      line-height: 1.75;
-    }
-
-    /* ─── CUSTOM CURSOR ─────────────────────── */
-    @media (hover: hover) and (pointer: fine) {
-      * { cursor: none !important; }
-    }
-    .xivora-cursor-dot {
-      position: fixed;
-      width: 7px; height: 7px;
-      background: var(--accent);
-      border-radius: 50%;
       pointer-events: none;
       z-index: 9999;
-      left: 0; top: 0;
-      transform: translate(-50%, -50%);
-      box-shadow: 0 0 10px var(--accent), 0 0 22px rgba(232,25,10,.55);
-      transition: width .18s, height .18s, box-shadow .18s;
-      will-change: left, top;
-    }
-    .xivora-cursor-ring {
-      position: fixed;
-      width: 36px; height: 36px;
-      border: 1.5px solid rgba(232,25,10,.42);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9998;
-      left: 0; top: 0;
-      transform: translate(-50%, -50%);
-      transition: width .28s ease, height .28s ease, border-color .28s, opacity .28s;
-      will-change: left, top;
-    }
-    .xivora-cursor-ring.is-hov {
-      width: 54px; height: 54px;
-      border-color: rgba(232,25,10,.75);
-    }
-    .xivora-cursor-dot.is-hov {
-      width: 4px; height: 4px;
-      box-shadow: 0 0 6px var(--accent);
-    }
-    @media (hover: none) {
-      .xivora-cursor-dot, .xivora-cursor-ring { display: none; }
-    }
-
-    /* ─── SCROLL PROGRESS ────────────────────── */
-    .xivora-scroll-prog {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--accent) 0%, rgba(232,25,10,.55) 100%);
-      transform-origin: left;
-      transform: scaleX(0);
-      z-index: 9997;
-      pointer-events: none;
-      box-shadow: 0 0 8px var(--accent), 0 0 18px rgba(232,25,10,.35);
-    }
-
-    /* ─── GRAIN OVERLAY ──────────────────────── */
-    .xivora-grain {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 299;
-      opacity: .032;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)'/%3E%3C/svg%3E");
-      background-size: 300px;
-      animation: grain-shift .45s steps(1) infinite;
-    }
-    @keyframes grain-shift {
-      0%   { background-position:   0px   0px; }
-      14%  { background-position: -90px  35px; }
-      28%  { background-position: 110px -55px; }
-      43%  { background-position: -35px  90px; }
-      57%  { background-position:  70px -40px; }
-      71%  { background-position:-120px  60px; }
-      86%  { background-position:  45px -80px; }
-      100% { background-position:   0px   0px; }
-    }
-
-    /* ─── HERO CANVAS ─────────────────────────── */
-    #xivora-hero-canvas {
-      position: absolute;
-      inset: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 0;
-    }
-    .xivora-hero { position: relative; }
-    .xivora-hero > *:not(#xivora-hero-canvas) { position: relative; z-index: 1; }
-
-    /* ─── HERO GLITCH ─────────────────────────── */
-    .xivora-glitch { position: relative; }
-    .xivora-glitch::before,
-    .xivora-glitch::after {
-      content: attr(data-text);
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      pointer-events: none;
-      font: inherit;
-      letter-spacing: inherit;
-      line-height: inherit;
-    }
-    .xivora-glitch::before {
-      color: rgba(0,240,255,.3);
-      animation: glitch-a 6s infinite;
-    }
-    .xivora-glitch::after {
-      color: rgba(255,0,120,.22);
-      animation: glitch-b 6s infinite;
-    }
-    @keyframes glitch-a {
-      0%,85%,100% { transform:none; clip-path:none; opacity:0; }
-      87%  { transform:translateX(-5px) skewX(2deg); clip-path:polygon(0 18%,100% 18%,100% 42%,0 42%); opacity:1; }
-      89%  { transform:translateX(4px); clip-path:polygon(0 58%,100% 58%,100% 74%,0 74%); opacity:1; }
-      91%  { transform:translateX(-3px) skewX(-1deg); clip-path:polygon(0 80%,100% 80%,100% 96%,0 96%); opacity:1; }
-      93%  { opacity:0; }
-    }
-    @keyframes glitch-b {
-      0%,85%,100% { transform:none; clip-path:none; opacity:0; }
-      88%  { transform:translateX(5px) skewX(-2deg); clip-path:polygon(0 32%,100% 32%,100% 52%,0 52%); opacity:1; }
-      90%  { transform:translateX(-4px); clip-path:polygon(0 63%,100% 63%,100% 79%,0 79%); opacity:1; }
-      92%  { transform:translateX(3px); clip-path:polygon(0 8%,100% 8%,100% 22%,0 22%); opacity:1; }
-      94%  { opacity:0; }
-    }
-
-    /* ─── CARD TILT + SPOTLIGHT ───────────────── */
-    .xivora-tilt {
-      transform-style: preserve-3d;
-      will-change: transform;
-    }
-    .xivora-tilt:hover { transform: none; } /* JS takes over */
-
-    .xivora-spotlight { position: relative; overflow: hidden; }
-    .xivora-spotlight::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(480px circle at var(--sx,50%) var(--sy,50%),
-        rgba(232,25,10,.075) 0%, transparent 58%);
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity .35s;
-    }
-    .xivora-spotlight:hover::after { opacity: 1; }
-
-    /* ─── MAGNETIC BUTTON ─────────────────────── */
-    .xivora-magnetic {
-      will-change: transform;
-      transition: transform .45s cubic-bezier(.22,.84,.33,1),
-                  background .2s !important;
-    }
-
-    /* ─── FLOATING CODE CHARS ─────────────────── */
-    .xivora-code-char {
-      position: fixed;
-      pointer-events: none;
-      z-index: 0;
-      font-family: 'Courier New', monospace;
-      font-weight: 700;
-      color: rgba(232,25,10,.11);
-      animation: code-rise linear infinite;
-      user-select: none;
-    }
-    @keyframes code-rise {
-      0%   { transform: translateY(105vh); opacity: 0; }
-      4%   { opacity: 1; }
-      94%  { opacity: .5; }
-      100% { transform: translateY(-8vh); opacity: 0; }
-    }
-
-    /* ─── TYPEWRITER CURSOR ───────────────────── */
-    .xivora-tw::after {
-      content: '|';
-      animation: tw-blink .72s step-end infinite;
-      color: var(--accent);
-      margin-left: 1px;
-    }
-    @keyframes tw-blink { 50% { opacity: 0; } }
-
-    /* ─── SCRAMBLE CHAR ──────────────────────── */
-    .xivora-sc {
-      color: var(--accent);
-      opacity: .65;
-      font-style: normal;
-    }
-
-    /* ─── CURSOR TRAIL ───────────────────────── */
-    .xivora-trail-dot {
-      position: fixed;
-      border-radius: 50%;
-      background: var(--accent);
-      pointer-events: none;
-      z-index: 9990;
-      left: 0; top: 0;
-      transform: translate(-50%,-50%);
-      will-change: left, top;
-    }
-
-    /* ─── CLICK BURST ────────────────────────── */
-    .xivora-burst-p {
-      position: fixed;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9995;
-      transform: translate(-50%,-50%);
-      animation: burst-fly var(--dur,.55s) ease-out forwards;
-    }
-    @keyframes burst-fly {
-      0%   { transform:translate(-50%,-50%) scale(1.3); opacity:1; }
-      100% { transform:translate(calc(-50% + var(--bx,0px)),calc(-50% + var(--by,0px))) scale(0); opacity:0; }
-    }
-
-    /* ─── MATRIX OVERLAY ─────────────────────── */
-    #xivora-matrix-c {
-      position: fixed;
-      inset: 0;
-      z-index: 9900;
-      pointer-events: none;
-      opacity: 0;
-      background: #000;
-    }
-    #xivora-matrix-c.xm-on { opacity: 1; pointer-events: all; }
-    .xivora-matrix-label {
-      position: fixed;
-      top: 42%; left: 50%;
-      transform: translate(-50%,-50%);
-      font-family: 'Courier New', monospace;
-      font-size: clamp(18px, 4vw, 42px);
-      font-weight: 700;
-      letter-spacing: .18em;
-      color: #00ff41;
-      text-shadow: 0 0 12px #00ff41, 0 0 40px rgba(0,255,65,.4);
-      z-index: 9901;
-      pointer-events: none;
-      display: none;
-      text-align: center;
-      white-space: pre;
-      line-height: 1.5;
-    }
-    .xivora-matrix-hint {
-      position: fixed;
-      bottom: 18%; left: 50%;
-      transform: translateX(-50%);
-      font-family: 'Courier New', monospace;
-      font-size: 12px;
-      color: rgba(0,255,65,.4);
-      z-index: 9901;
-      pointer-events: none;
-      display: none;
-      letter-spacing: .06em;
-      text-align: center;
-      width: 240px;
-    }
-    .mx-progress {
-      position: fixed;
-      bottom: 26%; left: 50%;
-      transform: translateX(-50%);
-      width: 220px; height: 2px;
-      background: rgba(0,255,65,.12);
-      z-index: 9901;
-      display: none;
-      border-radius: 1px;
-      overflow: hidden;
-    }
-    .mx-progress-fill {
-      height: 100%;
-      width: 0%;
-      background: #00ff41;
-      border-radius: 1px;
-      box-shadow: 0 0 8px #00ff41;
-      transition: width .1s linear;
-    }
-    .mx-scanline {
-      position: fixed;
-      inset: 0;
-      z-index: 9902;
-      pointer-events: none;
-      display: none;
       background: repeating-linear-gradient(
         0deg,
         transparent,
         transparent 2px,
-        rgba(0,0,0,.15) 2px,
-        rgba(0,0,0,.15) 4px
+        rgba(0,0,0,.04) 2px,
+        rgba(0,0,0,.04) 4px
       );
-      mix-blend-mode: multiply;
-    }
-    .mx-vignette {
-      position: fixed;
-      inset: 0;
-      z-index: 9902;
-      pointer-events: none;
-      display: none;
-      background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,.7) 100%);
-    }
-    @keyframes mx-glitch {
-      0%   { transform: translate(-50%,-50%) skewX(0deg); }
-      20%  { transform: translate(-50%,-50%) skewX(-3deg) translateX(3px); }
-      40%  { transform: translate(-50%,-50%) skewX(2deg) translateX(-2px); }
-      60%  { transform: translate(-50%,-50%) skewX(-1deg); }
-      80%  { transform: translate(-50%,-50%) skewX(4deg) translateX(1px); }
-      100% { transform: translate(-50%,-50%) skewX(0deg); }
-    }
-    @keyframes mx-flicker {
-      0%, 100% { opacity: 1; }
-      92%  { opacity: 1; }
-      93%  { opacity: .4; }
-      94%  { opacity: 1; }
-      96%  { opacity: .6; }
-      97%  { opacity: 1; }
     }
 
-    /* ─── TERMINAL BOOT OVERLAY ────────────────── */
-    .mx-terminal {
+    /* CRT vignette */
+    body::before {
+      content: '';
       position: fixed;
       inset: 0;
-      z-index: 9910;
-      background: #0a0a0a;
-      display: none;
-      padding: 40px 48px;
-      overflow: hidden;
-      font-family: 'Courier New', 'JetBrains Mono', monospace;
-      font-size: 13px;
-      line-height: 1.7;
-      color: #00ff41;
-    }
-    .mx-terminal.on { display: block; }
-    .mx-term-scanline {
-      position: absolute;
-      inset: 0;
       pointer-events: none;
-      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.12) 2px, rgba(0,0,0,.12) 4px);
-      z-index: 1;
+      z-index: 9998;
+      background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,.45) 100%);
     }
-    .mx-term-inner {
-      position: relative;
-      z-index: 2;
-      white-space: pre-wrap;
-      word-break: break-all;
+
+    /* Phosphor glow on text */
+    .c-main {
+      text-shadow: 0 0 1px rgba(0,255,65,.06);
     }
-    .mx-term-inner .t-dim { color: #1a5c28; }
-    .mx-term-inner .t-green { color: #00ff41; }
-    .mx-term-inner .t-cyan { color: #00e5ff; }
-    .mx-term-inner .t-yellow { color: #ffcc00; }
-    .mx-term-inner .t-white { color: #ccc; }
-    .mx-term-inner .t-red { color: #ff4444; }
-    .mx-term-inner .t-ok { color: #00ff41; font-weight: bold; }
-    .mx-term-cursor {
-      display: inline-block;
-      width: 8px;
-      height: 15px;
-      background: #00ff41;
-      box-shadow: 0 0 6px rgba(0,255,65,.5);
-      animation: cur-blink .6s step-end infinite;
+
+    a { color: inherit; text-decoration: none; }
+    a:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; border-radius: 2px; }
+
+    /* ── TITLEBAR ──────────────────────────────────── */
+    .c-titlebar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--titlebar-h);
+      background: var(--bg-raised);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 18px;
+      gap: 14px;
+      z-index: 200;
+      user-select: none;
+    }
+
+    .c-dots { display: flex; gap: 7px; flex-shrink: 0; }
+    .c-dot { width: 12px; height: 12px; border-radius: 50%; display: block; }
+    .c-dot-r { background: #ff5f56; }
+    .c-dot-y { background: #ffbd2e; }
+    .c-dot-g { background: #27c93f; box-shadow: 0 0 6px rgba(39,201,63,.4); }
+
+    .c-titlebar-center {
+      flex: 1;
+      text-align: center;
+      font-size: var(--fs-xs);
+      color: var(--green);
+      letter-spacing: .06em;
+      opacity: .7;
+    }
+
+    .c-nav {
+      display: flex;
+      gap: 22px;
+      flex-shrink: 0;
+    }
+    .c-nav-link {
+      font-size: var(--fs-xs);
+      color: var(--text-dim);
+      letter-spacing: .03em;
+      transition: color .15s;
+    }
+    .c-nav-link::before { content: '> '; color: var(--text-muted); }
+    .c-nav-link:hover, .c-nav-link.active { color: var(--green); text-shadow: 0 0 8px rgba(0,255,65,.3); }
+    .c-nav-link.active::before { color: var(--green); }
+
+    @media (max-width: 640px) {
+      .c-nav { display: none; }
+      .c-titlebar-center { text-align: left; }
+    }
+
+    /* ── STATUS BAR ─────────────────────────────────── */
+    .c-statusbar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: var(--statusbar-h);
+      background: var(--green);
+      color: #0b0c10;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      z-index: 200;
+      font-size: var(--fs-xs);
+      font-weight: 600;
+      overflow: hidden;
+    }
+    .c-sb-seg {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 10px;
+      height: 100%;
+    }
+    .c-sb-seg + .c-sb-seg { border-left: 1px solid rgba(0,0,0,.18); }
+    .c-sb-right { margin-left: auto; display: flex; height: 100%; }
+
+    /* ── MAIN ───────────────────────────────────────── */
+    .c-main {
+      padding-top: calc(var(--titlebar-h) + 48px);
+      padding-bottom: calc(var(--statusbar-h) + 48px);
+      max-width: 880px;
+      margin: 0 auto;
+      padding-left: 28px;
+      padding-right: 28px;
+    }
+
+    /* ── SECTION ────────────────────────────────────── */
+    .c-sec {
+      padding: 56px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .c-sec:last-of-type { border-bottom: none; }
+
+    /* ── PROMPT LINE ────────────────────────────────── */
+    .c-prompt {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      font-size: var(--fs-sm);
+    }
+    .cp-sym   { color: var(--green);   font-weight: 600; text-shadow: 0 0 6px rgba(0,255,65,.3); }
+    .cp-path  { color: var(--orange); }
+    .cp-cmd   { color: var(--cyan);    font-weight: 500; }
+    .cp-flag  { color: var(--blue); }
+    .cp-arg   { color: var(--magenta); }
+
+    /* ── SCROLL REVEAL ──────────────────────────────── */
+    .rv {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .48s ease, transform .48s ease;
+    }
+    .rv.in { opacity: 1; transform: none; }
+    .rv-d1 { transition-delay: .07s; }
+    .rv-d2 { transition-delay: .14s; }
+    .rv-d3 { transition-delay: .21s; }
+    .rv-d4 { transition-delay: .28s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .rv { opacity: 1; transform: none; transition: none; }
+    }
+
+    /* ── HERO ───────────────────────────────────────── */
+    .c-hero {
+      min-height: calc(100vh - var(--titlebar-h) - var(--statusbar-h) - 96px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0;
+      padding: 24px 0 64px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .c-boot {
+      margin-bottom: 44px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .c-boot-line {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: var(--fs-sm);
+      color: var(--text-dim);
+      opacity: 0;
+      transition: opacity .2s;
+    }
+    .c-boot-line.show { opacity: 1; }
+    .c-boot-label { min-width: 200px; }
+    .c-boot-ok { color: var(--green); font-weight: 600; font-size: var(--fs-xs); letter-spacing: .08em; }
+    .c-boot-bar-wrap {
+      width: 160px; height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .c-boot-bar-fill {
+      height: 100%;
+      background: var(--green);
+      width: 0%;
+      transition: width .7s cubic-bezier(.22,.84,.33,1);
+      border-radius: 2px;
+    }
+
+    /* hero frame */
+    .c-hero-frame {
+      border: 1px solid var(--border-2);
+      padding: 36px 40px;
+      margin-bottom: 28px;
       position: relative;
-      z-index: 2;
+    }
+    .c-hero-frame::before {
+      content: 'XIVORA.STUDIO';
+      position: absolute;
+      top: -9px; left: 18px;
+      background: var(--bg);
+      padding: 0 8px;
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: .12em;
+    }
+    @media (max-width: 480px) {
+      .c-hero-frame { padding: 24px 20px; }
+    }
+
+    .c-hero-title {
+      font-size: clamp(28px, 6vw, 56px);
+      font-weight: 700;
+      color: var(--green);
+      line-height: 1;
+      letter-spacing: .04em;
+      margin-bottom: 18px;
+      text-shadow: 0 0 20px rgba(0,255,65,.25), 0 0 60px rgba(0,255,65,.1);
+    }
+    .c-hero-title em { color: #fff; font-style: normal; }
+    .c-hero-sub {
+      font-size: clamp(13px, 1.4vw, 15px);
+      color: var(--text-dim);
+      max-width: 520px;
+      line-height: 1.65;
+      margin-bottom: 6px;
+    }
+    .c-hero-comment {
+      font-size: var(--fs-xs);
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* blinking block cursor */
+    .c-cursor::after {
+      content: '█';
+      color: var(--green);
+      text-shadow: 0 0 6px rgba(0,255,65,.5);
+      animation: cur-blink .8s step-end infinite;
     }
     @keyframes cur-blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
-    /* ─── TERMINAL WIDGET ─────────────────────── */
-    .xivora-term-wrap {
-      position: fixed;
-      bottom: 28px; right: 28px;
-      z-index: 9800;
+    .c-hero-actions {
       display: flex;
-      flex-direction: column;
-      align-items: flex-end;
       gap: 10px;
-    }
-    .xivora-term-panel {
-      width: 440px;
-      max-width: calc(100vw - 40px);
-      background: rgba(7,7,7,.97);
-      border: 1px solid rgba(232,25,10,.22);
-      border-radius: 14px;
-      overflow: hidden;
-      box-shadow: 0 0 0 1px rgba(232,25,10,.06),
-                  0 32px 80px rgba(0,0,0,.88),
-                  0 0 48px rgba(232,25,10,.07);
-      display: none;
-      flex-direction: column;
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-    }
-    .xivora-term-panel.xtp-on { display: flex; animation: tslide .22s cubic-bezier(.22,.84,.33,1); }
-    @keyframes tslide {
-      from { opacity:0; transform:translateY(16px) scale(.97); }
-      to   { opacity:1; transform:translateY(0) scale(1); }
-    }
-    .xivora-term-head {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 14px;
-      background: rgba(255,255,255,.025);
-      border-bottom: 1px solid rgba(255,255,255,.055);
-      user-select: none;
-      flex-shrink: 0;
-    }
-    .xivora-term-dots { display: flex; gap: 6px; }
-    .xivora-term-dots span { width: 11px; height: 11px; border-radius: 50%; }
-    .xtd-r { background: #ff5f56; }
-    .xtd-y { background: #ffbd2e; }
-    .xtd-g { background: #27c93f; }
-    .xivora-term-titlebar {
-      font-family: 'Courier New', monospace;
-      font-size: 11px;
-      color: rgba(255,255,255,.25);
-      flex: 1;
-      text-align: center;
-      letter-spacing: .04em;
-    }
-    .xivora-term-out {
-      padding: 14px 16px;
-      font-family: 'Courier New', monospace;
-      font-size: 12.5px;
-      line-height: 1.8;
-      color: rgba(255,255,255,.7);
-      max-height: 270px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(232,25,10,.22) transparent;
-    }
-    .xivora-term-out .tc-a { color: var(--accent); }
-    .xivora-term-out .tc-g { color: #27c93f; }
-    .xivora-term-out .tc-m { color: rgba(255,255,255,.28); }
-    .xivora-term-out .tc-w { color: #fff; font-weight: 700; }
-    .xivora-term-out .tc-y { color: #ffbd2e; }
-    .xivora-term-inp-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 16px;
-      border-top: 1px solid rgba(255,255,255,.055);
-      background: rgba(0,0,0,.4);
-      flex-shrink: 0;
-    }
-    .xivora-term-sym { color: var(--accent); font-family: 'Courier New', monospace; font-size: 14px; flex-shrink: 0; }
-    .xivora-term-inp {
-      flex: 1;
-      background: none;
-      border: none;
-      outline: none;
-      font-family: 'Courier New', monospace;
-      font-size: 13px;
-      color: #fff;
-      caret-color: var(--accent);
-    }
-    .xivora-term-inp::placeholder { color: rgba(255,255,255,.16); }
-    .xivora-term-btn {
-      width: 52px; height: 52px;
-      border-radius: 50%;
-      background: rgba(10,10,10,.92);
-      border: 1px solid rgba(232,25,10,.28);
-      color: var(--accent);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 0 0 1px rgba(232,25,10,.07), 0 8px 28px rgba(0,0,0,.55);
-      transition: background .2s, border-color .2s, transform .2s, box-shadow .2s;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
-    .xivora-term-btn:hover {
-      background: rgba(232,25,10,.12);
-      border-color: var(--accent);
-      transform: scale(1.08);
-      box-shadow: 0 0 0 1px var(--accent), 0 0 20px rgba(232,25,10,.28), 0 8px 28px rgba(0,0,0,.55);
-    }
-    .xivora-term-btn.xtp-on {
-      background: rgba(232,25,10,.13);
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px var(--accent), 0 0 16px rgba(232,25,10,.24);
-    }
-    @media (max-width: 500px) {
-      .xivora-term-wrap { bottom: 16px; right: 14px; }
+      flex-wrap: wrap;
+      margin-top: 4px;
     }
 
-    /* ─── RISE ANIMATION ──────────────────────── */
-    .rise {
-      opacity: 0;
-      transform: translateY(28px);
-      transition: opacity .65s cubic-bezier(.22,.84,.33,1), transform .65s cubic-bezier(.22,.84,.33,1);
-    }
-    .rise.visible { opacity: 1; transform: translateY(0); }
-    .rise-d1 { transition-delay: .1s; }
-    .rise-d2 { transition-delay: .2s; }
-    .rise-d3 { transition-delay: .3s; }
-
-    /* ─── RESPONSIVE ──────────────────────────── */
-    @media (max-width: 860px) {
-      .xivora-nav-links { display: none; }
-      .xivora-why-grid { grid-template-columns: 1fr; }
-      .xivora-why-card { border-right: none; border-bottom: 1px solid var(--border); padding: 36px 24px; }
-      .xivora-why-card:last-child { border-bottom: none; }
-      .xivora-cta-card { padding: 48px 32px; flex-direction: column; align-items: flex-start; }
-      .xivora-stats-inner { grid-template-columns: repeat(2, 1fr); }
-      .xivora-stat:nth-child(2) { border-right: none; }
-      .xivora-stat:nth-child(3), .xivora-stat:nth-child(4) { border-top: 1px solid var(--border); }
-      .xivora-process-steps { grid-template-columns: repeat(2, 1fr); }
-      .xivora-process-steps::before { display: none; }
-      .xivora-pricing-grid { grid-template-columns: 1fr; max-width: 440px; }
-      .xivora-socials-grid { grid-template-columns: repeat(2, 1fr); }
-      .xivora-faq-q { padding: 22px 24px; }
-      .xivora-faq-a-inner { padding: 0 24px 22px; }
-    }
-    @media (max-width: 620px) {
-      .xivora-services-grid { grid-template-columns: 1fr; }
-      .xivora-hero-title { letter-spacing: -.02em; }
-      .xivora-footer-inner { flex-direction: column; align-items: flex-start; }
-      .xivora-bg-grid { background-size: 28px 28px; opacity: .4; }
-      .xivora-stats-inner { grid-template-columns: repeat(2, 1fr); }
-      .xivora-process-steps { grid-template-columns: 1fr; }
-      .xivora-socials-grid { grid-template-columns: 1fr; }
-    }
-
-    /* ─── CUSTOM SCROLLBAR ───────────────────── */
-    ::-webkit-scrollbar { width: 5px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb {
-      background: var(--accent);
-      border-radius: 3px;
-    }
-    ::-webkit-scrollbar-thumb:hover { background: var(--accent-hover); }
-    * { scrollbar-width: thin; scrollbar-color: var(--accent) transparent; }
-
-    /* ─── MARQUEE ────────────────────────────── */
-    .xivora-marquee-wrap {
-      position: relative;
-      z-index: 1;
-      overflow: hidden;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      background: var(--bg-panel);
-      padding: 17px 0;
-      -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 9%, #000 91%, transparent 100%);
-      mask-image: linear-gradient(to right, transparent 0%, #000 9%, #000 91%, transparent 100%);
-    }
-    .xivora-marquee-track {
-      display: flex;
-      width: max-content;
-      align-items: center;
-      animation: mq-scroll 38s linear infinite;
-    }
-    .xivora-marquee-wrap:hover .xivora-marquee-track {
-      animation-play-state: paused;
-    }
-    @keyframes mq-scroll {
-      0%   { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-    .xivora-mq-tag {
+    /* ── BUTTONS ────────────────────────────────────── */
+    .c-btn {
       display: inline-flex;
       align-items: center;
       gap: 7px;
-      padding: 5px 14px;
-      margin: 0 6px;
-      border: 1px solid var(--border-strong);
-      border-radius: var(--r-pill);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      color: var(--fg-muted);
-      white-space: nowrap;
-      transition: color .2s, border-color .2s, background .2s;
+      padding: 9px 18px;
+      font-family: var(--font);
+      font-size: var(--fs-sm);
+      font-weight: 600;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: background .15s, border-color .15s, color .15s;
+      letter-spacing: .02em;
+      border: 1px solid transparent;
+      text-decoration: none;
     }
-    .xivora-mq-tag:hover {
-      color: var(--fg);
-      border-color: rgba(232,25,10,.35);
-      background: var(--accent-soft);
+    .c-btn:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+    .c-btn-red {
+      background: transparent;
+      color: var(--green);
+      border-color: var(--green);
+      text-shadow: 0 0 6px rgba(0,255,65,.2);
     }
-    .xivora-mq-tag::before {
-      content: '';
-      width: 5px; height: 5px;
-      border-radius: 50%;
-      background: var(--accent);
-      flex-shrink: 0;
-      box-shadow: 0 0 5px var(--accent);
+    .c-btn-red:hover { background: rgba(0,255,65,.08); border-color: var(--green); box-shadow: 0 0 12px rgba(0,255,65,.15); }
+    .c-btn-ghost {
+      background: transparent;
+      color: var(--green);
+      border-color: rgba(0,255,65,.3);
     }
-    .xivora-mq-sep {
-      color: rgba(255,255,255,.1);
-      font-size: 18px;
-      padding: 0 4px;
-      flex-shrink: 0;
+    .c-btn-ghost:hover { background: rgba(0,255,65,.06); border-color: var(--green); }
+    .c-btn-dim {
+      background: transparent;
+      color: var(--text-dim);
+      border-color: var(--border-2);
+    }
+    .c-btn-dim:hover { color: var(--text); border-color: var(--text-dim); }
+
+    /* ── STATS ──────────────────────────────────────── */
+    .c-stats { display: flex; flex-direction: column; gap: 12px; }
+    .c-stat-row {
+      display: grid;
+      grid-template-columns: 1fr 120px 180px 90px;
+      align-items: center;
+      gap: 14px;
+      padding: 13px 16px;
+      background: var(--bg-inset);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--green);
+    }
+    .c-stat-lbl { font-size: var(--fs-sm); color: var(--text-dim); }
+    .c-stat-val { font-size: var(--fs-lg); font-weight: 700; color: var(--green); text-shadow: 0 0 8px rgba(0,255,65,.2); }
+    .c-stat-bar-wrap { height: 2px; background: var(--border); border-radius: 2px; overflow: hidden; }
+    .c-stat-bar-fill { height: 100%; background: var(--green); width: 0%; transition: width 1.6s cubic-bezier(.22,.84,.33,1); border-radius: 2px; box-shadow: 0 0 6px rgba(0,255,65,.3); }
+    .c-stat-note { font-size: var(--fs-xs); color: var(--text-muted); text-align: right; }
+
+    @media (max-width: 580px) {
+      .c-stat-row { grid-template-columns: 1fr auto; }
+      .c-stat-bar-wrap, .c-stat-note { display: none; }
     }
 
-    /* ─── COMPILE BUTTON ─────────────────────── */
-    .xivora-compile-btn {
-      position: relative;
-      overflow: hidden;
+    /* ── SERVICES TABLE ─────────────────────────────── */
+    .c-tbl {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--fs-sm);
     }
-    .xivora-compile-btn::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0;
-      height: 2px;
-      width: 0;
-      background: currentColor;
-      opacity: .5;
+    .c-tbl th {
+      text-align: left;
+      padding: 8px 14px;
+      font-size: var(--fs-xs);
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
     }
-    .xivora-compile-btn.xc-on::after {
-      animation: compile-bar 1.5s cubic-bezier(.4,0,.2,1) forwards;
+    .c-tbl td {
+      padding: 15px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
     }
-    @keyframes compile-bar {
-      0%   { width: 0; }
-      55%  { width: 75%; }
-      85%  { width: 90%; }
-      100% { width: 100%; }
+    .c-tbl tr:last-child td { border-bottom: none; }
+    .c-tbl tbody tr:hover td { background: rgba(255,255,255,.018); }
+    .c-tbl-name { color: var(--cyan); font-weight: 500; white-space: nowrap; }
+    .c-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      font-size: var(--fs-xs);
+      border: 1px solid;
+      border-radius: 2px;
+      letter-spacing: .03em;
+      white-space: nowrap;
     }
-    .xivora-compile-btn .xc-text { transition: opacity .15s; }
-    .xivora-compile-btn.xc-on .xc-text { opacity: 0; }
-    .xivora-compile-lbl {
-      position: absolute;
+    .c-tag-web { color: var(--blue);    border-color: rgba(126,184,255,.4); background: rgba(126,184,255,.07); }
+    .c-tag-tg  { color: var(--cyan);    border-color: rgba(77,217,236,.4);  background: rgba(77,217,236,.07); }
+    .c-tag-sup { color: var(--green);   border-color: rgba(61,220,132,.4);  background: rgba(61,220,132,.07); }
+    .c-tag-ui  { color: var(--magenta); border-color: rgba(195,151,248,.4); background: rgba(195,151,248,.07); }
+    .c-tbl-desc { color: var(--text-dim); line-height: 1.55; }
+
+    @media (max-width: 540px) {
+      .c-tbl thead { display: none; }
+      .c-tbl, .c-tbl tbody, .c-tbl tr, .c-tbl td { display: block; }
+      .c-tbl td { padding: 6px 0; border-bottom: none; }
+      .c-tbl tr { border-bottom: 1px solid var(--border); padding: 12px 0; }
+      .c-tbl tr:last-child { border-bottom: none; }
+    }
+
+    /* ── PROCESS ────────────────────────────────────── */
+    .c-process { display: flex; flex-direction: column; }
+    .c-proc-item {
+      display: grid;
+      grid-template-columns: 36px 1fr auto;
+      gap: 16px;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+    }
+    .c-proc-item:last-child { border-bottom: none; }
+    .c-proc-num { color: var(--text-muted); font-size: var(--fs-sm); font-weight: 600; padding-top: 2px; }
+    .c-proc-title { color: var(--text); font-weight: 600; font-size: var(--fs-base); margin-bottom: 4px; }
+    .c-proc-desc { color: var(--text-dim); font-size: var(--fs-sm); line-height: 1.6; }
+    .c-proc-time {
+      font-size: var(--fs-xs);
+      font-weight: 500;
+      color: var(--yellow);
+      background: rgba(227,179,65,.08);
+      border: 1px solid rgba(227,179,65,.22);
+      padding: 3px 10px;
+      border-radius: 2px;
+      white-space: nowrap;
+      margin-top: 2px;
+    }
+    @media (max-width: 480px) {
+      .c-proc-item { grid-template-columns: 28px 1fr; }
+      .c-proc-time { grid-column: 2; margin-top: 6px; align-self: auto; }
+    }
+
+    /* ── WHY CARDS ──────────────────────────────────── */
+    .c-why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+    }
+    .c-why-card {
+      padding: 22px 20px;
+      background: var(--bg-inset);
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--border-2);
+    }
+    .c-why-card:nth-child(1) { border-top-color: var(--green); }
+    .c-why-card:nth-child(2) { border-top-color: var(--cyan); }
+    .c-why-card:nth-child(3) { border-top-color: var(--blue); }
+    .c-why-n { font-size: var(--fs-xs); color: var(--text-muted); margin-bottom: 12px; letter-spacing: .06em; }
+    .c-why-title { color: var(--text); font-weight: 600; font-size: 15px; margin-bottom: 8px; }
+    .c-why-text { color: var(--text-dim); font-size: var(--fs-sm); line-height: 1.6; }
+
+    /* ── PRICING ────────────────────────────────────── */
+    .c-pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+    .c-price-card {
+      padding: 26px 22px;
+      background: var(--bg-inset);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+    }
+    .c-price-card.featured {
+      border-color: rgba(0,255,65,.3);
+      background: rgba(0,255,65,.02);
+      box-shadow: 0 0 20px rgba(0,255,65,.04);
+    }
+    .c-price-badge {
+      display: inline-block;
+      padding: 2px 9px;
+      font-size: var(--fs-xs);
+      background: transparent;
+      color: var(--green);
+      border: 1px solid var(--green);
+      font-weight: 600;
+      border-radius: 2px;
+      margin-bottom: 14px;
+      align-self: flex-start;
+      letter-spacing: .04em;
+      text-shadow: 0 0 6px rgba(0,255,65,.3);
+    }
+    .c-price-plan {
+      font-size: var(--fs-xs);
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin-bottom: 8px;
+    }
+    .c-price-val {
+      font-size: clamp(22px, 3vw, 28px);
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 4px;
+      line-height: 1.1;
+      text-shadow: 0 0 10px rgba(0,255,65,.2);
+    }
+    .c-price-val sup { font-size: 13px; font-weight: 400; color: var(--text-dim); }
+    .c-price-note { color: var(--text-muted); font-size: 12px; margin-bottom: 20px; }
+    .c-price-features {
+      list-style: none;
+      margin-bottom: 18px;
+      flex: 1;
+    }
+    .c-price-features li {
+      color: var(--text-dim);
+      font-size: var(--fs-sm);
+      padding: 5px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      line-height: 1.5;
+    }
+    .c-price-features li:last-child { border-bottom: none; }
+    .c-price-features li::before { content: '$ '; color: var(--green); flex-shrink: 0; opacity: .5; }
+    .c-price-deadline {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .c-price-deadline strong { color: var(--yellow); }
+
+    /* ── FAQ ────────────────────────────────────────── */
+    .c-faq { display: flex; flex-direction: column; }
+    .c-faq-item { border-bottom: 1px solid var(--border); }
+    .c-faq-item:last-child { border-bottom: none; }
+    .c-faq-btn {
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      padding: 16px 0;
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: var(--fs-sm);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: color .15s;
+    }
+    .c-faq-btn::before { content: '>'; color: var(--text-muted); flex-shrink: 0; transition: color .15s; }
+    .c-faq-btn:hover { color: var(--cyan); }
+    .c-faq-btn[aria-expanded="true"] { color: var(--cyan); }
+    .c-faq-btn[aria-expanded="true"]::before { content: 'v'; color: var(--cyan); }
+    .c-faq-arrow { margin-left: auto; font-size: 18px; color: var(--text-muted); transition: transform .2s, color .15s; flex-shrink: 0; }
+    .c-faq-btn[aria-expanded="true"] .c-faq-arrow { transform: rotate(90deg); color: var(--cyan); }
+    .c-faq-btn:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+    .c-faq-ans { max-height: 0; overflow: hidden; transition: max-height .3s ease; }
+    .c-faq-ans-inner {
+      padding: 0 0 18px 22px;
+      color: var(--text-dim);
+      font-size: var(--fs-sm);
+      line-height: 1.7;
+      border-left: 2px solid var(--border-2);
+    }
+
+    /* ── CONTACT ────────────────────────────────────── */
+    .c-contact-block {
+      background: var(--bg-inset);
+      border: 1px solid var(--border);
+      padding: 28px;
+    }
+    .c-contact-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: var(--fs-sm);
+    }
+    .c-contact-row:last-of-type { border-bottom: none; }
+    .c-contact-key { color: var(--text-muted); min-width: 90px; flex-shrink: 0; }
+    .c-contact-val { color: var(--green); }
+    .c-contact-val a:hover { color: #fff; text-shadow: 0 0 8px rgba(0,255,65,.3); }
+    .c-contact-cta {
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    /* ── COMMENT / INLINE ELEMENTS ──────────────────── */
+    .c-comment { color: var(--text-muted); font-style: italic; font-size: var(--fs-sm); }
+    .c-val { color: var(--yellow); }
+    .c-link { color: var(--cyan); }
+    .c-link:hover { color: var(--green); }
+
+    .c-inline-note {
+      margin-top: 18px;
+      font-size: var(--fs-sm);
+      color: var(--text-muted);
+    }
+
+    /* ── FOOTER ─────────────────────────────────────── */
+    .c-footer {
+      padding: 28px 0 8px;
+      text-align: center;
+      font-size: var(--fs-xs);
+      color: var(--text-muted);
+      font-style: italic;
+      letter-spacing: .03em;
+    }
+
+    /* ── CRT BOOT OVERLAY ─────────────────────────── */
+    .crt-boot {
+      position: fixed;
       inset: 0;
+      z-index: 10000;
+      background: #000;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Courier New', monospace;
-      font-size: 10.5px;
-      letter-spacing: .04em;
-      opacity: 0;
-      transition: opacity .15s;
-      pointer-events: none;
-      white-space: nowrap;
+      transition: opacity .4s;
     }
-    .xivora-compile-btn.xc-on .xivora-compile-lbl { opacity: 1; }
-
-    /* ─── DVD EASTER EGG ─────────────────────── */
-    #xivora-dvd {
-      position: fixed;
-      z-index: 9850;
-      font-family: var(--font-display);
-      font-weight: 900;
-      font-size: 30px;
-      letter-spacing: .06em;
-      pointer-events: none;
-      user-select: none;
-      transition: color .25s;
-      text-shadow: 0 0 18px currentColor;
+    .crt-boot.hide { opacity: 0; pointer-events: none; }
+    .crt-boot-inner {
+      font-family: var(--font);
+      font-size: var(--fs-sm);
+      color: var(--green);
+      text-shadow: 0 0 4px rgba(0,255,65,.4);
+      max-width: 500px;
+      padding: 40px;
+      white-space: pre-wrap;
+      line-height: 1.8;
     }
-    #xivora-dvd-hint {
-      position: fixed;
-      bottom: 22px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 9851;
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,.2);
-      pointer-events: none;
-      user-select: none;
-      animation: dvd-hint-blink 2s ease-in-out infinite alternate;
-    }
-    @keyframes dvd-hint-blink {
-      from { opacity: .4; }
-      to   { opacity: 1; }
+    .crt-boot-cursor {
+      display: inline-block;
+      width: 8px; height: 14px;
+      background: var(--green);
+      animation: cur-blink .6s step-end infinite;
+      vertical-align: text-bottom;
+      box-shadow: 0 0 4px rgba(0,255,65,.5);
     }
   </style>
 </head>
 <body>
 
-  <!-- CURSOR -->
-  <div class="xivora-cursor-dot" aria-hidden="true"></div>
-  <div class="xivora-cursor-ring" aria-hidden="true"></div>
+  <!-- CRT BOOT OVERLAY -->
+  <div class="crt-boot" id="crt-boot">
+    <div class="crt-boot-inner" id="crt-boot-inner"><span class="crt-boot-cursor"></span></div>
+  </div>
 
-  <!-- SCROLL PROGRESS -->
-  <div class="xivora-scroll-prog" aria-hidden="true"></div>
-
-  <!-- GRAIN + FLOATING CODE -->
-  <div class="xivora-grain" aria-hidden="true"></div>
-
-  <!-- BG EFFECTS -->
-  <div class="xivora-bg-grid" aria-hidden="true"></div>
-  <div class="xivora-orb xivora-orb-1" aria-hidden="true"></div>
-  <div class="xivora-orb xivora-orb-2" aria-hidden="true"></div>
-
-  <!-- NAV -->
-  <div class="xivora-nav-wrap">
-    <nav class="xivora-nav">
-      <div class="xivora-nav-logo">XIVORA<span>.</span></div>
-      <div class="xivora-nav-links">
-        <a class="xivora-nav-link" href="#services">Услуги</a>
-        <a class="xivora-nav-link" href="#process">Процесс</a>
-        <a class="xivora-nav-link" href="#why">О нас</a>
-        <a class="xivora-nav-link" href="#pricing">Цены</a>
-        <a class="xivora-nav-link" href="#contacts">Контакты</a>
-        <a class="xivora-nav-link" href="#faq">FAQ</a>
-      </div>
-      <a class="xivora-nav-cta" href="https://t.me/Xivora" target="_blank" rel="noopener">Написать</a>
+  <!-- TITLEBAR -->
+  <header class="c-titlebar" role="banner">
+    <div class="c-dots" aria-hidden="true">
+      <span class="c-dot c-dot-r"></span>
+      <span class="c-dot c-dot-y"></span>
+      <span class="c-dot c-dot-g"></span>
+    </div>
+    <div class="c-titlebar-center">xivora@studio:~/console — bash</div>
+    <nav class="c-nav" aria-label="Навигация">
+      <a class="c-nav-link" href="#services">services</a>
+      <a class="c-nav-link" href="#process">process</a>
+      <a class="c-nav-link" href="#pricing">pricing</a>
+      <a class="c-nav-link" href="#faq">faq</a>
+      <a class="c-nav-link" href="#contact">contact</a>
     </nav>
-  </div>
+  </header>
 
-  <!-- HERO -->
-  <section class="xivora-hero">
-    <canvas id="xivora-hero-canvas" aria-hidden="true"></canvas>
-    <div class="xivora-hero-badge">
-      <span class="xivora-hero-badge-dot"></span>
-      Студия&nbsp;цифровых&nbsp;решений
-    </div>
-    <h1 class="xivora-hero-title xivora-glitch" data-text="XIVORA.">XIVORA<span>.</span></h1>
-    <p class="xivora-hero-sub">Цифровые решения для твоего бизнеса — быстро, чисто, с результатом.</p>
-    <div class="xivora-hero-actions">
-      <a class="xivora-btn-primary xivora-magnetic" href="https://t.me/Xivora" target="_blank" rel="noopener">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-          <path d="M22 2L11 13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        Написать в Telegram
-      </a>
-      <a class="xivora-btn-secondary" href="https://t.me/Xivora" target="_blank" rel="noopener">@Xivora</a>
-    </div>
-    <div class="xivora-hero-scroll-hint" aria-hidden="true">
-      <div class="xivora-hero-scroll-line"></div>
-      <span class="xivora-hero-scroll-label">Скролл</span>
-    </div>
-  </section>
+  <!-- MAIN -->
+  <main class="c-main" id="top">
 
-  <!-- STATS -->
-  <div class="xivora-stats">
-    <div class="xivora-stats-inner">
-      <div class="xivora-stat rise">
-        <div class="xivora-stat-value xivora-counter" data-to="15" data-tmpl="{n}<span>+</span>">15<span>+</span></div>
-        <div class="xivora-stat-label">проектов сдано в срок</div>
-      </div>
-      <div class="xivora-stat rise rise-d1">
-        <div class="xivora-stat-value xivora-counter" data-to="10" data-tmpl="~<span>{n}</span>&thinsp;ч">~<span>10</span> ч</div>
-        <div class="xivora-stat-label">среднее время на реализацию проекта</div>
-      </div>
-      <div class="xivora-stat rise rise-d2">
-        <div class="xivora-stat-value xivora-counter" data-to="10" data-tmpl="&lt;<span>{n}</span>&thinsp;мин">&lt;<span>10</span> мин</div>
-        <div class="xivora-stat-label">время ответа в рабочее время</div>
-      </div>
-      <div class="xivora-stat rise rise-d3">
-        <div class="xivora-stat-value xivora-counter" data-to="100" data-tmpl="<span>{n}</span>%"><span>100</span>%</div>
-        <div class="xivora-stat-label">работ сдали в срок</div>
-      </div>
-    </div>
-  </div>
+    <!-- ═══ HERO ════════════════════════════════════ -->
+    <section class="c-hero" id="home" aria-label="Главный экран">
 
-  <!-- MARQUEE -->
-  <div class="xivora-marquee-wrap" aria-hidden="true">
-    <div class="xivora-marquee-track">
-      <span class="xivora-mq-tag">Python</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">JavaScript</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">TypeScript</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">React</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">Vue.js</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">FastAPI</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">Node.js</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">aiogram</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">Telegram API</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">Docker</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">Nginx</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">Git</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">Figma</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">PostgreSQL</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">Redis</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">HTML / CSS</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">REST API</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">WebSocket</span><span class="xivora-mq-sep">|</span>
-      <!-- duplicate for seamless loop -->
-      <span class="xivora-mq-tag">Python</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">JavaScript</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">TypeScript</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">React</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">Vue.js</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">FastAPI</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">Node.js</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">aiogram</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">Telegram API</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">Docker</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">Nginx</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">Git</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">Figma</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">PostgreSQL</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">Redis</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">HTML / CSS</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">REST API</span><span class="xivora-mq-sep">|</span>
-      <span class="xivora-mq-tag">WebSocket</span><span class="xivora-mq-sep">|</span>
-    </div>
-  </div>
-
-  <!-- SERVICES -->
-  <section id="services" class="xivora-section">
-    <p class="xivora-eyebrow rise">Услуги</p>
-    <h2 class="xivora-section-title rise rise-d1">Чем поможем</h2>
-    <div class="xivora-services-grid">
-
-      <div class="xivora-service-card xivora-tilt xivora-spotlight rise rise-d1">
-        <div class="xivora-service-icon-wrap">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-            <rect x="2" y="4" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.8"/>
-            <path d="M8 18v3M16 18v3M5 21h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-            <path d="M7 12h2M11 9l2 3-2 3M15 9l2 3-2 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+      <div class="c-boot" aria-live="polite" aria-label="Инициализация системы">
+        <div class="c-boot-line" id="bl-1">
+          <span class="c-boot-label">initializing system...</span>
+          <span class="c-boot-ok">[  OK  ]</span>
         </div>
-        <div class="xivora-service-name">Разработка сайтов, скриптов, приложений</div>
-        <div class="xivora-service-desc">Лендинги, корпоративные сайты и веб-приложения — под ключ, с нуля до запуска.</div>
-        <div class="xivora-service-tag">Web Dev</div>
-      </div>
-
-      <div class="xivora-service-card xivora-tilt xivora-spotlight rise rise-d2">
-        <div class="xivora-service-icon-wrap">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-            <path d="M22 2L11 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+        <div class="c-boot-line" id="bl-2">
+          <span class="c-boot-label">loading modules...</span>
+          <span class="c-boot-ok">[  OK  ]</span>
         </div>
-        <div class="xivora-service-name">Telegram Разработчик</div>
-        <div class="xivora-service-desc">Telegram Mini App, боты любой сложности, парсеры и автоматизация прямо внутри Telegram.</div>
-        <div class="xivora-service-tag">Telegram Dev</div>
-      </div>
-
-      <div class="xivora-service-card xivora-tilt xivora-spotlight rise rise-d2">
-        <div class="xivora-service-icon-wrap">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-            <path d="M4 6h16M4 10h16M4 14h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-            <circle cx="18" cy="17" r="4" stroke="currentColor" stroke-width="1.8"/>
-            <path d="M16.5 17l1 1 2-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+        <div class="c-boot-line" id="bl-3">
+          <span class="c-boot-label">connecting services...</span>
+          <span class="c-boot-ok">[  OK  ]</span>
         </div>
-        <div class="xivora-service-name">Поддержка</div>
-        <div class="xivora-service-desc">Техническое сопровождение, плановые обновления и доработки вашего проекта без лишней суеты.</div>
-        <div class="xivora-service-tag">Support</div>
-      </div>
-
-      <div class="xivora-service-card xivora-tilt xivora-spotlight rise rise-d3">
-        <div class="xivora-service-icon-wrap">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-            <rect x="2" y="3" width="20" height="15" rx="2" stroke="currentColor" stroke-width="1.8"/>
-            <path d="M2 9h20" stroke="currentColor" stroke-width="1.8"/>
-            <rect x="5" y="12" width="6" height="4" rx="1" stroke="currentColor" stroke-width="1.5"/>
-            <path d="M14 13h5M14 16h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <div class="xivora-service-name">Интерфейс-дизайн</div>
-        <div class="xivora-service-desc">UI/UX для сайтов и приложений: продуманно, красиво и с фокусом на конверсию.</div>
-        <div class="xivora-service-tag">UI / UX</div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- PROCESS -->
-  <section id="process" class="xivora-section">
-    <p class="xivora-eyebrow rise">Процесс</p>
-    <h2 class="xivora-section-title rise rise-d1">Как мы работаем</h2>
-    <div class="xivora-process-steps">
-      <div class="xivora-step rise rise-d1">
-        <div class="xivora-step-num">01</div>
-        <div class="xivora-step-title">Бриф</div>
-        <div class="xivora-step-desc">Пишешь в Telegram, рассказываешь о задаче. Мы задаём уточняющие вопросы и фиксируем цель.</div>
-        <div class="xivora-step-time">≈ 1 день</div>
-      </div>
-      <div class="xivora-step rise rise-d2">
-        <div class="xivora-step-num">02</div>
-        <div class="xivora-step-title">Предложение</div>
-        <div class="xivora-step-desc">Готовим план, сроки и стоимость. Согласовываем всё до старта — никаких сюрпризов в процессе.</div>
-        <div class="xivora-step-time">≈ 1 день</div>
-      </div>
-      <div class="xivora-step rise rise-d2">
-        <div class="xivora-step-num">03</div>
-        <div class="xivora-step-title">Работа</div>
-        <div class="xivora-step-desc">Реализуем проект, показываем промежуточные результаты и вносим правки прямо по ходу.</div>
-        <div class="xivora-step-time">1–14 дней</div>
-      </div>
-      <div class="xivora-step rise rise-d3">
-        <div class="xivora-step-num">04</div>
-        <div class="xivora-step-title">Сдача</div>
-        <div class="xivora-step-desc">Передаём готовый результат и помогаем с запуском. Остаёмся на связи — поддержка включена.</div>
-        <div class="xivora-step-time">1 день</div>
-      </div>
-    </div>
-    <p style="margin-top:28px;font-size:13px;font-weight:600;color:var(--fg-muted);text-align:center;">
-      Максимальный срок запуска любого проекта —&nbsp;<span style="color:var(--accent)">14 дней</span>. Работаем быстро, без лишних итераций.
-    </p>
-  </section> 
-
-  <!-- WHY XIVORA -->
-  <div id="why" class="xivora-why-bg">
-    <div class="xivora-section" style="padding-bottom:0">
-      <p class="xivora-eyebrow rise">Преимущества</p>
-      <h2 class="xivora-section-title rise rise-d1">Почему Xivora</h2>
-    </div>
-    <div style="max-width:1100px;margin:0 auto;padding:0 24px 100px">
-      <div class="xivora-why-grid">
-        <div class="xivora-why-card rise">
-          <p class="xivora-why-num">01</p>
-          <h3 class="xivora-why-title">Скорость работы</h3>
-          <p class="xivora-why-text">Первый результат — в течение 7 часов. Чёткие дедлайны без пустых обещаний и лишних согласований.</p>
-        </div>
-        <div class="xivora-why-card rise rise-d1">
-          <p class="xivora-why-num">02</p>
-          <h3 class="xivora-why-title">Фокус на твои задачи</h3>
-          <p class="xivora-why-text">Никаких шаблонов. Каждый проект разбираем с нуля и решаем конкретно твою задачу.</p>
-        </div>
-        <div class="xivora-why-card rise rise-d2">
-          <p class="xivora-why-num">03</p>
-          <h3 class="xivora-why-title">Всегда на связи</h3>
-          <p class="xivora-why-text">Telegram, быстрые ответы, прозрачный процесс. Ты всегда знаешь что происходит с проектом.</p>
+        <div class="c-boot-line" id="bl-4">
+          <span class="c-boot-label">xivora.studio v1.0.0</span>
+          <div class="c-boot-bar-wrap" aria-hidden="true"><div class="c-boot-bar-fill" id="boot-bar"></div></div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- PRICING -->
-  <section id="pricing" class="xivora-section">
-    <p class="xivora-eyebrow rise">Стоимость</p>
-    <h2 class="xivora-section-title rise rise-d1">Прозрачные цены</h2>
-    <div class="xivora-pricing-grid">
-
-      <div class="xivora-price-card xivora-tilt xivora-spotlight rise rise-d1">
-        <div class="xivora-price-plan">Telegram Бот</div>
-        <div class="xivora-price-value"><sup>от </sup>1 000 ₽</div>
-        <div class="xivora-price-note">Идеально для первого проекта</div>
-        <div class="xivora-price-divider"></div>
-        <ul class="xivora-price-features">
-          <li>Бот любой сложности</li>
-          <li>API-интеграции и платёжные системы</li>
-          <li>Хостинг на вашем сервере</li>
-          <li>2 раунда правок</li>
-          <li>Поддержка 15 дней</li>
-        </ul>
-        <div class="xivora-price-time">Срок: 1–5 дней</div>
-        <a class="xivora-btn-outline xivora-compile-btn" href="https://t.me/Xivora" target="_blank" rel="noopener"><span class="xivora-compile-lbl"></span><span class="xc-text">Обсудить</span></a>
+      <div class="c-hero-frame rv" id="hero-frame">
+        <h1 class="c-hero-title">XIVORA<em>_</em></h1>
+        <p class="c-hero-sub">Цифровые решения для твоего бизнеса — быстро, чисто, с результатом.</p>
+        <p class="c-hero-comment">// студия цифровых решений · Telegram: @Xivora</p>
       </div>
 
-      <div class="xivora-price-card xivora-price-featured xivora-tilt xivora-spotlight rise rise-d2">
-        <div class="xivora-price-badge">Популярный</div>
-        <div class="xivora-price-plan">Сайт</div>
-        <div class="xivora-price-value"><sup>от </sup>1 000 ₽</div>
-        <div class="xivora-price-note">Быстрый старт в интернете</div>
-        <div class="xivora-price-divider"></div>
-        <ul class="xivora-price-features">
-          <li>Лендинг или многостраничный сайт</li>
-          <li>Адаптивная вёрстка под любой экран</li>
-          <li>Базовая SEO-оптимизация</li>
-          <li>Подключение домена и деплой</li>
-          <li>2 раунда правок</li>
-          <li>Поддержка 15 дней</li>
-        </ul>
-        <div class="xivora-price-time">Срок: 1–14 дней</div>
-        <a class="xivora-btn-primary xivora-compile-btn" href="https://t.me/Xivora" target="_blank" rel="noopener" style="justify-content:center;font-size:13.5px;padding:13px 20px;border-radius:999px"><span class="xivora-compile-lbl"></span><span class="xc-text">Обсудить</span></a>
+      <div class="c-prompt rv rv-d1" id="hero-prompt">
+        <span class="cp-sym">$</span>
+        <span class="cp-path">xivora</span>
+        <span class="cp-cmd">contact</span>
+        <span class="cp-flag">--telegram</span>
+        <span class="c-cursor" aria-hidden="true"></span>
       </div>
 
-      <div class="xivora-price-card xivora-tilt xivora-spotlight rise rise-d3">
-        <div class="xivora-price-plan">Скрипт</div>
-        <div class="xivora-price-value"><sup>от </sup>800 ₽</div>
-        <div class="xivora-price-note">Автоматизация под любую задачу</div>
-        <div class="xivora-price-divider"></div>
-        <ul class="xivora-price-features">
-          <li>Парсеры, авто-постинг, уведомления</li>
-          <li>Интеграция с внешними API и сервисами</li>
-          <li>Чистый читаемый код с документацией</li>
-          <li>2 раунда правок</li>
-          <li>Поддержка 15 дней</li>
-        </ul>
-        <div class="xivora-price-time">Срок: 1–14 дней</div>
-        <a class="xivora-btn-outline xivora-compile-btn" href="https://t.me/Xivora" target="_blank" rel="noopener"><span class="xivora-compile-lbl"></span><span class="xc-text">Обсудить</span></a>
+      <div class="c-hero-actions rv rv-d2" id="hero-actions">
+        <a class="c-btn c-btn-red" href="https://t.me/Xivora" target="_blank" rel="noopener">
+          ↗ Написать в Telegram
+        </a>
+        <a class="c-btn c-btn-dim" href="https://t.me/Xivora" target="_blank" rel="noopener">
+          @Xivora
+        </a>
+      </div>
+    </section>
+
+    <!-- ═══ STATS ════════════════════════════════════ -->
+    <section class="c-sec" id="stats" aria-label="Статистика">
+      <div class="c-prompt rv">
+        <span class="cp-sym">$</span>
+        <span class="cp-path">xivora</span>
+        <span class="cp-cmd">stat</span>
+        <span class="cp-flag">--all</span>
       </div>
 
-    </div>
-    <p class="xivora-pricing-note">Нужно что-то нестандартное? <a href="https://t.me/Xivora" target="_blank" rel="noopener">Напишите</a> — рассчитаем индивидуально.</p>
-  </section>
-
-  <!-- FAQ -->
-  <section id="faq" class="xivora-section" style="padding-top:0">
-    <p class="xivora-eyebrow rise">FAQ</p>
-    <h2 class="xivora-section-title rise rise-d1">Частые вопросы</h2>
-    <div class="xivora-faq-list rise rise-d1">
-
-      <div class="xivora-faq-item">
-        <button class="xivora-faq-q" aria-expanded="false">
-          <span class="xivora-faq-q-text">Как проходит оплата?</span>
-          <span class="xivora-faq-icon" aria-hidden="true">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          </span>
-        </button>
-        <div class="xivora-faq-a"><div class="xivora-faq-a-inner">Работаем по предоплате 50% при старте проекта, остаток — после сдачи. Принимаем перевод на карту или криптовалюту.</div></div>
-      </div>
-
-      <div class="xivora-faq-item">
-        <button class="xivora-faq-q" aria-expanded="false">
-          <span class="xivora-faq-q-text">Сколько правок входит в стоимость?</span>
-          <span class="xivora-faq-icon" aria-hidden="true">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          </span>
-        </button>
-        <div class="xivora-faq-a"><div class="xivora-faq-a-inner">Для всех проектов одинаково — 2 бесплатных раунда правок. Каждый раунд включает любое количество замечаний по текущей версии. Дополнительные правки обсуждаются отдельно.</div></div>
-      </div>
-
-      <div class="xivora-faq-item">
-        <button class="xivora-faq-q" aria-expanded="false">
-          <span class="xivora-faq-q-text">Что если мне нужен сайт срочно?</span>
-          <span class="xivora-faq-icon" aria-hidden="true">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          </span>
-        </button>
-        <div class="xivora-faq-a"><div class="xivora-faq-a-inner">Принимаем срочные заказы с доплатой 25% от стоимости проекта. Напишите в Telegram, назовите дедлайн — возьмём в работу в первую очередь.</div></div>
-      </div>
-
-      <div class="xivora-faq-item">
-        <button class="xivora-faq-q" aria-expanded="false">
-          <span class="xivora-faq-q-text">Предоставляете ли хостинг?</span>
-          <span class="xivora-faq-icon" aria-hidden="true">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          </span>
-        </button>
-        <div class="xivora-faq-a"><div class="xivora-faq-a-inner">Нет, хостинг не предоставляем — но всегда помогаем развернуть проект на вашем сервере бесплатно. Не знаете, какой хостинг выбрать? Подберём подходящий вариант под задачу и бюджет.</div></div>
-      </div>
-
-      <div class="xivora-faq-item">
-        <button class="xivora-faq-q" aria-expanded="false">
-          <span class="xivora-faq-q-text">Можно ли будет самому редактировать сайт?</span>
-          <span class="xivora-faq-icon" aria-hidden="true">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          </span>
-        </button>
-        <div class="xivora-faq-a"><div class="xivora-faq-a-inner">Да. По желанию подключаем удобную CMS (систему управления контентом), чтобы вы могли менять тексты, картинки и блоки без программиста. Обучим за 15 минут.</div></div>
-      </div>
-
-      <div class="xivora-faq-item">
-        <button class="xivora-faq-q" aria-expanded="false">
-          <span class="xivora-faq-q-text">Работаете ли вы с клиентами из других городов?</span>
-          <span class="xivora-faq-icon" aria-hidden="true">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          </span>
-        </button>
-        <div class="xivora-faq-a"><div class="xivora-faq-a-inner">Да, работаем полностью онлайн. Вся коммуникация через Telegram, созвоны при необходимости. Клиенты из любой точки мира — без проблем.</div></div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- SOCIALS -->
-  <section id="contacts" class="xivora-section" style="padding-top:0">
-    <p class="xivora-eyebrow rise">Контакты</p>
-    <h2 class="xivora-section-title rise rise-d1">Найти нас</h2>
-    <div class="xivora-socials-grid">
-
-      <a class="xivora-social-card rise rise-d1" href="https://t.me/Xivora" target="_blank" rel="noopener">
-        <div class="xivora-social-icon">
-          <!-- Telegram plane -->
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
-          </svg>
+      <div class="c-stats">
+        <div class="c-stat-row rv rv-d1" data-bar="88">
+          <div class="c-stat-lbl">проектов сдано в срок</div>
+          <div class="c-stat-val">15<span style="font-size:14px;color:var(--text-muted)">+</span></div>
+          <div class="c-stat-bar-wrap"><div class="c-stat-bar-fill"></div></div>
+          <div class="c-stat-note">проектов</div>
         </div>
-        <div class="xivora-social-platform">Telegram</div>
-        <div class="xivora-social-handle">@Xivora</div>
-        <div class="xivora-social-desc">Написать напрямую — обсудим задачу и стоимость.</div>
-      </a>
-
-      <a class="xivora-social-card rise rise-d2" href="https://t.me/Xivora_Service" target="_blank" rel="noopener">
-        <div class="xivora-social-icon">
-          <!-- Telegram channel (same icon, different context) -->
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
-          </svg>
+        <div class="c-stat-row rv rv-d2" data-bar="72">
+          <div class="c-stat-lbl">среднее время реализации</div>
+          <div class="c-stat-val">~10ч</div>
+          <div class="c-stat-bar-wrap"><div class="c-stat-bar-fill"></div></div>
+          <div class="c-stat-note">per project</div>
         </div>
-        <div class="xivora-social-platform">Telegram канал</div>
-        <div class="xivora-social-handle">@Xivora_Service</div>
-        <div class="xivora-social-desc">Кейсы, обновления и новости студии — следи за нашей работой.</div>
-      </a>
-
-      <a class="xivora-social-card rise rise-d2" href="https://github.com/m1ghty13" target="_blank" rel="noopener">
-        <div class="xivora-social-icon">
-          <!-- GitHub mark -->
-          <svg width="20" height="20" viewBox="0 0 98 96" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M48.854 0C21.839 0 0 22 0 49.217c0 21.756 13.993 40.172 33.405 46.69 2.427.49 3.316-1.059 3.316-2.362 0-1.141-.08-5.052-.08-9.127-13.59 2.934-16.42-5.867-16.42-5.867-2.184-5.704-5.42-7.17-5.42-7.17-4.448-3.015.324-3.015.324-3.015 4.934.326 7.523 5.052 7.523 5.052 4.367 7.496 11.404 5.378 14.235 4.074.404-3.178 1.699-5.378 3.074-6.6-10.839-1.141-22.243-5.378-22.243-24.283 0-5.378 1.94-9.778 5.014-13.2-.485-1.222-2.184-6.275.486-13.038 0 0 4.125-1.304 13.426 5.052a46.97 46.97 0 0 1 12.214-1.63c4.125 0 8.33.571 12.213 1.63 9.302-6.356 13.427-5.052 13.427-5.052 2.67 6.763.97 11.816.485 13.038 3.155 3.422 5.015 7.822 5.015 13.2 0 18.905-11.404 23.06-22.324 24.283 1.78 1.548 3.316 4.481 3.316 9.126 0 6.6-.08 11.897-.08 13.526 0 1.304.89 2.853 3.316 2.364 19.412-6.52 33.405-24.935 33.405-46.691C97.707 22 75.788 0 48.854 0z"/>
-          </svg>
+        <div class="c-stat-row rv rv-d3" data-bar="95">
+          <div class="c-stat-lbl">время ответа</div>
+          <div class="c-stat-val">&lt;10мин</div>
+          <div class="c-stat-bar-wrap"><div class="c-stat-bar-fill"></div></div>
+          <div class="c-stat-note">рабочее время</div>
         </div>
-        <div class="xivora-social-platform">GitHub</div>
-        <div class="xivora-social-handle">m1ghty13</div>
-        <div class="xivora-social-desc">Открытые проекты и примеры кода от нашей команды.</div>
-      </a>
-
-      <a class="xivora-social-card rise rise-d3" href="https://lolz.live/members/9765279/" target="_blank" rel="noopener">
-        <div class="xivora-social-icon">
-          <!-- Forum / Lolzteam - speech bubble with L -->
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M9 10h.01M12 10h.01M15 10h.01" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-          </svg>
+        <div class="c-stat-row rv rv-d4" data-bar="100">
+          <div class="c-stat-lbl">сдача в срок</div>
+          <div class="c-stat-val">100%</div>
+          <div class="c-stat-bar-wrap"><div class="c-stat-bar-fill"></div></div>
+          <div class="c-stat-note">гарантия</div>
         </div>
-        <div class="xivora-social-platform">Lolzteam</div>
-        <div class="xivora-social-handle">m1ghty13</div>
-        <div class="xivora-social-desc">Профиль на форуме — отзывы, репутация, история сделок.</div>
-      </a>
+      </div>
+    </section>
 
+    <!-- ═══ SERVICES ═════════════════════════════════ -->
+    <section class="c-sec" id="services" aria-labelledby="sec-services-h">
+      <div class="c-prompt rv">
+        <span class="cp-sym">$</span>
+        <span class="cp-path">xivora</span>
+        <span class="cp-cmd">services</span>
+        <span class="cp-flag">--list</span>
+      </div>
+
+      <div class="rv rv-d1">
+        <table class="c-tbl" aria-label="Список услуг">
+          <thead>
+            <tr>
+              <th scope="col">NAME</th>
+              <th scope="col">TAG</th>
+              <th scope="col">DESCRIPTION</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="c-tbl-name">web-dev</td>
+              <td><span class="c-tag c-tag-web">Web Dev</span></td>
+              <td class="c-tbl-desc">Лендинги, корпоративные сайты и веб-приложения — под ключ, с нуля до запуска.</td>
+            </tr>
+            <tr>
+              <td class="c-tbl-name">telegram-dev</td>
+              <td><span class="c-tag c-tag-tg">Tg Dev</span></td>
+              <td class="c-tbl-desc">Telegram Mini App, боты любой сложности, парсеры и автоматизация внутри Telegram.</td>
+            </tr>
+            <tr>
+              <td class="c-tbl-name">support</td>
+              <td><span class="c-tag c-tag-sup">Support</span></td>
+              <td class="c-tbl-desc">Техническое сопровождение, плановые обновления и доработки без лишней суеты.</td>
+            </tr>
+            <tr>
+              <td class="c-tbl-name">ui-ux</td>
+              <td><span class="c-tag c-tag-ui">UI / UX</span></td>
+              <td class="c-tbl-desc">Дизайн интерфейсов для сайтов и приложений: продуманно, красиво, с фокусом на конверсию.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══ PROCESS ══════════════════════════════════ -->
+    <section class="c-sec" id="process" aria-labelledby="sec-process-h">
+      <div class="c-prompt rv">
+        <span class="cp-sym">$</span>
+        <span class="cp-path">xivora</span>
+        <span class="cp-cmd">workflow</span>
+        <span class="cp-flag">--show</span>
+      </div>
+
+      <div class="c-process">
+        <div class="c-proc-item rv rv-d1">
+          <div class="c-proc-num">01</div>
+          <div>
+            <div class="c-proc-title">Бриф</div>
+            <div class="c-proc-desc">Пишешь в Telegram, рассказываешь о задаче. Мы задаём уточняющие вопросы и фиксируем цель.</div>
+          </div>
+          <div class="c-proc-time">≈&thinsp;1 день</div>
+        </div>
+        <div class="c-proc-item rv rv-d2">
+          <div class="c-proc-num">02</div>
+          <div>
+            <div class="c-proc-title">Предложение</div>
+            <div class="c-proc-desc">Готовим план, сроки и стоимость. Согласовываем всё до старта — никаких сюрпризов в процессе.</div>
+          </div>
+          <div class="c-proc-time">≈&thinsp;1 день</div>
+        </div>
+        <div class="c-proc-item rv rv-d3">
+          <div class="c-proc-num">03</div>
+          <div>
+            <div class="c-proc-title">Работа</div>
+            <div class="c-proc-desc">Реализуем проект, показываем промежуточные результаты и вносим правки прямо по ходу.</div>
+          </div>
+          <div class="c-proc-time">1–14 дней</div>
+        </div>
+        <div class="c-proc-item rv rv-d4">
+          <div class="c-proc-num">04</div>
+          <div>
+            <div class="c-proc-title">Сдача</div>
+            <div class="c-proc-desc">Передаём готовый результат и помогаем с запуском. Остаёмся на связи — поддержка включена.</div>
+          </div>
+          <div class="c-proc-time">1 день</div>
+        </div>
+      </div>
+
+      <div class="c-inline-note rv">
+        <span class="c-comment">// Максимальный срок запуска любого проекта —&nbsp;</span><span class="c-val">14 дней</span>
+      </div>
+    </section>
+
+    <!-- ═══ WHY ═══════════════════════════════════════ -->
+    <section class="c-sec" id="why" aria-labelledby="sec-why-h">
+      <div class="c-prompt rv">
+        <span class="cp-sym">$</span>
+        <span class="cp-path">xivora</span>
+        <span class="cp-cmd">about</span>
+        <span class="cp-flag">--why-us</span>
+      </div>
+
+      <div class="c-why-grid">
+        <div class="c-why-card rv rv-d1">
+          <div class="c-why-n">// 01</div>
+          <div class="c-why-title">Скорость работы</div>
+          <div class="c-why-text">Первый результат — в течение 7 часов. Чёткие дедлайны без пустых обещаний и лишних согласований.</div>
+        </div>
+        <div class="c-why-card rv rv-d2">
+          <div class="c-why-n">// 02</div>
+          <div class="c-why-title">Фокус на задачи</div>
+          <div class="c-why-text">Никаких шаблонов. Каждый проект разбираем с нуля и решаем конкретно твою задачу.</div>
+        </div>
+        <div class="c-why-card rv rv-d3">
+          <div class="c-why-n">// 03</div>
+          <div class="c-why-title">Всегда на связи</div>
+          <div class="c-why-text">Telegram, быстрые ответы, прозрачный процесс. Ты всегда знаешь, что происходит с проектом.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ PRICING ═══════════════════════════════════ -->
+    <section class="c-sec" id="pricing" aria-labelledby="sec-pricing-h">
+      <div class="c-prompt rv">
+        <span class="cp-sym">$</span>
+        <span class="cp-path">xivora</span>
+        <span class="cp-cmd">pricing</span>
+        <span class="cp-flag">--table</span>
+      </div>
+
+      <div class="c-pricing-grid">
+        <div class="c-price-card rv rv-d1">
+          <div class="c-price-plan">Telegram Бот</div>
+          <div class="c-price-val"><sup>от </sup>1&thinsp;000&thinsp;₽</div>
+          <div class="c-price-note">Идеально для первого проекта</div>
+          <ul class="c-price-features">
+            <li>Бот любой сложности</li>
+            <li>API-интеграции и платёжные системы</li>
+            <li>Хостинг на вашем сервере</li>
+            <li>2 раунда правок</li>
+            <li>Поддержка 15 дней</li>
+          </ul>
+          <div class="c-price-deadline">Срок: <strong>1–5 дней</strong></div>
+          <a class="c-btn c-btn-ghost" href="https://t.me/Xivora" target="_blank" rel="noopener">→ Обсудить</a>
+        </div>
+
+        <div class="c-price-card featured rv rv-d2">
+          <div class="c-price-badge">★ Популярный</div>
+          <div class="c-price-plan">Сайт</div>
+          <div class="c-price-val"><sup>от </sup>1&thinsp;000&thinsp;₽</div>
+          <div class="c-price-note">Быстрый старт в интернете</div>
+          <ul class="c-price-features">
+            <li>Лендинг или многостраничный сайт</li>
+            <li>Адаптивная вёрстка под любой экран</li>
+            <li>Базовая SEO-оптимизация</li>
+            <li>Подключение домена и деплой</li>
+            <li>2 раунда правок</li>
+            <li>Поддержка 15 дней</li>
+          </ul>
+          <div class="c-price-deadline">Срок: <strong>1–14 дней</strong></div>
+          <a class="c-btn c-btn-red" href="https://t.me/Xivora" target="_blank" rel="noopener">→ Обсудить</a>
+        </div>
+
+        <div class="c-price-card rv rv-d3">
+          <div class="c-price-plan">Скрипт</div>
+          <div class="c-price-val"><sup>от </sup>800&thinsp;₽</div>
+          <div class="c-price-note">Автоматизация под любую задачу</div>
+          <ul class="c-price-features">
+            <li>Парсеры, авто-постинг, уведомления</li>
+            <li>Интеграция с внешними API и сервисами</li>
+            <li>Чистый читаемый код с документацией</li>
+            <li>2 раунда правок</li>
+            <li>Поддержка 15 дней</li>
+          </ul>
+          <div class="c-price-deadline">Срок: <strong>1–14 дней</strong></div>
+          <a class="c-btn c-btn-ghost" href="https://t.me/Xivora" target="_blank" rel="noopener">→ Обсудить</a>
+        </div>
+      </div>
+
+      <div class="c-inline-note rv">
+        <span class="c-comment">// Нестандартный проект?&nbsp;</span>
+        <a class="c-link" href="https://t.me/Xivora" target="_blank" rel="noopener">Напишите</a>
+        <span class="c-comment">&nbsp;— рассчитаем индивидуально</span>
+      </div>
+    </section>
+
+    <!-- ═══ FAQ ════════════════════════════════════════ -->
+    <section class="c-sec" id="faq" aria-labelledby="sec-faq-h">
+      <div class="c-prompt rv">
+        <span class="cp-sym">$</span>
+        <span class="cp-path">xivora</span>
+        <span class="cp-cmd">faq</span>
+        <span class="cp-flag">--query</span>
+        <span class="cp-arg">"*"</span>
+      </div>
+
+      <div class="c-faq rv rv-d1">
+
+        <div class="c-faq-item">
+          <button class="c-faq-btn" aria-expanded="false">
+            <span>Как проходит оплата?</span>
+            <span class="c-faq-arrow" aria-hidden="true">›</span>
+          </button>
+          <div class="c-faq-ans" role="region">
+            <div class="c-faq-ans-inner">
+              Работаем по предоплате 50% при старте проекта, остаток — после сдачи. Принимаем перевод на карту или криптовалюту.
+            </div>
+          </div>
+        </div>
+
+        <div class="c-faq-item">
+          <button class="c-faq-btn" aria-expanded="false">
+            <span>Сколько правок входит в стоимость?</span>
+            <span class="c-faq-arrow" aria-hidden="true">›</span>
+          </button>
+          <div class="c-faq-ans" role="region">
+            <div class="c-faq-ans-inner">
+              Для всех проектов — 2 бесплатных раунда правок. Каждый раунд включает любое количество замечаний по текущей версии. Дополнительные правки обсуждаются отдельно.
+            </div>
+          </div>
+        </div>
+
+        <div class="c-faq-item">
+          <button class="c-faq-btn" aria-expanded="false">
+            <span>Что если нужен сайт срочно?</span>
+            <span class="c-faq-arrow" aria-hidden="true">›</span>
+          </button>
+          <div class="c-faq-ans" role="region">
+            <div class="c-faq-ans-inner">
+              Принимаем срочные заказы с доплатой 25% от стоимости проекта. Напишите в Telegram, назовите дедлайн — возьмём в работу в первую очередь.
+            </div>
+          </div>
+        </div>
+
+        <div class="c-faq-item">
+          <button class="c-faq-btn" aria-expanded="false">
+            <span>Предоставляете ли хостинг?</span>
+            <span class="c-faq-arrow" aria-hidden="true">›</span>
+          </button>
+          <div class="c-faq-ans" role="region">
+            <div class="c-faq-ans-inner">
+              Нет, но всегда помогаем развернуть проект на вашем сервере бесплатно. Не знаете, какой выбрать? Подберём подходящий вариант под задачу и бюджет.
+            </div>
+          </div>
+        </div>
+
+        <div class="c-faq-item">
+          <button class="c-faq-btn" aria-expanded="false">
+            <span>Можно ли будет самому редактировать сайт?</span>
+            <span class="c-faq-arrow" aria-hidden="true">›</span>
+          </button>
+          <div class="c-faq-ans" role="region">
+            <div class="c-faq-ans-inner">
+              Да. По желанию подключаем CMS, чтобы вы могли менять тексты и блоки без программиста. Обучим за 15 минут.
+            </div>
+          </div>
+        </div>
+
+        <div class="c-faq-item">
+          <button class="c-faq-btn" aria-expanded="false">
+            <span>Работаете ли с клиентами из других городов?</span>
+            <span class="c-faq-arrow" aria-hidden="true">›</span>
+          </button>
+          <div class="c-faq-ans" role="region">
+            <div class="c-faq-ans-inner">
+              Да, работаем полностью онлайн. Вся коммуникация через Telegram, созвоны при необходимости. Клиенты из любой точки мира — без проблем.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══ CONTACT ═══════════════════════════════════ -->
+    <section class="c-sec" id="contact" aria-labelledby="sec-contact-h">
+      <div class="c-prompt rv">
+        <span class="cp-sym">$</span>
+        <span class="cp-path">xivora</span>
+        <span class="cp-cmd">contact</span>
+        <span class="cp-flag">--info</span>
+      </div>
+
+      <div class="c-contact-block rv rv-d1">
+        <div class="c-contact-row">
+          <span class="c-contact-key">telegram</span>
+          <span class="c-contact-val"><a href="https://t.me/Xivora" target="_blank" rel="noopener">@Xivora</a></span>
+        </div>
+        <div class="c-contact-row">
+          <span class="c-contact-key">response</span>
+          <span class="c-contact-val">&lt; 10 минут в рабочее время</span>
+        </div>
+        <div class="c-contact-row">
+          <span class="c-contact-key">location</span>
+          <span class="c-contact-val">онлайн · по всему миру</span>
+        </div>
+        <div class="c-contact-cta">
+          <a class="c-btn c-btn-red" href="https://t.me/Xivora" target="_blank" rel="noopener">
+            ↗ Написать в Telegram
+          </a>
+          <span class="c-comment">// ответим за &lt;10 минут</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="c-footer">
+      <span class="c-comment">// XIVORA.STUDIO · 2024–2025 · все права защищены</span>
     </div>
-  </section>
 
-  <!-- CTA -->
-  <div class="xivora-cta-section">
-    <div class="xivora-cta-card rise">
-      <div>
-        <h2 class="xivora-cta-heading">Готов начать?<br><span>Напиши нам.</span></h2>
-        <p class="xivora-cta-sub">Расскажи о задаче — ответим быстро.</p>
-      </div>
-      <a class="xivora-btn-primary xivora-magnetic" href="https://t.me/Xivora" target="_blank" rel="noopener" style="font-size:15px;padding:16px 32px">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-          <path d="M22 2L11 13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        Написать в Telegram
-      </a>
+  </main>
+
+  <!-- STATUS BAR -->
+  <footer class="c-statusbar" aria-label="Строка состояния">
+    <div class="c-sb-seg">
+      <span>⬡</span>
+      <span>xivora</span>
     </div>
-  </div>
-
-  <!-- MATRIX OVERLAY -->
-  <canvas id="xivora-matrix-c" aria-hidden="true"></canvas>
-  <div class="mx-scanline" id="mx-scanline" aria-hidden="true"></div>
-  <div class="mx-vignette" id="mx-vignette" aria-hidden="true"></div>
-  <div class="xivora-matrix-label" id="xivora-matrix-label" aria-hidden="true"></div>
-  <div class="mx-progress" id="mx-progress" aria-hidden="true"><div class="mx-progress-fill" id="mx-progress-fill"></div></div>
-  <div class="xivora-matrix-hint" id="xivora-matrix-hint" aria-hidden="true"></div>
-
-  <!-- TERMINAL BOOT OVERLAY -->
-  <div id="mx-terminal" class="mx-terminal" aria-hidden="true">
-    <div class="mx-term-scanline"></div>
-    <div class="mx-term-inner" id="mx-term-inner"></div>
-    <div class="mx-term-cursor" id="mx-term-cursor"></div>
-  </div>
-
-  <!-- TERMINAL WIDGET -->
-  <div class="xivora-term-wrap" id="xivora-term-wrap">
-    <div class="xivora-term-panel" id="xivora-term-panel">
-      <div class="xivora-term-head">
-        <div class="xivora-term-dots">
-          <span class="xtd-r"></span>
-          <span class="xtd-y"></span>
-          <span class="xtd-g"></span>
-        </div>
-        <span class="xivora-term-titlebar">xivora ~ bash</span>
-      </div>
-      <div class="xivora-term-out" id="xivora-term-out">
-        <div>Привет! Я <span class="tc-a">Xivora Terminal</span> v1.0</div>
-        <div class="tc-m">Введи <span class="tc-g">help</span> для списка команд.</div>
-      </div>
-      <div class="xivora-term-inp-row">
-        <span class="xivora-term-sym">❯</span>
-        <input class="xivora-term-inp" id="xivora-term-inp" type="text" placeholder="type a command..." autocomplete="off" spellcheck="false" />
-      </div>
-    </div>
-    <button class="xivora-term-btn" id="xivora-term-btn" title="Открыть терминал" aria-label="Открыть терминал">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-        <path d="M4 17l5-5-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M12 19h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      </svg>
-    </button>
-  </div>
-
-  <!-- FOOTER -->
-  <footer class="xivora-footer">
-    <div class="xivora-footer-inner">
-      <div class="xivora-footer-logo">XIVORA<span>.</span></div>
-      <a class="xivora-footer-tg" href="https://t.me/Xivora" target="_blank" rel="noopener">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-          <path d="M22 2L11 13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        @Xivora
-      </a>
-      <p class="xivora-footer-copy">&copy; 2026 Xivora. Все права защищены.</p>
+    <div class="c-sb-seg">studio</div>
+    <div class="c-sb-right">
+      <div class="c-sb-seg" id="sb-sec">HOME</div>
+      <div class="c-sb-seg">UTF-8</div>
+      <div class="c-sb-seg" id="sb-time" aria-live="off"></div>
     </div>
   </footer>
 
   <script>
-  /* ═══════════════════════════════════════════════
-     XIVORA — Visual Engine v2
-  ═══════════════════════════════════════════════ */
+    'use strict';
 
-  /* ── SHARED MOUSE POSITION ───────────────────── */
-  let mx = -300, my = -300;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ── CURSOR + RING ───────────────────────────── */
-  const $dot  = document.querySelector('.xivora-cursor-dot');
-  const $ring = document.querySelector('.xivora-cursor-ring');
-  let rx = -300, ry = -300;
+    /* ── CRT BOOT ANIMATION ──────────────────────────── */
+    const $crtBoot  = document.getElementById('crt-boot');
+    const $crtInner = document.getElementById('crt-boot-inner');
 
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-    $dot.style.left = mx + 'px';
-    $dot.style.top  = my + 'px';
-  });
-  (function animRing() {
-    rx += (mx - rx) * .11; ry += (my - ry) * .11;
-    $ring.style.left = rx + 'px'; $ring.style.top = ry + 'px';
-    requestAnimationFrame(animRing);
-  })();
-  document.querySelectorAll('a, button, [role="button"]').forEach(el => {
-    el.addEventListener('mouseenter', () => { $dot.classList.add('is-hov'); $ring.classList.add('is-hov'); });
-    el.addEventListener('mouseleave', () => { $dot.classList.remove('is-hov'); $ring.classList.remove('is-hov'); });
-  });
+    const bootMessages = [
+      { text: 'XIVORA TERMINAL v2.1.0', delay: 0 },
+      { text: 'Copyright (c) 2024-2025 Xivora Studio', delay: 80 },
+      { text: '', delay: 40 },
+      { text: 'Initializing kernel modules...     [OK]', delay: 200 },
+      { text: 'Loading display driver...           [OK]', delay: 150 },
+      { text: 'Mounting filesystem...              [OK]', delay: 180 },
+      { text: 'Starting network services...        [OK]', delay: 220 },
+      { text: 'Connecting to xivora.studio...      [OK]', delay: 300 },
+      { text: '', delay: 40 },
+      { text: 'System ready. Welcome back.', delay: 100 },
+    ];
 
-  /* ── CURSOR TRAIL ────────────────────────────── */
-  const TRAIL = 8;
-  const trailEls  = Array.from({ length: TRAIL }, (_, i) => {
-    const d = document.createElement('div');
-    d.className = 'xivora-trail-dot';
-    document.body.appendChild(d);
-    return d;
-  });
-  const trailPos = Array.from({ length: TRAIL }, () => ({ x: -300, y: -300 }));
-  (function animTrail() {
-    trailPos[0].x = mx; trailPos[0].y = my;
-    for (let i = 0; i < TRAIL; i++) {
-      if (i > 0) {
-        trailPos[i].x += (trailPos[i-1].x - trailPos[i].x) * .18;
-        trailPos[i].y += (trailPos[i-1].y - trailPos[i].y) * .18;
+    function runCrtBoot() {
+      if (reduced) {
+        $crtBoot.classList.add('hide');
+        setTimeout(() => $crtBoot.remove(), 400);
+        startMainBoot();
+        return;
       }
-      const sz = (5 - i * .38) + 'px';
-      trailEls[i].style.cssText = 'left:' + trailPos[i].x + 'px;top:' + trailPos[i].y +
-        'px;width:' + sz + ';height:' + sz + ';opacity:' + ((1 - i / TRAIL) * .42);
-    }
-    requestAnimationFrame(animTrail);
-  })();
 
-  /* ── SCROLL PROGRESS ─────────────────────────── */
-  const $prog = document.querySelector('.xivora-scroll-prog');
-  window.addEventListener('scroll', () => {
-    const h = document.documentElement.scrollHeight - window.innerHeight;
-    $prog.style.transform = 'scaleX(' + (h ? window.scrollY / h : 0) + ')';
-  }, { passive: true });
-
-  /* ── PARALLAX ORBS ───────────────────────────── */
-  const $orb1 = document.querySelector('.xivora-orb-1');
-  const $orb2 = document.querySelector('.xivora-orb-2');
-  window.addEventListener('scroll', () => {
-    const y = window.scrollY;
-    if ($orb1) $orb1.style.transform = 'translateY(' + y * .17 + 'px)';
-    if ($orb2) $orb2.style.transform = 'translateY(' + -y * .11 + 'px)';
-  }, { passive: true });
-
-  /* ── HERO PARTICLE MESH ──────────────────────── */
-  const $hc = document.getElementById('xivora-hero-canvas');
-  if ($hc) {
-    const hctx = $hc.getContext('2d');
-    let hW, hH;
-    const hmouse = { x: -999, y: -999 };
-    const pts = [];
-    const resize = () => { hW = $hc.width = $hc.offsetWidth; hH = $hc.height = $hc.offsetHeight; };
-    resize();
-    new ResizeObserver(resize).observe($hc.parentElement);
-    $hc.parentElement.addEventListener('mousemove', e => {
-      const r = $hc.getBoundingClientRect();
-      hmouse.x = e.clientX - r.left; hmouse.y = e.clientY - r.top;
-    });
-    $hc.parentElement.addEventListener('mouseleave', () => { hmouse.x = -999; hmouse.y = -999; });
-    for (let i = 0; i < 95; i++) pts.push({
-      x: Math.random()*1920, y: Math.random()*950,
-      vx: (Math.random()-.5)*.4, vy: (Math.random()-.5)*.4,
-      r: Math.random()*1.7+.4,
-    });
-    (function drawPts() {
-      hctx.clearRect(0, 0, hW, hH);
-      pts.forEach(p => {
-        p.x += p.vx; p.y += p.vy;
-        if (p.x<0||p.x>hW) p.vx*=-1; if (p.y<0||p.y>hH) p.vy*=-1;
-        const dx=p.x-hmouse.x, dy=p.y-hmouse.y, d=Math.sqrt(dx*dx+dy*dy);
-        if (d<130) { p.x+=(dx/d)*.9; p.y+=(dy/d)*.9; }
+      let total = 0;
+      bootMessages.forEach((msg, i) => {
+        total += msg.delay;
+        setTimeout(() => {
+          // Remove old cursor
+          const oldCur = $crtInner.querySelector('.crt-boot-cursor');
+          if (oldCur) oldCur.remove();
+          // Add line
+          if (msg.text) {
+            const ok = msg.text.includes('[OK]');
+            if (ok) {
+              const parts = msg.text.split('[OK]');
+              $crtInner.insertAdjacentHTML('beforeend',
+                parts[0] + '<span style="color:#00ff41;text-shadow:0 0 8px rgba(0,255,65,.5)">[OK]</span>\n'
+              );
+            } else {
+              $crtInner.insertAdjacentText('beforeend', msg.text + '\n');
+            }
+          } else {
+            $crtInner.insertAdjacentText('beforeend', '\n');
+          }
+          // Re-add cursor at end
+          $crtInner.insertAdjacentHTML('beforeend', '<span class="crt-boot-cursor"></span>');
+        }, total);
       });
-      for (let i=0; i<pts.length; i++) for (let j=i+1; j<pts.length; j++) {
-        const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y, d=Math.sqrt(dx*dx+dy*dy);
-        if (d<165) {
-          hctx.beginPath();
-          hctx.strokeStyle='rgba(232,25,10,'+((1-d/165)*.2)+')';
-          hctx.lineWidth=.65;
-          hctx.moveTo(pts[i].x,pts[i].y); hctx.lineTo(pts[j].x,pts[j].y);
-          hctx.stroke();
-        }
-      }
-      pts.forEach(p => {
-        hctx.beginPath(); hctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-        hctx.fillStyle='rgba(232,25,10,.52)'; hctx.fill();
-      });
-      requestAnimationFrame(drawPts);
-    })();
-  }
 
-  /* ── CARD SPOTLIGHT ──────────────────────────── */
-  document.querySelectorAll('.xivora-spotlight').forEach(c => {
-    c.addEventListener('mousemove', e => {
-      const r = c.getBoundingClientRect();
-      c.style.setProperty('--sx', ((e.clientX-r.left)/r.width*100)+'%');
-      c.style.setProperty('--sy', ((e.clientY-r.top)/r.height*100)+'%');
-    });
-  });
-
-  /* ── 3D TILT ─────────────────────────────────── */
-  document.querySelectorAll('.xivora-tilt').forEach(c => {
-    c.addEventListener('mouseenter', () => { c.style.transition = 'transform .08s ease'; });
-    c.addEventListener('mousemove', e => {
-      const r = c.getBoundingClientRect();
-      const dx = (e.clientX-r.left-r.width/2)/(r.width/2);
-      const dy = (e.clientY-r.top-r.height/2)/(r.height/2);
-      c.style.transform = 'perspective(900px) translateY(-5px) rotateY('+(dx*7)+'deg) rotateX('+(-dy*7)+'deg)';
-    });
-    c.addEventListener('mouseleave', () => {
-      c.style.transition = 'transform .55s cubic-bezier(.22,.84,.33,1)';
-      c.style.transform  = 'perspective(900px) translateY(0) rotateY(0deg) rotateX(0deg)';
-      setTimeout(() => { c.style.transition=''; c.style.transform=''; }, 560);
-    });
-  });
-
-  /* ── MAGNETIC BUTTONS ────────────────────────── */
-  document.querySelectorAll('.xivora-magnetic').forEach(btn => {
-    btn.addEventListener('mousemove', e => {
-      const r = btn.getBoundingClientRect();
-      btn.style.transform = 'translate('+((e.clientX-r.left-r.width/2)*.28)+'px,'+((e.clientY-r.top-r.height/2)*.28)+'px)';
-    });
-    btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
-  });
-
-  /* ── FLOATING CODE CHARS ─────────────────────── */
-  ['{ }','//','=>','&&','||','()','[]','++','/**','*/','async','await','const','fn()','...','</>','null','0x1F'].forEach((tok, i) => {
-    if (i > 13) return;
-    const el = document.createElement('div');
-    el.className = 'xivora-code-char';
-    el.textContent = tok;
-    const dur = 20 + Math.random() * 24;
-    el.style.cssText = 'left:'+(Math.random()*100)+'vw;animation-duration:'+dur+'s;animation-delay:'+(-(Math.random()*dur))+'s;font-size:'+(9+Math.random()*5)+'px';
-    document.body.appendChild(el);
-  });
-
-  /* ── TYPEWRITER HERO SUBTITLE ────────────────── */
-  const $twEl = document.querySelector('.xivora-hero-sub');
-  if ($twEl) {
-    const full = $twEl.textContent.trim();
-    $twEl.textContent = ''; $twEl.classList.add('xivora-tw');
-    let twI = 0;
-    const type = () => {
-      if (twI < full.length) { $twEl.textContent = full.slice(0, ++twI); requestAnimationFrame(() => setTimeout(type, 30)); }
-      else setTimeout(() => $twEl.classList.remove('xivora-tw'), 900);
-    };
-    setTimeout(type, 700);
-  }
-
-  /* ── TEXT SCRAMBLE ON REVEAL ─────────────────── */
-  const SC_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&<>/{}[]!?';
-  class Scramble {
-    constructor(el) { this.el = el; }
-    run(text) {
-      this.q = Array.from(text, (ch, i) => ({
-        to:    ch,
-        start: Math.floor(Math.random() * 8),
-        end:   Math.floor(Math.random() * 8) + 10 + (i * .6 | 0),
-        char:  '',
-      }));
-      this.f = 0;
-      cancelAnimationFrame(this.raf);
-      this._tick();
-    }
-    _tick() {
-      let out = '', done = 0;
-      for (const q of this.q) {
-        if (this.f >= q.end) { done++; out += q.to; }
-        else if (this.f >= q.start) {
-          if (!q.char || Math.random() < .28) q.char = SC_CHARS[Math.random() * SC_CHARS.length | 0];
-          out += '<span class="xivora-sc">' + q.char + '</span>';
-        } else { out += q.to === ' ' ? ' ' : '&nbsp;'; }
-      }
-      this.el.innerHTML = out;
-      if (done < this.q.length) { this.f++; this.raf = requestAnimationFrame(() => this._tick()); }
-    }
-  }
-  const scrObs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (!e.isIntersecting) return;
-      scrObs.unobserve(e.target);
-      const text = e.target.textContent.trim();
-      if (text) new Scramble(e.target).run(text);
-    });
-  }, { threshold: .18 });
-  document.querySelectorAll('.xivora-section-title, .xivora-eyebrow').forEach(el => scrObs.observe(el));
-
-  /* ── CLICK BURST ──────────────────────────────── */
-  document.addEventListener('click', e => {
-    const n = 10 + Math.random() * 6 | 0;
-    for (let i = 0; i < n; i++) {
-      const p = document.createElement('div');
-      p.className = 'xivora-burst-p';
-      const angle = (i/n) * Math.PI * 2 + Math.random() * .9;
-      const dist  = 28 + Math.random() * 52;
-      const dur   = (.35 + Math.random() * .35) + 's';
-      p.style.cssText = 'left:'+e.clientX+'px;top:'+e.clientY+'px;--bx:'+(Math.cos(angle)*dist)+'px;--by:'+(Math.sin(angle)*dist)+'px;--dur:'+dur+';width:'+(2+Math.random()*4)+'px;height:'+(2+Math.random()*4)+'px;background:'+(Math.random()>.3?'var(--accent)':'#fff');
-      document.body.appendChild(p);
-      p.addEventListener('animationend', () => p.remove(), { once: true });
-    }
-  });
-
-  /* ── MATRIX RAIN ──────────────────────────────── */
-  const $matC = document.getElementById('xivora-matrix-c');
-  const $matL = document.getElementById('xivora-matrix-label');
-  const $matH = document.getElementById('xivora-matrix-hint');
-  const $mxScan = document.getElementById('mx-scanline');
-  const $mxVig  = document.getElementById('mx-vignette');
-  const $mxProg = document.getElementById('mx-progress');
-  const $mxFill = document.getElementById('mx-progress-fill');
-  const $mxTerm = document.getElementById('mx-terminal');
-  const $mxTInner = document.getElementById('mx-term-inner');
-  let matActive = false;
-
-  /* Reset matrix overlay on bfcache restore (back button) */
-  window.addEventListener('pageshow', function(e) {
-    if (e.persisted) {
-      matActive = false;
-      $matC.classList.remove('xm-on');
-      $matC.style.cssText = '';
-      $matL.style.cssText = 'display:none';
-      $matH.style.cssText = 'display:none';
-      $mxScan.style.display = 'none';
-      $mxVig.style.display = 'none';
-      $mxProg.style.cssText = 'display:none';
-      $mxFill.style.width = '0%';
-      $mxTerm.classList.remove('on');
-      $mxTerm.style.cssText = '';
-      $mxTInner.innerHTML = '';
-      document.body.style.filter = '';
-    }
-  });
-
-  function typeInTerminal(el, text, speed) {
-    return new Promise(resolve => {
-      let i = 0;
-      const t = setInterval(() => {
-        el.insertAdjacentText('beforeend', text[i]);
-        i++;
-        if (i >= text.length) { clearInterval(t); resolve(); }
-      }, speed);
-    });
-  }
-
-  function printLine(el, html) {
-    el.insertAdjacentHTML('beforeend', html + '\n');
-  }
-
-  function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-  function triggerMatrix() {
-    if (matActive) return;
-    matActive = true;
-
-    // Phase 1: Matrix rain (short)
-    $matC.style.transition = 'none';
-    $matC.width  = window.innerWidth;
-    $matC.height = window.innerHeight;
-    // Fill solid black immediately so site is fully covered
-    const preCtx = $matC.getContext('2d');
-    preCtx.fillStyle = '#000';
-    preCtx.fillRect(0, 0, $matC.width, $matC.height);
-    $matC.classList.add('xm-on');
-    $mxScan.style.display = 'block';
-    $mxVig.style.display = 'block';
-
-    const ctx = $matC.getContext('2d');
-    const fs = 15;
-    const cols = Math.floor($matC.width / fs);
-    const drops = Array(cols).fill(0).map(() => Math.random() * -30 | 0);
-    const chars = 'アイウエオカキクケコ0123456789XIVORA<>{}[]';
-
-    const interval = setInterval(() => {
-      ctx.fillStyle = 'rgba(0,0,0,.08)';
-      ctx.fillRect(0, 0, $matC.width, $matC.height);
-      ctx.font = fs + 'px monospace';
-      drops.forEach((y, i) => {
-        const r = Math.random();
-        ctx.fillStyle = r > .93 ? '#fff' : r > .5 ? '#00ff41' : 'rgba(0,255,65,.3)';
-        ctx.shadowColor = '#00ff41';
-        ctx.shadowBlur = r > .93 ? 10 : 2;
-        ctx.fillText(chars[Math.random()*chars.length|0], i*fs, y*fs);
-        ctx.shadowBlur = 0;
-        if (y*fs > $matC.height && Math.random() > .96) drops[i] = 0;
-        drops[i]++;
-      });
-    }, 33);
-
-    // Phase 2: After 1.5s, switch to terminal
-    setTimeout(async () => {
-      clearInterval(interval);
-
-      // Show terminal overlay FIRST (z-index 9910, above canvas 9900)
-      $mxTerm.classList.add('on');
-      $mxTInner.innerHTML = '';
-
-      // Now safely hide matrix elements behind the terminal
-      $matL.style.display = 'none';
-      $matH.style.display = 'none';
-      $mxProg.style.display = 'none';
-      $mxScan.style.display = 'none';
-      $mxVig.style.display = 'none';
-      $matC.classList.remove('xm-on');
-      $matC.style.transition = 'none';
-      $matC.style.opacity = '0';
-
-      const T = $mxTInner;
-
-      // Boot header
-      printLine(T, '<span class="t-dim">XIVORA TERMINAL v2.1.0</span>');
-      printLine(T, '<span class="t-dim">Copyright (c) 2024-2025 Xivora Studio</span>');
-      printLine(T, '');
-      await wait(200);
-
-      // Command 1: cd
-      await typeInTerminal(T, '$ cd /opt/xivora/console', 28);
-      printLine(T, '');
-      await wait(150);
-
-      // Command 2: git pull
-      await typeInTerminal(T, '$ git pull origin main', 30);
-      printLine(T, '');
-      await wait(200);
-      printLine(T, '<span class="t-white">remote: Enumerating objects: 12, done.</span>');
-      await wait(80);
-      printLine(T, '<span class="t-white">remote: Counting objects: 100% (12/12), done.</span>');
-      await wait(80);
-      printLine(T, '<span class="t-white">remote: Compressing objects: 100% (8/8), done.</span>');
-      await wait(100);
-      printLine(T, '<span class="t-ok">Already up to date.</span>');
-      await wait(200);
-      printLine(T, '');
-
-      // Command 3: npm run build
-      await typeInTerminal(T, '$ npm run build', 32);
-      printLine(T, '');
-      await wait(250);
-      printLine(T, '<span class="t-cyan">vite v5.4.1</span> <span class="t-dim">building for production...</span>');
-      await wait(300);
-      printLine(T, '<span class="t-green">\u2713</span> <span class="t-white">142 modules transformed.</span>');
-      await wait(150);
-      printLine(T, '<span class="t-green">\u2713</span> <span class="t-white">dist/index.html    </span><span class="t-yellow">0.42 kB</span> <span class="t-dim">\u2502</span> <span class="t-dim">gzip: 0.28 kB</span>');
-      await wait(80);
-      printLine(T, '<span class="t-green">\u2713</span> <span class="t-white">dist/console.html  </span><span class="t-yellow">12.8 kB</span> <span class="t-dim">\u2502</span> <span class="t-dim">gzip: 4.10 kB</span>');
-      await wait(80);
-      printLine(T, '<span class="t-green">\u2713</span> <span class="t-white">built in </span><span class="t-yellow">1.24s</span>');
-      await wait(200);
-      printLine(T, '');
-
-      // Command 4: start server
-      await typeInTerminal(T, '$ node server.js --mode=console', 25);
-      printLine(T, '');
-      await wait(300);
-      printLine(T, '<span class="t-dim">[info]</span> <span class="t-white">Loading environment variables...</span>');
-      await wait(180);
-      printLine(T, '<span class="t-dim">[info]</span> <span class="t-white">Initializing console interface...</span>');
-      await wait(200);
-      printLine(T, '<span class="t-dim">[info]</span> <span class="t-white">Mounting routes...</span>');
-      await wait(120);
-      printLine(T, '<span class="t-dim">[info]</span> <span class="t-white">Connecting to database...</span>          <span class="t-ok">[OK]</span>');
-      await wait(180);
-      printLine(T, '<span class="t-dim">[info]</span> <span class="t-white">Starting HTTPS server...</span>           <span class="t-ok">[OK]</span>');
-      await wait(200);
-      printLine(T, '');
-      printLine(T, '<span class="t-green">\u2713</span> <span class="t-ok">Server ready on https://xivora.studio</span>');
-      printLine(T, '<span class="t-dim">[info]</span> <span class="t-white">Redirecting to console view...</span>');
-      await wait(500);
-      printLine(T, '');
-
-      // Final fade and redirect
-      $mxTerm.style.transition = 'opacity .3s';
-      $mxTerm.style.opacity = '0';
-      await wait(300);
-      window.location.href = 'console.html';
-    }, 1500);
-  }
-
-  /* ── KONAMI CODE ──────────────────────────────── */
-  const KONAMI = [38,38,40,40,37,39,37,39,66,65];
-  let kIdx = 0;
-  document.addEventListener('keydown', e => {
-    kIdx = e.keyCode === KONAMI[kIdx] ? kIdx + 1 : 0;
-    if (kIdx === KONAMI.length) { kIdx = 0; triggerMatrix(); }
-  });
-
-  /* ── LOGO EASTER EGG (click 5× fast) ────────── */
-  let logoClicks = 0, logoTimer;
-  document.querySelector('.xivora-nav-logo').addEventListener('click', () => {
-    logoClicks++;
-    clearTimeout(logoTimer);
-    logoTimer = setTimeout(() => { logoClicks = 0; }, 800);
-    if (logoClicks >= 5) { logoClicks = 0; triggerMatrix(); }
-  });
-
-  /* ── TERMINAL WIDGET ──────────────────────────── */
-  const $tBtn   = document.getElementById('xivora-term-btn');
-  const $tPanel = document.getElementById('xivora-term-panel');
-  const $tOut   = document.getElementById('xivora-term-out');
-  const $tInp   = document.getElementById('xivora-term-inp');
-
-  $tBtn.addEventListener('click', () => {
-    const open = $tPanel.classList.toggle('xtp-on');
-    $tBtn.classList.toggle('xtp-on', open);
-    if (open) { $tPanel.style.animation=''; void $tPanel.offsetWidth; $tPanel.style.animation='tslide .22s cubic-bezier(.22,.84,.33,1)'; $tInp.focus(); }
-  });
-
-  const CMDS = {
-    help:     () => ['<span class="tc-a">Команды:</span>','  <span class="tc-g">whoami</span>   — о студии','  <span class="tc-g">services</span> — что делаем','  <span class="tc-g">price</span>    — стоимость','  <span class="tc-g">stack</span>    — технологии','  <span class="tc-g">contact</span>  — как связаться','  <span class="tc-g">ping</span>     — тест связи','  <span class="tc-g">matrix</span>   — ???','  <span class="tc-g">clear</span>    — очистить','  <span class="tc-m">...и ещё кое-что. Поищи ;)</span>'],
-    whoami:   () => ['<span class="tc-a">Xivora</span> — студия цифровых решений.','Сайты, боты, скрипты и интерфейсы.','<span class="tc-m">Быстро. Чисто. Без лишних слов.</span>'],
-    services: () => ['<span class="tc-g">[1]</span> Web Dev     — лендинги, сайты, приложения','<span class="tc-g">[2]</span> Telegram Dev — боты, Mini Apps, парсеры','<span class="tc-g">[3]</span> Scripts      — автоматизация, API-интеграции','<span class="tc-g">[4]</span> UI/UX Design — интерфейсы на конверсию'],
-    price:    () => ['Бот:    <span class="tc-a">от 1 000 ₽</span>  | 1–5 дней','Сайт:   <span class="tc-a">от 1 000 ₽</span>  | 1–14 дней','Скрипт: <span class="tc-a">от 800 ₽</span>    | 1–14 дней','<span class="tc-m">Нестандарт? Напишите — рассчитаем.</span>'],
-    stack:    () => ['<span class="tc-a">Lang:</span>    Python, JS/TS, HTML/CSS','<span class="tc-a">Backend:</span> FastAPI, Node.js, aiogram','<span class="tc-a">Frontend:</span> React, Vue, vanilla','<span class="tc-a">Tools:</span>   Git, Docker, Nginx, VPS','<span class="tc-a">Design:</span>  Figma'],
-    contact:  () => ['Telegram: <span class="tc-a">@Xivora</span>','Канал:    <span class="tc-a">@Xivora_Service</span>','GitHub:   <span class="tc-a">m1ghty13</span>','Lolzteam: <span class="tc-a">m1ghty13</span>'],
-    ping:     () => ['<span class="tc-g">pong</span> — 2ms'],
-    matrix:   () => { triggerMatrix(); return ['<span class="tc-g">> initiating system override...</span>']; },
-    'sudo':               () => ['<span class="tc-a">Permission denied.</span> Хорошая попытка.'],
-    'sudo rm -rf /':      () => ['<span class="tc-a">Нет.</span>'],
-    'git status':         () => ['On branch <span class="tc-a">main</span>','nothing to commit, working tree clean'],
-    'git push':           () => ['<span class="tc-g">✓</span>  pushed to origin/main'],
-    'npm run dev':        () => ['Starting...','<span class="tc-g">✓</span>  ready in 89ms','<span class="tc-m">➜  Local: http://localhost:3000</span>'],
-    'npm run build':      () => ['Building...','<span class="tc-g">✓</span>  built in 1.2s  (dist/ 142kb)'],
-    xivora:               () => ['<span class="tc-a"> ██╗  ██╗██╗██╗   ██╗ ██████╗ ██████╗  █████╗ </span>','<span class="tc-a"> ╚██╗██╔╝██║██║   ██║██╔═══██╗██╔══██╗██╔══██╗</span>','<span class="tc-a">  ╚███╔╝ ██║██║   ██║██║   ██║██████╔╝███████║</span>','<span class="tc-a">  ██╔██╗ ██║╚██╗ ██╔╝██║   ██║██╔══██╗██╔══██║</span>','<span class="tc-a"> ██╔╝ ██╗██║ ╚████╔╝ ╚██████╔╝██║  ██║██║  ██║</span>','<span class="tc-a"> ╚═╝  ╚═╝╚═╝  ╚═══╝   ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝</span>'],
-  };
-
-  function tPrint(lines) {
-    if (!lines) { $tOut.innerHTML = ''; return; }
-    lines.forEach(l => { const d = document.createElement('div'); d.innerHTML = l; $tOut.appendChild(d); });
-    $tOut.scrollTop = $tOut.scrollHeight;
-  }
-
-  $tInp.addEventListener('keydown', e => {
-    if (e.key !== 'Enter') return;
-    const raw = $tInp.value.trim();
-    if (!raw) return;
-    $tInp.value = '';
-    const echo = document.createElement('div');
-    echo.innerHTML = '<span class="tc-a">❯</span> <span class="tc-w">' + raw.replace(/</g,'&lt;') + '</span>';
-    $tOut.appendChild(echo);
-    const key = raw.toLowerCase();
-    if (key === 'clear') { tPrint(null); }
-    else if (CMDS[key]) { tPrint(CMDS[key]()); }
-    else {
-      const d = document.createElement('div');
-      d.innerHTML = '<span class="tc-a">command not found:</span> ' + raw.replace(/</g,'&lt;') + ' — попробуй <span class="tc-g">help</span>';
-      $tOut.appendChild(d);
-      $tOut.scrollTop = $tOut.scrollHeight;
-    }
-  });
-
-  /* ── INERTIAL SCROLL (desktop only) ─────────────── */
-  if (!('ontouchstart' in window)) {
-    let iEase = window.scrollY, iTarget = window.scrollY, iRunning = false;
-    const iMax = () => document.body.scrollHeight - window.innerHeight;
-
-    window.addEventListener('wheel', e => {
-      e.preventDefault();
-      iTarget = Math.max(0, Math.min(iTarget + e.deltaY * 0.88, iMax()));
-      if (!iRunning) { iRunning = true; iSmoothTick(); }
-    }, { passive: false });
-
-    // sync when anchor links or keyboard change scroll position externally
-    window.addEventListener('scroll', () => {
-      if (Math.abs(window.scrollY - iEase) > 60) { iEase = window.scrollY; iTarget = window.scrollY; }
-    }, { passive: true });
-
-    function iSmoothTick() {
-      const diff = iTarget - iEase;
-      if (Math.abs(diff) < 0.5) { iEase = iTarget; window.scrollTo(0, iEase); iRunning = false; return; }
-      iEase += diff * 0.1;
-      window.scrollTo(0, iEase);
-      requestAnimationFrame(iSmoothTick);
-    }
-  }
-
-  /* ── STAT COUNTER ────────────────────────────────── */
-  const cntObs = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      cntObs.unobserve(entry.target);
-      const el   = entry.target;
-      const to   = +el.dataset.to;
-      const tmpl = el.dataset.tmpl;
-      const dur  = 1800;
-      const t0   = performance.now();
-      (function tick(now) {
-        const t = Math.min((now - t0) / dur, 1);
-        const v = Math.round((1 - Math.pow(1 - t, 3)) * to);
-        el.innerHTML = tmpl.replace('{n}', v);
-        if (t < 1) requestAnimationFrame(tick);
-        else {
-          // final value flash
-          el.style.transition = 'color .15s';
-          el.style.color = 'var(--accent)';
-          setTimeout(() => { el.style.color = ''; el.style.transition = ''; }, 300);
-        }
-      })(performance.now());
-    });
-  }, { threshold: 0.6 });
-  document.querySelectorAll('.xivora-counter').forEach(el => cntObs.observe(el));
-
-  /* ── COMPILE BUTTON ──────────────────────────────── */
-  const COMPILE_STEPS = ['Компилируется...', 'Сборка... ▓▓░░░', 'Линковка... ▓▓▓▓░', 'Готово! ✓'];
-  document.querySelectorAll('.xivora-compile-btn').forEach(btn => {
-    btn.addEventListener('click', e => {
-      if (btn.classList.contains('xc-on')) return;
-      e.preventDefault();
-      const href = btn.href, tgt = btn.target;
-      const lbl  = btn.querySelector('.xivora-compile-lbl');
-      btn.classList.add('xc-on');
-      let step = 0;
-      lbl.textContent = COMPILE_STEPS[0];
-      const iv = setInterval(() => {
-        step++;
-        if (step < COMPILE_STEPS.length) lbl.textContent = COMPILE_STEPS[step];
-        else clearInterval(iv);
-      }, 380);
+      total += 500;
       setTimeout(() => {
-        btn.classList.remove('xc-on');
-        clearInterval(iv);
-        tgt === '_blank' ? window.open(href, '_blank', 'noopener,noreferrer') : (window.location.href = href);
-      }, 1600);
-    });
-  });
+        $crtBoot.classList.add('hide');
+        setTimeout(() => $crtBoot.remove(), 400);
+        startMainBoot();
+      }, total);
+    }
 
-  /* ── DVD IDLE EASTER EGG ─────────────────────────── */
-  let dvdActive = false, dvdRaf, dvdTimer;
-  const DVD_COLORS = ['#e8190a','#ff6b35','#ffd700','#27c93f','#00bfff','#bf5af2','#ff2d55','#fff'];
-  let dvdColorIdx = 0;
+    function startMainBoot() {
+      const bootLines = Array.from(document.querySelectorAll('.c-boot-line'));
+      const bootBar   = document.getElementById('boot-bar');
+      const heroEls   = ['hero-frame', 'hero-prompt', 'hero-actions'].map(id => document.getElementById(id));
 
-  function startDVD() {
-    if (dvdActive) return;
-    dvdActive = true;
-
-    const el   = document.createElement('div'); el.id = 'xivora-dvd';
-    el.textContent = 'XIVORA.';
-    el.style.color = DVD_COLORS[0];
-    document.body.appendChild(el);
-
-    const hint = document.createElement('div'); hint.id = 'xivora-dvd-hint';
-    hint.textContent = 'нажми любую клавишу или кликни';
-    document.body.appendChild(hint);
-
-    let x = 80, y = 80, vx = 1.8, vy = 1.4;
-
-    (function moveDVD() {
-      const W = window.innerWidth  - el.offsetWidth  - 10;
-      const H = window.innerHeight - el.offsetHeight - 10;
-      x += vx; y += vy;
-      let hit = false;
-      if (x <= 0 || x >= W) { vx *= -1; x = Math.max(0, Math.min(x, W)); hit = true; }
-      if (y <= 0 || y >= H) { vy *= -1; y = Math.max(0, Math.min(y, H)); hit = true; }
-      if (hit) { dvdColorIdx = (dvdColorIdx + 1) % DVD_COLORS.length; el.style.color = DVD_COLORS[dvdColorIdx]; }
-      el.style.left = x + 'px'; el.style.top = y + 'px';
-      dvdRaf = requestAnimationFrame(moveDVD);
-    })();
-  }
-
-  function stopDVD() {
-    if (!dvdActive) return;
-    dvdActive = false;
-    cancelAnimationFrame(dvdRaf);
-    document.getElementById('xivora-dvd')?.remove();
-    document.getElementById('xivora-dvd-hint')?.remove();
-    resetDVDTimer();
-  }
-
-  function resetDVDTimer() {
-    clearTimeout(dvdTimer);
-    if (!dvdActive) dvdTimer = setTimeout(startDVD, 28000);
-  }
-
-  ['mousemove','keydown','click','scroll','touchstart'].forEach(ev =>
-    document.addEventListener(ev, () => { stopDVD(); resetDVDTimer(); }, { passive: true })
-  );
-  resetDVDTimer();
-
-  /* ── SCROLL RISE ──────────────────────────────── */
-  const riseObs = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); riseObs.unobserve(e.target); } });
-  }, { threshold: 0.08 });
-  document.querySelectorAll('.rise').forEach(el => riseObs.observe(el));
-
-  /* ── FAQ ACCORDION ────────────────────────────── */
-  document.querySelectorAll('.xivora-faq-q').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const isOpen = btn.classList.contains('open');
-      document.querySelectorAll('.xivora-faq-q').forEach(b => {
-        b.classList.remove('open'); b.setAttribute('aria-expanded','false');
-        b.nextElementSibling.style.maxHeight = '0';
-      });
-      if (!isOpen) {
-        btn.classList.add('open'); btn.setAttribute('aria-expanded','true');
-        const a = btn.nextElementSibling;
-        a.style.maxHeight = a.scrollHeight + 'px';
+      function revealHero() {
+        heroEls.forEach((el, i) => {
+          if (!el) return;
+          setTimeout(() => el.classList.add('in'), reduced ? 0 : i * 110);
+        });
       }
-    });
-  });
-  </script>
 
+      if (reduced) {
+        bootLines.forEach(l => l.classList.add('show'));
+        if (bootBar) bootBar.style.width = '100%';
+        revealHero();
+      } else {
+        bootLines.forEach((line, i) => {
+          setTimeout(() => {
+            line.classList.add('show');
+            if (i === bootLines.length - 1 && bootBar) {
+              setTimeout(() => { bootBar.style.width = '100%'; }, 120);
+              setTimeout(revealHero, 820);
+            }
+          }, 140 + i * 260);
+        });
+      }
+    }
+
+    runCrtBoot();
+
+    /* ── SCROLL REVEAL ───────────────────────────────── */
+    const revObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          revObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -32px 0px' });
+
+    document.querySelectorAll('.rv').forEach(el => {
+      const heroEls = ['hero-frame', 'hero-prompt', 'hero-actions'].map(id => document.getElementById(id));
+      if (!heroEls.includes(el)) revObs.observe(el);
+    });
+
+    /* ── STAT BARS ───────────────────────────────────── */
+    const barObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const pct  = e.target.dataset.bar;
+          const fill = e.target.querySelector('.c-stat-bar-fill');
+          if (fill && pct) setTimeout(() => { fill.style.width = pct + '%'; }, 250);
+          barObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.4 });
+
+    document.querySelectorAll('[data-bar]').forEach(el => barObs.observe(el));
+
+    /* ── FAQ ACCORDION ───────────────────────────────── */
+    document.querySelectorAll('.c-faq-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const open = btn.getAttribute('aria-expanded') === 'true';
+        document.querySelectorAll('.c-faq-btn').forEach(b => {
+          b.setAttribute('aria-expanded', 'false');
+          b.nextElementSibling.style.maxHeight = '0';
+        });
+        if (!open) {
+          btn.setAttribute('aria-expanded', 'true');
+          const panel = btn.nextElementSibling;
+          panel.style.maxHeight = panel.scrollHeight + 'px';
+        }
+      });
+    });
+
+    /* ── ACTIVE NAV + STATUS BAR SECTION ─────────────── */
+    const navLinks  = document.querySelectorAll('.c-nav-link');
+    const sbSec     = document.getElementById('sb-sec');
+    const secIds    = ['home', 'stats', 'services', 'process', 'why', 'pricing', 'faq', 'contact'];
+
+    const secObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        const id = e.target.id;
+        if (sbSec) sbSec.textContent = id.toUpperCase();
+        navLinks.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+        });
+      });
+    }, { threshold: 0.35 });
+
+    secIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) secObs.observe(el);
+    });
+
+    /* ── STATUS BAR CLOCK ────────────────────────────── */
+    const sbTime = document.getElementById('sb-time');
+    function tick() {
+      if (!sbTime) return;
+      const d = new Date();
+      sbTime.textContent =
+        String(d.getHours()).padStart(2, '0') + ':' +
+        String(d.getMinutes()).padStart(2, '0');
+    }
+    tick();
+    setInterval(tick, 30000);
+  </script>
 </body>
 </html>
